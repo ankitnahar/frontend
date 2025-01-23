@@ -1,0 +1,257 @@
+<!-- Admin (Administration) manager users html view -->
+<div class="admin-manage-users-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <i class="material-icons cursor-pointer">home</i>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>ADMINISTRATION</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">MANAGE USER</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="onAddUSer()">Add User</button>
+                  <button mat-menu-item>Add User Right Report</button>
+                </mat-menu>
+              </a>
+            </li>
+            <li>
+              <a>
+                <i class="material-icons">info</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Grid Inner Header -->
+  <div class="with-filter-grid-container">
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="inner-header-title">
+            <h3>Manage User</h3>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li>
+              <a>
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+          <div class="grid-search">
+            <div class="add-one">
+              <input placeholder="Search" type="text">
+              <span class="prefix">
+                <i class="material-icons">search</i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onToggleFilter()">Esc <i class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form>
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="BioMetric ID"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Full Name"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Login Name"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Email Address"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Designation" [multiple]="true">
+                  <mat-option value="webDesigner">Web Designer</mat-option>
+                  <mat-option value="webDeveloper">Web Developer</mat-option>
+                  <mat-option value="dbms">DBMS</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Login Access">
+                  <mat-option value="0">Open</mat-option>
+                  <mat-option value="1">Block</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="shift Name" [multiple]="true">
+                  <mat-option value="day">Day</mat-option>
+                  <mat-option value="night">Night</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Location" [multiple]="true">
+                  <mat-option value="india">India</mat-option>
+                  <mat-option value="uk">UK</mat-option>
+                  <mat-option value="us">US</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12 MT-20 text-right">
+              <button type="reset" class="btn-cancel">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <div class="tag" *ngFor="let filterTag of tagList; let i=index">
+        <span class="tag__title">{{filterTag.label}} :</span>
+        <input type="text" class="disabled-text" [value]="filterTag.value" readonly (click)="inputRef.readOnly = false"
+               (blur)="inputRef.readOnly = true" #inputRef/>
+        <i class="material-icons tag__close" (click)="deleteMsg(i)">close</i>
+      </div>
+      <div class="clearAll-tags" *ngIf="tagList.length !== 0">
+        <a (click)="onClearTags()">Clear all</a>
+      </div>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="5%">Bio ID
+              <i class="material-icons icon-up active">arrow_upward</i>
+              <i class="material-icons icon-down" *ngIf="false">arrow_downward</i>
+            </th>
+            <th width="15%">Full Name
+              <i class="material-icons icon-up" *ngIf="false">arrow_upward</i>
+              <i class="material-icons icon-down active">arrow_downward</i>
+            </th>
+            <th width="8%">Login Name
+              <i class="material-icons icon-up">arrow_upward</i>
+              <i class="material-icons icon-down" *ngIf="false">arrow_downward</i>
+            </th>
+            <th width="18%">Email ID
+              <i class="material-icons icon-up">arrow_upward</i>
+              <i class="material-icons icon-down" *ngIf="false">arrow_downward</i>
+            </th>
+            <th width="8%">Designation
+              <i class="material-icons icon-up">arrow_upward</i>
+              <i class="material-icons icon-down" *ngIf="false">arrow_downward</i>
+            </th>
+            <th width="12%">Shift Name
+              <i class="material-icons icon-up">arrow_upward</i>
+              <i class="material-icons icon-down" *ngIf="false">arrow_downward</i>
+            </th>
+            <th width="12%">Location
+              <i class="material-icons icon-up">arrow_upward</i>
+              <i class="material-icons icon-down" *ngIf="false">arrow_downward</i>
+            </th>
+            <th width="8%" class="text-center">Login Access
+              <!--<i class="material-icons icon-up">arrow_upward</i>-->
+              <!--<i class="material-icons icon-down" *ngIf="false">arrow_downward</i>-->
+            </th>
+            <th width="5%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let user of userList; let i = index">
+              <td width="5%">{{i + 1}}</td>
+              <td width="5%">{{user?.bioId}}</td>
+              <td width="15%">{{user?.fullName}}</td>
+              <td width="8%">{{user?.loginName}}</td>
+              <td width="18%">
+                <div class="elipsis-email">{{user?.emailId}}</div>
+              </td>
+              <td width="8%">{{user?.designation}}</td>
+              <td width="12%">{{user.shiftName}}</td>
+              <td width="12%">{{user.location}}</td>
+              <td width="8%" class="text-center">
+                <mat-slide-toggle [checked]="user?.is_active"></mat-slide-toggle>
+              </td>
+              <td width="5%">
+                <i class="material-icons edit-icon" (click)="onUpdateUser()">edit</i>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="length"
+                             [pageSize]="pageSize"
+                             [pageSizeOptions]="pageSizeOptions"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>  <!-- End Table -->
+  <!-- End Grid Inner Header -->
+</div>

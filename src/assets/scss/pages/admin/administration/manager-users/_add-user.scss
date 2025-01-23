@@ -1,0 +1,21 @@
+// --------------------------------------------------------------------------------------
+// ===================== Admin (Administration) add user scss  =====================
+// --------------------------------------------------------------------------------------
+.admin-add-user-management-container {
+  .save-history-btns {
+    text-align: right;
+    margin-top: 2rem;
+  }
+}
+
+.form-container {
+  .form-title {
+    h3 {
+      margin: 0;
+      padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: $dark-primary-color;
+    }
+  }
+}

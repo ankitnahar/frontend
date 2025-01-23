@@ -1,0 +1,75 @@
+// ---------------------------------------------------------------------------------------------
+// ===================================  button sass file  ======================================
+// ---------------------------------------------------------------------------------------------
+button, html [type=button], [type=reset], [type=submit] {
+  -webkit-appearance: button;
+}
+%btn {
+  display: inline-block;
+  padding: 7px 30px;
+  margin-bottom: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  outline: 0;
+  @include border-radius(0.2rem);
+}
+
+.btn-primary {
+  @extend %btn;
+  @include bgClr($dark-primary-color, $white-color, $dark-primary-color);
+  &:hover {
+    @include bgClr(lighten($dark-primary-color, 10%), $white-color, lighten($dark-primary-color, 10%));
+  }
+}
+
+.btn-orange {
+  @extend %btn;
+  @include bgClr($orange-color, $white-color, $orange-color);
+  &:hover {
+    @include bgClr(lighten($orange-color, 5%), $white-color, lighten($orange-color, 5%));
+  }
+}
+.btn-default{
+  @extend %btn;
+  @include bgClr(lighten($light-gray-color,10%), $gray-color, lighten($light-gray-color,10%));
+  &:hover {
+    @include bgClr(lighten($light-gray-color,13%), $gray-color, lighten($light-gray-color,13%));
+  }
+}
+
+.btn-cancel {
+  @extend %btn;
+  @include bgClr(transparent, $black-color,transparent);
+}
+
+.btn-login {
+  font-size: 1.4rem;
+  padding: 1rem 1.2rem;
+  font-weight: 500;
+  border-radius: 2px;
+  letter-spacing: .1rem;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.btn-primary[disabled] {
+  background-color: lighten($dark-primary-color, 10%) !important;
+  border-color: lighten($dark-primary-color, 10%) !important;
+  cursor: not-allowed;
+}

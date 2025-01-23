@@ -1,0 +1,102 @@
+// --------------------------------------------------------------------------------------
+// ===================== Admin Login / Forgot Password / Reset Password scss =====================
+// --------------------------------------------------------------------------------------
+.admin-login-container {
+  background: linear-gradient(to top, lighten($dark-primary-color, 50%), lighten($light-gray-color, 40%));
+  background: -webkit-linear-gradient(to top, lighten($dark-primary-color, 50%), lighten($light-gray-color, 40%));
+  margin-top: -7rem;
+  .panel-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    &__container {
+      margin: auto;
+      width: 45rem;
+      .panel-logo {
+        text-align: center;
+        img {
+          width: 20rem;
+          margin-bottom: 4rem;
+        }
+      }
+      .panel-body-container {
+        width: 45rem;
+//        box-shadow: 0 1px 0px -5px rgba(0, 0, 0, 0), 0 1px 1px 1px rgba(0, 0, 0, 0.11), 0 1px 1px 0px rgba(0, 0, 0, 0);
+        @include border-radius(0.6rem);
+        background-color: $white-color;
+        .panel-header {
+          text-align: center;
+          h3 {
+            padding: 2.5rem 0 1rem 0;
+            font-size: 2.2rem;
+            font-weight: 500;
+            font-style: normal;
+            font-stretch: normal;
+            letter-spacing: 0.1rem;
+            text-align: center;
+            color: $dark-primary-color;
+          }
+        }
+        .panel-body {
+          padding: 2rem 3rem 3rem 3rem;
+          .forgot-password-link {
+            text-align: center;
+            a {
+              color: $black-color;
+              font-weight: 500;
+              cursor: pointer;
+            }
+          }
+          .back-to-login-link {
+            text-align: center;
+            margin-top: 3rem;
+            a {
+              color: $black-color;
+              font-weight: 500;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+    &__copyright {
+      margin: auto;
+      width: 50rem;
+      text-align: center;
+      margin-top: -7rem;
+      p {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  // Responsive function for mobile phone device
+  @include respond(phone) {
+    .panel-block {
+      &__container {
+        width: 100%;
+        box-sizing: border-box;
+        .panel-header {
+        }
+        .panel-body {
+          padding: 5rem 1rem 5rem 1rem;
+          .forgot-password-link {
+            a {
+            }
+          }
+          .back-to-login-link {
+            a {
+            }
+          }
+        }
+      }
+      &__copyright {
+        width: 100%;
+        box-sizing: border-box;
+        p {
+        }
+      }
+    }
+  }
+}

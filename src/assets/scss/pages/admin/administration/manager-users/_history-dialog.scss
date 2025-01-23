@@ -1,0 +1,109 @@
+//
+// View History Dialog scss
+//
+.modal {
+  &.history-modal {}
+
+  &__header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: row;
+    &__logo {
+      font-weight: 500;
+      font-size: 1.6rem;
+      display: inline-block;
+      //margin: auto;
+      align-self: center;
+    }
+    &__datepicker {
+      display: inline-block;
+      margin: auto;
+    }
+  }
+
+  &__close {
+    top: 2.2rem;
+  }
+
+  &__body {
+    .view-history-container {
+      z-index: 1;
+      background-color: $white-color;
+      right: 0;
+      padding: 0;
+      margin: 0;
+      li {
+        display: block;
+        & > a {
+          padding: 0.5rem 1.2rem;
+          border: 0;
+          display: flex;
+          flex-direction: row;
+          box-sizing: border-box;
+          width: 100%;
+          font-size: 1.3rem;
+          color: $black-color;
+          border-bottom: 1px solid lighten($light-gray-color, 15%);
+          //&:hover {
+          //  background-color: lighten($light-gray-color, 22%);
+          //}
+          .profile-icon {
+            margin-right: 1rem;
+            img {
+              vertical-align: middle;
+            }
+          }
+          .history-details {
+            flex: 1;
+            h3 {
+              float: left;
+              width: 20rem;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              margin: 0;
+              font-weight: 500;
+              font-size: 1.5rem;
+              color: darken($gray-color, 10%);
+              line-height: 2rem;
+              margin-top: .2rem;
+              span {
+                color: $dark-primary-color;
+              }
+            }
+            .history-time {
+              float: right;
+              color: $gray-color;
+              font-weight: 500;
+              margin-top: 0.3rem;
+              font-size: 1.2rem;
+              span {
+                position: relative;
+                top: -.5rem;
+              }
+              i {
+                font-size: 2rem;
+              }
+            }
+
+            .history-content {
+              margin-top: 0.5rem;
+              li {
+                font-weight: 400;
+                line-height: 1.8rem;
+                color: lighten($black-color, 20%);
+                i {
+                  color: $dark-primary-color;
+                  font-size: 1.8rem;
+                  position: relative;
+                  top: 0.7rem;
+                  margin-left: -2.4rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

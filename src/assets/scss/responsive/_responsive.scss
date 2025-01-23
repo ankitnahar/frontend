@@ -1,0 +1,71 @@
+/******************************* Media Query Manager  *******************************
+  0 - 600px : Phone
+  600px - 900px : Tablet Portrait
+  780px - 1024px : Regular Desktop
+  900px - 1200px : Tablet Landscape
+  [1200 - 1800] : is Where our normal style apply
+  1800px + : Big Desktop
+*/
+
+/*
+  $break-point argument choices:
+    - phone
+    - tab-port
+    - tab-land
+    - regular-desktop
+    - big-desktop
+*/
+
+/******************************* Dynamic Media Query  ********************************/
+@mixin respond($breakPoint) {
+
+  @if $breakPoint == big-desktop {
+    @media (max-width: 1800px) { // 112.5 em
+      @content;
+    }
+  }
+
+  @if $breakPoint == tab-land {
+    @media (min-width: 780px) and (max-width: 1024px) { // 75 em
+      @content;
+    }
+  }
+
+  @if $breakPoint == regular-desktop {
+    @media (max-width: 1260px) { // 75 em
+      @content;
+    }
+  }
+
+  @if $breakPoint == tab-port {
+    @media (min-width: 600px) and (max-width: 1024px) { // 56.25 em
+      @content;
+    }
+  }
+
+  @if $breakPoint == phone {
+    @media (max-width: 600px) { // 37.5 em
+      @content;
+    }
+  }
+}
+
+/*----------------------------     Start Big Desktop Media Query      ---------------------------*/
+@import "big-desktop-responsive";
+/*----------------------------     End Big Desktop Media Query      ---------------------------*/
+
+/*----------------------------     Start Tab Land Media Query      ---------------------------*/
+@import "tab-land-responsive";
+/*----------------------------     End Tab Land Media Query      ---------------------------*/
+
+/*----------------------------     Start Tab Port Media Query      ---------------------------*/
+@import "tab-port-responsive";
+/*----------------------------     End Tab Port Media Query      ---------------------------*/
+
+/*----------------------------     Start Desktop Media Query      ---------------------------*/
+@import "regular-desktop";
+/*----------------------------     Start Desktop Media Query      ---------------------------*/
+
+/*----------------------------     Start Phone Media Query      ---------------------------*/
+@import "phone-responsive";
+/*----------------------------     End Phone Media Query      ---------------------------*/

@@ -1,0 +1,172 @@
+<!-- Admin (Administration) user hierarchy html view -->
+<div class="admin-user-hierarchy-container">
+  <!-- Start form view -->
+  <form [formGroup]="hierarchyForm" (submit)="onSubmitHierarchyForm(hierarchyForm.value,hierarchyForm.valid)">
+    <div class="row">
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Designation" formControlName="designation_id" required>
+            <mat-option value="0">Indian Sales</mat-option>
+            <mat-option value="1">Block</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(hierarchyForm.get('designation_id'))"
+                          [errMsg]="validationMsg.DESIGNATION"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <mat-form-field class="demo-chip-list">
+          <mat-chip-list #chipList required>
+            <mat-chip
+              *ngFor="let fruit of teams"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="remove(fruit)">
+              {{fruit}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="Team"
+              #fruitInput
+              formControlName="team_id"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)"
+            />
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
+              {{ fruit }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(hierarchyForm.get('team_id'))"
+                          [errMsg]="validationMsg.TEAM"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Division Head">
+            <mat-option value="0">Dilip Parmar</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Business Unit Head">
+            <mat-option value="0">Dilip Parmar</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Technical Account Manager">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Associate Technical Account Manager">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Team Lead">
+            <mat-option value="0">Dilip Parmar</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Associate Team Lead">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Review Manager">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Associate Review Manager">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Review Lead">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Associate Review Lead">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Befree Writeoff Approval Staff">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Send for First Approval">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select placeholder="Send for Second Approval">
+            <mat-option value="0">Sobhana Desai</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-4 info-note">
+            <p>If Second approval user is not available then first user approved it means user have only single approval
+              late coming</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 save-history-btns">
+        <button type="button" class="btn-cancel">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="hierarchyForm.invalid">Save</button>
+      </div>
+    </div>
+  </form>
+  <!-- End form view -->
+</div>

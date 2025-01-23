@@ -1,0 +1,47 @@
+<div>
+  <!-- Start Table -->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="10%">Sr. No.</th>
+          <th width="25%">
+            Page
+            <i class="material-icons icon-up">arrow_drop_up</i>
+            <i class="material-icons icon-down">arrow_drop_down</i>
+          </th>
+          <th width="15%"> <mat-checkbox></mat-checkbox> View</th>
+          <th width="15%"><mat-checkbox></mat-checkbox> Add / Edit</th>
+          <th width="15%"> <mat-checkbox></mat-checkbox> Delete</th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let privilege of privilegesList; let i = index">
+            <td width="10%">{{privilege?.srNo}}</td>
+            <td width="25%">{{privilege?.page}}</td>
+            <td width="15%">
+              <mat-checkbox></mat-checkbox>
+            </td>
+            <td width="15%">
+              <mat-checkbox></mat-checkbox>
+            </td>
+            <td width="15%">
+              <mat-checkbox></mat-checkbox>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-12 save-history-btns">
+        <button type="button" class="btn-cancel">Cancel</button>
+        <button type="submit" class="btn-primary">Update</button>
+      </div>
+    </div>
+  </div><!-- End Table -->
+</div>

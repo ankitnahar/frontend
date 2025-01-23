@@ -1,0 +1,100 @@
+// ---------------------------------------------------------------------------------------------
+// ===================================  Diailog sass file  ======================================
+// ---------------------------------------------------------------------------------------------
+.modal {
+  position: fixed;
+  background: $white-color;
+  left: 50%;
+  top: 50%;
+  width: 50rem;
+  z-index: 990;
+  //@include border-radius(0rem);
+  transform: translate(-50%, -50%);
+  transition: 0.2s all ease-in;
+  box-shadow: 0 3px 0px -3px rgba(0, 0, 0, 0.2), 0 2px 3px 1px rgba(0, 0, 0, 0.14), 0 -1px 1px 1px rgba(0, 0, 0, 0.12);
+  &.mini-modal{
+    width: 30rem;
+  }
+  &.midium-modal{
+    width: 50rem;
+  }
+  &.large-modal{
+    width: 80rem;
+  }
+  &__close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.2rem;
+    font-size: 2rem;
+    color: $white-color;
+    cursor: pointer;
+  }
+  &__header {
+    border-bottom: .1rem solid $dark-primary-color;
+    background-color: $dark-primary-color;
+    padding: 1.5rem;
+    color: $white-color;
+    h3 {
+      padding-bottom: 1rem;
+      font-weight: 500;
+      color: $dark-primary-color;
+    }
+  }
+
+  &__body {
+    margin: 1rem 0;
+    padding: 1rem 2rem;
+    //padding: 1.5rem;
+    max-height: 85vh;
+    overflow: auto;
+    &__upload-img {
+      text-align: center;
+      img {
+        max-width: 100%;
+      }
+    }
+  }
+
+  &__footer {
+    margin: 0rem 0 1rem 0;
+    text-align: center;
+    border-top: 1px solid lighten($light-gray-color, 10%);
+    padding-top: 1rem;
+    button {
+      padding: 0.6rem 3rem;
+    }
+  }
+}
+
+
+.modal-layer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  background:$white-tranparent-color;
+}
+
+@include respond(phone) {
+  .modal {
+    width: 98%;
+    &__close {
+    }
+    &__header {
+      h3 {
+      }
+    }
+    &__body {
+      &__upload-img {
+        img {
+        }
+      }
+    }
+    &__footer {
+    }
+  }
+}
+

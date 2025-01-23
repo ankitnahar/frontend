@@ -1,0 +1,16 @@
+// --------------------------------------------------------------------------------------
+// ===================== Admin (Administration) user hierarchy scss  =====================
+// --------------------------------------------------------------------------------------
+.admin-user-hierarchy-container {
+  .info-note {
+    padding-left: 0;
+    p {
+      background-color: $primary-light-color;
+      color: $black-color;
+      padding: 1rem 1.5rem 1rem 1.5rem;
+      margin-top: 1rem;
+      box-sizing: border-box;
+      line-height: 1.9rem;
+    }
+  }
+}

@@ -1,0 +1,66 @@
+<div class="admin-update-user-management-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <i class="material-icons cursor-pointer">home</i>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>ADMINISTRATION</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a routerLink="/manage-users/"> MANAGE USER</a></span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>UPDATE USER</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a (click)="onShowHistory()">
+                <label>View History</label>
+                <i class="material-icons">history</i>
+              </a>
+            </li>
+            <li>
+              <a>
+                <i class="material-icons">info</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="user-details-view">
+    <mat-tab-group class="demo-tab-group">
+      <mat-tab label="Personal">
+        <div class="personal-tab-content">
+          <app-personal></app-personal>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Hierarchy">
+        <div class="hierarchy-tab-content">
+          <app-hierarchy></app-hierarchy>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Privileges">
+        <div class="rights-tab-content">
+          <app-privileges></app-privileges>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Change Password">
+        <div class="change-password-tab-content">
+          <app-change-password></app-change-password>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+
+<app-history-dialog [dialogStatus]="isOpenHistoryDialog" (close)="isOpenHistoryDialog = $event"></app-history-dialog>

@@ -1,0 +1,203 @@
+// ---------------------------------------------------------------------------------------------
+// ========================  Material component modify scss file  ==============================
+// ---------------------------------------------------------------------------------------------
+.mat-form-field {
+  display: block !important;
+  font-family: $font-family;
+  .mat-input-prefix {
+    i {
+      top: 5px;
+      position: relative;
+      color: $light-gray-color;
+    }
+  }
+}
+
+.mat-form-field-label {
+  font-family: $font-family !important;
+}
+
+.mat-form-field-ripple {
+  background-color: $dark-primary-color;
+}
+
+.mat-focused {
+  .mat-form-field-label {
+    color: $dark-primary-color;
+  }
+}
+
+.mat-menu-item {
+  height: 3.5rem !important;
+  line-height: 3.5rem !important;
+  font-size: 1.4rem;
+}
+
+.mat-menu-content {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.mat-form-field-underline {
+  bottom: 0;
+  background-color: lighten($gray-color, 20%);
+}
+
+.mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.mat-paginator-page-size {
+  margin-right: 0;
+  margin-top: -1.8rem;
+}
+
+.mat-slide-toggle-bar {
+  // background-color: lighten($red-color, 18%);
+}
+
+.mat-slide-toggle-thumb {
+  background-color: lighten($light-gray-color, 10%);
+}
+
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: $primary-light-color;
+}
+
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: $primary-color;
+}
+
+.mat-slide-toggle-bar {
+  height: 1.1rem !important;
+  width: 3rem !important;
+}
+
+.mat-slide-toggle-thumb-container {
+  top: -0.4rem;
+}
+
+.mat-slide-toggle-thumb {
+  height: 1.7rem !important;
+  width: 1.7rem !important;
+  position: relative;
+}
+
+.mat-tab-labels {
+  .mat-tab-label,
+  .mat-tab-link {
+    font-family: $font-family;
+    color: $black-color !important;
+    opacity: 1 !important;
+  }
+  .mat-tab-label.mat-ripple.mat-tab-label-active {
+    color: $dark-primary-color !important;
+    font-weight: 500;
+  }
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: $primary-color !important;
+}
+
+.mat-tab-group {
+  font-family: $font-family;
+}
+
+.mat-primary .mat-pseudo-checkbox-checked, .mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: $dark-primary-color;
+}
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: $dark-primary-color;
+}
+
+.mat-select-panel {
+  .mat-option {
+    line-height: 2em !important;
+    height: 2.5em !important;
+  }
+}
+
+.mat-chip:not(.mat-basic-chip) {
+  padding: .3rem 1.2rem !important;
+}
+
+.mat-option {
+  line-height: 2.5rem !important;
+  height: 3rem !important;
+  font-family: $font-family;
+  font-size: 1.4rem !important;
+}
+
+.mat-menu-item:hover:not([disabled]) {
+  color: $dark-primary-color;
+}
+
+.mat-icon-button {
+  color: $dark-primary-color !important;
+}
+
+.mat-icon-button:disabled {
+  color: lighten($gray-color, 20%) !important;
+}
+
+.mat-form-field-suffix {
+  .mat-datepicker-toggle-default-icon {
+    width: 1.2em !important;
+    color: lighten($gray-color, 5%);
+  }
+  .material-icons {
+    color: lighten($gray-color, 5%);
+    font-size: 1.9rem !important;
+    cursor: pointer;
+    padding-right: 2rem;
+  }
+  .mat-icon {
+    color: lighten($gray-color, 5%);
+    font-size: 1.4rem !important;
+  }
+}
+
+.mat-form-field-label.mat-input-placeholder.mat-form-field-placeholder.mat-empty.mat-form-field-empty {
+  font-size: 1.3rem !important;
+}
+
+//
+// Filter form field design
+//
+.filter {
+  .mat-form-field-underline {
+    background-color: $dark-primary-color;
+  }
+  .mat-form-field-label,
+  .mat-select-arrow {
+    color: $dark-primary-color;
+  }
+}
+
+//
+// History Dialog Design
+//
+.history-modal {
+  .modal__header__datepicker {
+    .mat-input-container {
+      background-color: lighten($dark-primary-color,5%);
+      padding: 0 .8rem .8rem .8rem;
+      border-radius: .4rem;
+    }
+    .mat-form-field-suffix .mat-datepicker-toggle-default-icon {
+      color: $white-color;
+    }
+    .mat-form-field-label {
+      color: $white-color;
+    }
+    .mat-form-field-underline,
+    .mat-form-field-ripple{
+      background-color: transparent;
+    }
+    .mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label{
+      display: none;
+    }
+  }
+}

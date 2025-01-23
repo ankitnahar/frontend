@@ -1,0 +1,53 @@
+<!-- admin (Administration) previleges html view -->
+<div class="admin-user-privileges-container">
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field>
+        <mat-select placeholder="Choose an option" (change)="onChangePageRight($event.value)">
+          <mat-option value="0">Page Rights</mat-option>
+          <mat-option value="1">Dynamic Field Group</mat-option>
+          <mat-option value="2">Worksheet Status Rights</mat-option>
+          <mat-option value="3">Form Email Rights</mat-option>
+          <mat-option value="4">Other</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-7"></div>
+    <div class="col-md-3">
+      <div class="grid-search">
+        <div class="add-one">
+          <input placeholder="Search" type="text">
+          <span class="prefix">
+                <i class="material-icons">search</i>
+              </span>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+  <!-- Start page rights view -->
+  <div class="inner-page-view" *ngIf="activeEnumView == enumView.PAGE_RIGHTS_VIEW">
+    <app-page-rights></app-page-rights>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div class="inner-page-view" *ngIf="activeEnumView == enumView.DYNAMIC_FIELD_GROUP_VIEW">
+    <app-dynamic-field-group></app-dynamic-field-group>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div class="inner-page-view" *ngIf="activeEnumView == enumView.WORKSHEET_STATUS_RIGHTS_VIEW">
+    <app-worksheet-status-right></app-worksheet-status-right>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div class="inner-page-view" *ngIf="activeEnumView == enumView.FORM_EMAIL_RIGHTS_VIEW">
+    <app-form-email-rights></app-form-email-rights>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div class="inner-page-view" *ngIf="activeEnumView == enumView.OTHER_VIEW">
+    <app-other></app-other>
+  </div>  <!-- End page rights view -->
+</div>

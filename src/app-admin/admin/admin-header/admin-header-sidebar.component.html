@@ -1,0 +1,375 @@
+<!-- Admin Header html View -->
+<div class="admin-header-sidebar-container">
+  <!-- Start  Header top panel  -->
+  <header class="header-section">
+    <div class="row">
+      <div class="col-md-6 col-sm-6 header-section__top-bar-container">
+        <!-- Start Header left menu -->
+        <div class="header-section__top-bar">
+          <img src="assets/images/logo_white.png"/>
+          <span>Befree CRM</span>
+        </div>
+        <ul class="header-section__left-menu">
+          <li>
+            <a class="mega-menu-container">
+              <div (click)="onOpenHeaderMenu('megaMenu')">
+                <i class="material-icons" [ngClass]="{'active': activeView == menuEnumView.MEGA_MENU_LIST}">menu</i>
+                <i class="material-icons dropdown-icon"
+                   [ngClass]="{'active': activeView == menuEnumView.MEGA_MENU_LIST}">arrow_drop_down</i>
+              </div>
+              <div class="mega-menu opacity-0" [ngClass]="{'opacity-1' : activeView == menuEnumView.MEGA_MENU_LIST}">
+                <ul class="mega-menu__main-nav">
+                  <li><a></a></li>
+
+                  <li>
+                    <a [ngClass]="{'active': activeSubMenuView == subMenuEnumView.ADMINISTRATION_MENU}"
+                       (click)="onChangeSubMenu('administration')">
+                      <i class="material-icons">group</i> Administration
+                      <div class="sub-nav" *ngIf="activeSubMenuView == subMenuEnumView.ADMINISTRATION_MENU">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let administration of administratorMenuList">
+                            <a>
+                              <i class="material-icons">chevron_right</i> {{administration}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a [ngClass]="{'active': activeSubMenuView == subMenuEnumView.WORKFLOW_MENU}"
+                       (click)="onChangeSubMenu('workflow')">
+                      <i class="material-icons">group_work</i> Workflow
+                      <div class="sub-nav" *ngIf="activeSubMenuView == subMenuEnumView.WORKFLOW_MENU">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let workFlow of workFlowMenuList">
+                            <a>
+                              <i class="material-icons">chevron_right</i> {{workFlow}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a [ngClass]="{'active': activeSubMenuView == subMenuEnumView.SYSTEM_SETUP_MENU}"
+                       (click)="onChangeSubMenu('systemSetup')">
+                      <i class="material-icons">settings_brightness</i> System Setup
+                      <div class="sub-nav" *ngIf="activeSubMenuView == subMenuEnumView.SYSTEM_SETUP_MENU">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let systemSetup of systemSetupMenuList">
+                            <a>
+                              <i class="material-icons">chevron_right</i> {{systemSetup}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a [ngClass]="{'active': activeSubMenuView == subMenuEnumView.CLIENT_MENU}"
+                       (click)="onChangeSubMenu('client')">
+                      <i class="material-icons">person_outline</i> Client
+                      <div class="sub-nav" *ngIf="activeSubMenuView == subMenuEnumView.CLIENT_MENU">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let client of clientMenuList">
+                            <a>
+                              <i class="material-icons">chevron_right</i> {{client}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a [ngClass]="{'active': activeSubMenuView == subMenuEnumView.BILLING_MENU}"
+                       (click)="onChangeSubMenu('billing')">
+                      <i class="material-icons">payment</i> Billing
+                      <div class="sub-nav" *ngIf="activeSubMenuView == subMenuEnumView.BILLING_MENU">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let billing of billingMenuList">
+                            <a>
+                              <i class="material-icons">chevron_right</i> {{billing}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a [ngClass]="{'active': activeSubMenuView == subMenuEnumView.REPORT_MENU}"
+                       (click)="onChangeSubMenu('report')">
+                      <i class="material-icons">report</i> Report
+                      <div class="sub-nav" *ngIf="activeSubMenuView == subMenuEnumView.REPORT_MENU">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let report of reportMenuList">
+                            <a>
+                              <i class="material-icons">chevron_right</i> {{report}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a [ngClass]="{'active': activeSubMenuView == subMenuEnumView.EMAIL_MENU}"
+                       (click)="onChangeSubMenu('email')">
+                      <i class="material-icons">email</i> Email
+                      <div class="sub-nav" *ngIf="activeSubMenuView == subMenuEnumView.EMAIL_MENU">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let email of emailMenuList">
+                            <a>
+                              <i class="material-icons">chevron_right</i> {{email}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li><a></a></li>
+                </ul>
+              </div>
+            </a>
+
+            <!--<a>-->
+            <!--<i class="material-icons">search</i>-->
+            <!--</a>-->
+          </li>
+        </ul>
+        <!-- End Header left menu -->
+      </div>
+
+      <div class="col-md-6 col-sm-6">
+        <!-- Start Header right menu -->
+        <ul class="header-section__right-menu">
+          <li class="full-screen">
+            <a (click)="toggleFullScreen()">
+              <i class="material-icons">fullscreen</i>
+              <!--<i class="material-icons">zoom_out_map</i>-->
+            </a>
+          </li>
+          <li>
+            <a class="wishList">
+              <i class="material-icons" (click)="onOpenHeaderMenu('wishlist')"
+                 [ngClass]="{'active': activeView == menuEnumView.WISH_MENU_LIST}">star</i>
+              <ul class="wishList__menu opacity-0" [ngClass]="{'opacity-1': activeView == menuEnumView.WISH_MENU_LIST}">
+                <li (click)="onOpenDialg()">
+                  <a class="favorite-menu-link">
+                    <label>Favorites</label>
+                    <i class="material-icons">add</i>
+                  </a>
+                </li>
+
+                <li>
+                  <a>Welcome Email</a>
+                </li>
+
+                <li>
+                  <a>Permanent Info</a>
+                </li>
+
+                <li>
+                  <a>View Client</a>
+                </li>
+
+                <li>
+                  <a>Billing Report</a>
+                </li>
+              </ul>
+            </a>
+          </li>
+          <li>
+            <a class="notifications">
+              <div class="notification-icon" (click)="onOpenHeaderMenu('notifications')">
+                <span class="notifications__counter">
+                  <small>3</small>
+                </span>
+                <i class="material-icons" [ngClass]="{'active': activeView == menuEnumView.NOTIFICATION_LIST}">notifications_active</i>
+              </div>
+              <ul class="notifications__menu opacity-0"
+                  [ngClass]="{'opacity-1': activeView == menuEnumView.NOTIFICATION_LIST}">
+                <li *ngFor="let row of [0,1,2]">
+                  <a>
+                    <div class="profile-icon">
+                      <img src="assets/images/profile_placeholder.png" width="32" height="32" alt=""/>
+                    </div>
+                    <div class="notification-details">
+                      <div>
+                        <h3>Task - Bookkeeping Processing</h3>
+                        <div class="notifications-time">15 minutes ago</div>
+                      </div>
+                      <div class="clearfix"></div>
+                      <p class="notification-content">Bright green Pvt. ltd. - period 1 march 2018 to 31 march 2018 mark
+                        as ready for review</p>
+                      <div class="notification-by"> -- By Ajay tanna</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <div class="view-all-link">
+                    <a>View all</a>
+                  </div>
+                </li>
+              </ul>
+            </a>
+          </li>
+          <li>
+            <a class="profile">
+              <i class="material-icons" (click)="onOpenHeaderMenu('profile')"
+                 [ngClass]="{'active': activeView == menuEnumView.PROFILE_MENU_LIST}">person</i>
+              <ul class="profile__menu opacity-0"
+                  [ngClass]="{'opacity-1': activeView == menuEnumView.PROFILE_MENU_LIST}">
+                <li class="user-name">
+                  <a>John Wick</a>
+                </li>
+                <li>
+                  <a>
+                    <i class="material-icons">person</i>
+                    View Profile
+                  </a>
+                </li>
+
+                <li>
+                  <a>
+                    <i class="material-icons">settings</i>
+                    Settings
+                  </a>
+                </li>
+
+                <li>
+                  <a>
+                    <i class="material-icons">lock</i>
+                    Lock Screen
+                  </a>
+                </li>
+
+                <li>
+                  <a (click)="onLogout()">
+                    <i class="material-icons">input</i>
+                    Logout
+                  </a>
+                </li>
+              </ul>
+            </a>
+          </li>
+          <li>
+            <a class="timeline">
+              <i class="material-icons" (click)="onOpenHeaderMenu('timeline')"
+                 [ngClass]="{'active': activeView == menuEnumView.TIMELINE_LIST}">toc</i>
+              <div class="timeline__menu opacity-0"
+                   [ngClass]="{'opacity-1' : activeView == menuEnumView.TIMELINE_LIST}">
+                <ul class="activity">
+                  <li class="header-title">
+                    <h3>Activity</h3>
+                  </li>
+
+                  <li>
+                    <label>Last Login</label>
+                    <span>12:40:00 AM</span>
+                  </li>
+
+                  <li>
+                    <label>Punch In</label>
+                    <span>10:00 AM</span>
+                  </li>
+                </ul>
+
+                <ul class="read-policy">
+                  <li class="header-title">
+                    <h3>Read Policies</h3>
+                  </li>
+                  <li>
+                    <a href="" target="_blank">
+                      <i class="material-icons">stop</i>
+                      <label>ISO Standards</label>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank">
+                      <i class="material-icons">stop</i>
+                      <label>Indian Public Holidays</label>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank">
+                      <i class="material-icons">stop</i>
+                      <label>Australian Public Holidays</label>
+                    </a>
+                  </li>
+                </ul>
+
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- End Header right menu -->
+      </div>
+    </div>
+  </header>
+  <!-- End Header top panel  -->
+</div>
+
+<!--  Start menu layer -->
+<div class="light-overlay" *ngIf="activeView !== null" (click)="activeView = null"></div>
+<!--  End menu layer -->
+
+<!--  Start Favorite menu dialog  -->
+<div class="modal" *ngIf="onOpenFavoriteMenuDialog">
+  <div class="modal__header">
+    <div class="modal__header__logo">Add Favorite Menu</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <mat-form-field>
+      <mat-select placeholder="Menu Items" [formControl]="faviriteMenuControl" multiple>
+        <mat-option>-- None --</mat-option>
+        <mat-optgroup *ngFor="let group of favoriteMenuList" [label]="group.name"
+                      [disabled]="group.disabled">
+          <mat-option *ngFor="let pokemon of group.pokemon" [value]="pokemon.value">
+            {{ pokemon.viewValue }}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="modal__footer">
+    <button class="btn-primary" (click)="onSubmitFavoriteMenu(faviriteMenuControl)">Save</button>
+  </div>
+</div>
+<!--  End Favorite menu dialog  -->
+
+<!--  Start dialog layer -->
+<div class="modal-layer" *ngIf="onOpenFavoriteMenuDialog" (click)="onCloseDialog()"></div>
+<!--  End dialog layer -->

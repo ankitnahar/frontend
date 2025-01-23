@@ -1,0 +1,330 @@
+// ---------------------------------------------------------------------------------------------
+// ===================================  Table scss file = ======================================
+// ---------------------------------------------------------------------------------------------
+
+//
+// Grid Top Header
+//
+.breadcrumb-top-header {
+  background-color: lighten($light-gray-color, 21.7%);
+  padding: 0;
+  .col-md-6 {
+    padding: 0;
+  }
+  &__breadcrumbs {
+    padding: 0.9rem 0 0.4rem 0.7rem;
+    i {
+      font-size: 2rem;
+      position: relative;
+      top: -0.1rem;
+      color: lighten($gray-color, 15%);
+    }
+    span {
+      position: relative;
+      top: -0.6rem;
+      font-size: 1.3rem;
+      color: lighten($gray-color, 15%);
+      font-weight: 500;
+      &.active {
+        a {
+          color: lighten($gray-color, 15%);
+          cursor: pointer;
+          &:visited {
+            color: lighten($gray-color, 15%);
+          }
+        }
+      }
+      a {
+        text-decoration: none;
+      }
+      &:last-child {
+        color: $dark-primary-color;
+      }
+    }
+  }
+  &__right-menu {
+    text-align: right;
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style-type: none;
+        display: inline-block;
+        text-align: center;
+        a {
+          padding: 0.5rem 0.8rem 0.3rem 0.8rem;
+          display: block;
+          // border-left: 1px solid lighten($light-gray-color, 12%);
+          cursor: pointer;
+          span {
+            cursor: pointer;
+            position: relative;
+            top: -0.6rem;
+          }
+          span + i.material-icons {
+            font-size: 2rem;
+          }
+          label {
+            vertical-align: super;
+            margin-right: .4rem;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            top: -.2rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+//
+// Grid inner header
+//
+.grid-inner-header {
+  //  border-bottom: 1px solid lighten($light-gray-color, 20%);
+  .inner-header-title {
+    h3 {
+      margin: 0;
+      line-height: 5rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: $dark-primary-color;
+    }
+  }
+  .grid-search {
+    width: 20rem;
+    float: right;
+    .add-one {
+      position: relative;
+      margin-top: 1rem;
+      input {
+        border: none;
+        border-bottom: 1px solid $light-gray-color;
+        outline: 0;
+        padding: 1rem 0 .5rem 2rem;
+      }
+      .prefix {
+        position: absolute;
+        left: 0;
+        top: 1rem;
+        i {
+          font-size: 1.7rem;
+        }
+      }
+    }
+  }
+
+  ul.download-icon {
+    float: right;
+    padding: 1.5rem 0 0 1rem;
+    margin: 0;
+    li {
+      list-style-type: none;
+      display: inline-block;
+      text-align: center;
+      a {
+        padding: 0.5rem 0.8rem 0.3rem 0.8rem;
+        display: block;
+        cursor: pointer;
+        //color: $dark-primary-color;
+        span {
+          cursor: pointer;
+          position: relative;
+          top: -0.6rem;
+        }
+        span + i.material-icons {
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+}
+
+//
+// Grid Filter Tags
+//
+.filter-tags {
+  .tag {
+    background-color: lighten($primary-light-color, 10%);
+    display: inline-block;
+    padding: .3rem .5rem .3rem .8rem;
+    color: $dark-primary-color;
+    margin: 1rem 0 0 1rem;
+    &__title {
+
+    }
+    input {
+      padding: .5rem;
+      width: 10rem;
+      display: inline-block;
+      border: none;
+      color: $dark-primary-color;
+      outline: 0;
+      &[readonly] {
+        background-color: lighten($primary-light-color, 10%);
+      }
+    }
+    &__close {
+      font-size: 1.8rem;
+      position: relative;
+      top: .4rem;
+      cursor: pointer;
+    }
+  }
+
+  .clearAll-tags {
+    display: inline-block;
+    margin-left: .5rem;
+    a {
+      color: $gray-color;
+      cursor: pointer;
+    }
+  }
+}
+
+//
+// Table inner header
+//
+.table-container {
+  background-color: white;
+  .table-block {
+    table {
+      font-size: 1.4rem;
+      width: 100%;
+      text-align: left;
+      border-spacing: 0;
+      padding: 1.5rem 0 0 0;
+      thead {
+        tr {
+          th {
+            border-bottom: 1px solid lighten($light-gray-color, 12%);
+            color: $black-color;
+            position: relative;
+            font-weight: 500;
+            font-size: 1.3rem;
+            padding: 0 0 1.5rem 1rem;
+            .icon-down, .icon-up {
+              position: absolute;
+              font-size: 1.7rem;
+              cursor: pointer;
+              &.active {
+                color: $dark-primary-color;
+              }
+            }
+            .icon-up {
+              top: -.2rem;
+            }
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            padding: 0.7rem 1rem;
+            font-size: 1.3rem;
+            color: darken($gray-color, 15%);
+            //border-bottom: 1px solid lighten($light-gray-color, 15%);
+            i {
+              font-size: 1.8rem;
+              cursor: pointer;
+            }
+            i.edit-icon {
+              color: lighten($gray-color, 15%);
+            }
+          }
+          &:nth-child(even) {
+            background-color: lighten($light-gray-color, 21%);
+          }
+          &:nth-child(odd) {
+
+          }
+          &:first-child {
+            td {
+              // border-top: 1px solid lighten($light-gray-color, 15%);
+            }
+          }
+        }
+      }
+
+      tfoot {
+        tr {
+          td {
+            //border-top: 2px solid #e6e6e6;
+            //            padding-top: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+//
+// Table body scss
+//
+.table-body {
+  //max-height: 40rem;
+  //overflow: auto;
+  table {
+    padding: 0 0 0 0 !important;
+  }
+}
+
+//.with-filter-grid-container {
+//  width: 99.2%;
+//}
+
+//
+// Filter scss
+//
+.filter {
+  transition: 0.2s all ease;
+  width: 98%;
+  position: absolute;
+  background-color: lighten($primary-color, 49%);
+  z-index: 9;
+  box-sizing: border-box;
+  padding: 1rem;
+  margin-left: .5%;
+  .filter-action-icon {
+    span.filter-close {
+      right: 2rem;
+      position: absolute;
+      color: $black-color;
+      z-index: 2;
+      cursor: pointer;
+      top: 1.4rem;
+      i {
+        vertical-align: middle;
+        font-size: 2.1rem;
+        position: relative;
+        top: -.1rem;
+      }
+    }
+  }
+  .grid-filter-container {
+    width: 100%;
+    transition: 0.2s all ease;
+    box-sizing: border-box;
+    .filter-title {
+      text-align: left;
+      h3 {
+        margin: 0;
+        line-height: 3rem;
+        padding-left: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: $dark-primary-color;
+      }
+    }
+    &.grid-filter-container-none {
+      width: 0rem !important;
+      height: 0rem !important;
+      overflow: hidden;
+      float: left;
+      transition: 0.2s all ease;
+      //height: 0;
+    }
+  }
+}

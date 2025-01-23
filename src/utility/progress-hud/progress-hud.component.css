@@ -1,0 +1,16 @@
+.lds-circle {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  z-index: 6;
+}
+
+.white-fixed-layer {
+  position: fixed;
+  top: 0;
+  background: transparent;
+  height: 100%;
+  width: 100%;
+  z-index: 15 !important;
+}

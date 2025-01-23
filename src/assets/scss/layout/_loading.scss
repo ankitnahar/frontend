@@ -1,0 +1,105 @@
+// ---------------------------------------------------------------------------------------------
+// ===================================  loading sass file  ======================================
+// ---------------------------------------------------------------------------------------------
+
+@mixin position-absolute ($top: null, $left: null, $right: null, $bottom: null) {
+  position: absolute;
+  top: $top;
+  left: $left;
+  right: $right;
+  bottom: $bottom;
+}
+
+.loading-spinner-container{
+  background-color: $white-color;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+}
+/* spinner style */
+.spinner-eff {
+  position: relative;
+  width: $spinner-dimensions;
+  height: $spinner-dimensions;
+  margin: auto;
+  &:before,
+  &:after {
+    content: "";
+    display: block;
+  }
+
+  .spinner-bar {
+
+    &:before,
+    &:after {
+      content: "";
+      display: block;
+    }
+  }
+}
+
+
+/* spinner-3 styles */
+.spinner-eff.spinner-eff-3 {
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0);
+    }
+
+    50% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-2 {
+    0% {
+      transform: scale(0);
+    }
+
+    100% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+  }
+
+  .circle {
+    border-radius: 100px;
+    @include position-absolute($left: 0, $right: 0);
+    margin: auto;
+    transform: scale(1);
+    transform-origin: center center;
+
+    &-1 {
+      width: 200%;
+      height: 200%;
+      background-color: lighten($dark-primary-color, 25%);
+      top: -30px;
+      left: -22px;
+      animation: pulse 1.6s linear 0s infinite;
+    }
+
+    &-2 {
+      width: 120%;
+      height: 120%;
+      background-color: $dark-primary-color;
+      top: -10px;
+      left: -4px;
+      animation: pulse-2 1.6s linear 0s infinite;
+    }
+
+    &-3 {
+      width: 50%;
+      height: 50%;
+      background-color: $dark-primary-color;
+      top: 16.5%;
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<div class="left-section text-left">
+  <div *ngIf="totalRecords > minRecords" class="MT5 inline-block">
+    <span>{{(paginateItem*page) - (paginateItem-1)}} - {{(paginateItem*page < totalRecords) ? (paginateItem*page) : totalRecords}} of {{totalRecords}}</span>
+  </div>
+  <div class="inline-block">
+    <pagination-controls *ngIf="totalRecords > paginateItem"
+                         [id]="paginatorId"
+                         maxSize="9"
+                         directionLinks="false"
+                         (pageChange)="onPageChange($event)"></pagination-controls>
+  </div>
+</div>
+<div class="right-section text-right">
+  <div *ngIf="totalRecords > minRecords">
+    <label class="custom-icon">
+      <select (change)="onPageSizeChange($event.target.value)" [(ngModel)]="paginateItem">
+        <option *ngFor="let value of paginationArray" [value]="value">{{value}}</option>
+      </select>
+    </label>
+  </div>
+</div>
