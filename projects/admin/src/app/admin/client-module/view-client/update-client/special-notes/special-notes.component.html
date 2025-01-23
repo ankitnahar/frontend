@@ -1,0 +1,14 @@
+<!-- Admin View Client special notes html view -->
+<div class="special-note-container">
+  <mat-tab-group class="demo-tab-group" (selectedTabChange)="onSelectSpecialNoteTab($event)">
+    <mat-tab *ngFor="let tab of tabList; let i = index" label="{{tab.service_name}}">
+      <div *ngIf="isActiveTab === i">
+        <app-bookkeeping [tabInformation]="tab" [clientInfo]="clientInformation"></app-bookkeeping>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<div *ngIf="!(clientInformation.is_service)" class="panel-title light-orange-color">
+  No service agreed by client!
+</div>

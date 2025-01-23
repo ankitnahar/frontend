@@ -1,0 +1,63 @@
+<!--  Start create folder dialog  -->
+<div class="modal">
+  <div class="modal__header">
+    <div class="modal__header__logo" *ngIf="typeOfForm === 0">Create Folder</div>
+    <div class="modal__header__logo" *ngIf="typeOfForm === 1">Create File</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="createfolderForm" *ngIf="typeOfForm === 0" (submit)="onSubmit(createfolderForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <input matInput placeholder="Folder Name" type="text"
+                   formControlName="folder_name">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="createfolderForm.invalid">Create</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form [formGroup]="createfolderForm" *ngIf="typeOfForm === 1" (submit)="onSubmit(createfolderForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <input matInput placeholder="File Name" type="text"
+                   formControlName="file_name">
+          </mat-form-field>
+        </div>
+        <div class="col-md-12 MT-15">
+          <mat-form-field>
+            <mat-select placeholder="FileType" formControlName="file_type">
+              <mat-option *ngFor="let fileType of fileTypeList; let i = index" [value]="fileType?.mimeType">
+                {{fileType?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="createfolderForm.invalid">Create File</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End reate Folderdialog  -->

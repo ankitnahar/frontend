@@ -1,0 +1,409 @@
+<div class="">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onContact()">CONTACT INFORMATION</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">ARCHIVED LIST</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 leave-type-list">
+          <ul>
+            <li>
+              <a class="teal-color"><i class="material-icons">fiber_manual_record</i> Accountant</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li *ngIf="tabData['export']">
+              <a>
+                <span (click)="downloadExcel()">Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+      <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+        class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="parentClientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Parent Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         (change)="onChangeParentEntity($event)"
+                         formControlName="parent_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="First name" formControlName="first_name">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Contact person" formControlName="contact_person">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Contact Position" (selectionChange)="selectRefCP.readOnly = false"
+                            readonly formControlName="contact_position_id" #selectRefCP>
+                  <mat-option *ngFor="let contactPositionData of contactPosition" [value]="contactPositionData.key">
+                    {{contactPositionData.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Email" formControlName="email">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Phone" formControlName="mobile_no">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="ABN Number" formControlName="abn_number">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="TFN Number" formControlName="tfn_number">
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="parentTradingName.value">
+          <span class="tag__title">Parent Trading Name:</span>
+          <span>
+            <ng-select class="custom" [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="parent_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="entityIdTradingField.value">
+          <span class="tag__title">Trading name :</span>
+          <span>
+	       <ng-select [items]="clientList"
+                    [closeOnSelect]="true"
+                    bindLabel="trading_name"
+                    placeholder="Trading Name"
+                    bindValue="id"
+                    [virtualScroll]="true"
+                    [searchable]="true"
+                    [hideSelected]="true"
+                    formControlName="entity_id"
+                    (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+            </ng-select>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('entity_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="firstNameField.value">
+          <span class="tag__title">First name :</span>
+          <span>
+	        <mat-form-field>
+	            <input matInput placeholder="First person" formControlName="first_name"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+	          </mat-form-field>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('first_name')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="contactPersonField.value">
+          <span class="tag__title">Contact person :</span>
+          <span>
+	        <mat-form-field>
+	            <input matInput placeholder="Contact person" formControlName="contact_person"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+	          </mat-form-field>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('contact_person')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="contactPositionIdField.value">
+          <span class="tag__title">Contact Position :</span>
+          <span>
+	        <mat-form-field>
+	          <mat-select placeholder="Contact Position" (selectionChange)="selectRefCP.readOnly = false" readonly
+                        #selectRefCP formControlName="contact_position_id"
+                        (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+	             <mat-option *ngFor="let contactPositionData of contactPosition" [value]="contactPositionData.key">{{contactPositionData.label}}</mat-option>
+	          </mat-select>
+	        </mat-form-field>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('contact_position_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="emailField.value">
+          <span class="tag__title">Email :</span>
+          <span>
+	        <mat-form-field>
+	            <input matInput placeholder="Email" formControlName="email"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+	          </mat-form-field>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('email')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="mobileNoField.value">
+          <span class="tag__title">Phone :</span>
+          <span>
+	        <mat-form-field>
+	            <input matInput placeholder="Phone" formControlName="mobile_no"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+	          </mat-form-field>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('mobile_no')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="abnNumberField.value">
+          <span class="tag__title">ABN Number :</span>
+          <span>
+	        <mat-form-field>
+	            <input matInput placeholder="ABN Number" formControlName="abn_number"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+	          </mat-form-field>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('abn_number')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="tfnNumberField.value">
+          <span class="tag__title">TFN Number :</span>
+          <span>
+	        <mat-form-field>
+	            <input matInput placeholder="TFN Number" formControlName="tfn_number"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+	          </mat-form-field>
+	      </span>
+          <i class="material-icons tag__close" (click)="onClearTag('tfn_number')">close</i>
+        </div>
+
+        <div class="clearAll-tags" *ngIf="entityIdTradingField.value || firstNameField.value  || contactPersonField.value || contactPositionIdField.value ||
+emailField.value || mobileNoField.value || abnNumberField.value || tfnNumberField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr.No</th>
+            <th width="12%">Parent Trading Name</th>
+            <th width="12%"
+                (click)="getSortData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Trading Name
+              <i *ngIf="sortBy === 'trading_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+                {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="6%"
+                (click)="getSortData('first_name', sortBy === 'first_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              First Name
+              <i *ngIf="sortBy === 'first_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'first_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'first_name' && sortOrder === 'desc'}">
+                {{sortBy === 'first_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+
+            <th width="10%"
+                (click)="getSortData('contact_person', sortBy === 'contact_person' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Contact Person
+              <i *ngIf="sortBy === 'contact_person'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'contact_person' && sortOrder === 'asc', 'icon-down' :  sortBy === 'contact_person' && sortOrder === 'desc'}">
+                {{sortBy === 'contact_person' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+
+            <th width="9%"
+                (click)="getSortData('contact_position_id', sortBy === 'contact_position_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Position
+              <i *ngIf="sortBy === 'contact_position_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'contact_position_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'contact_position_id' && sortOrder === 'desc'}">
+                {{sortBy === 'contact_position_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%"
+                (click)="getSortData('to', sortBy === 'to' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">To
+              <i *ngIf="sortBy === 'to'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'to' && sortOrder === 'asc', 'icon-down' :  sortBy === 'to' && sortOrder === 'desc'}">
+                {{sortBy === 'to' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%"
+                (click)="getSortData('cc', sortBy === 'cc' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">CC
+              <i *ngIf="sortBy === 'cc'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'cc' && sortOrder === 'asc', 'icon-down' :  sortBy === 'cc' && sortOrder === 'desc'}">
+                {{sortBy === 'cc' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="9%"
+                (click)="getSortData('mobile_no', sortBy === 'mobile_no' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Phone
+              <i *ngIf="sortBy === 'mobile_no'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'mobile_no' && sortOrder === 'asc', 'icon-down' :  sortBy === 'mobile_no' && sortOrder === 'desc'}">
+                {{sortBy === 'mobile_no' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="12%">Remarks</th>
+            <th width="6%">
+              Actions
+            </th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table *ngIf="contactList.length">
+            <tbody *ngFor="let contactData of contactList; let i = index">
+            <tr [ngClass]="{'teal-tr' : contactData.contact_position_id === 2}">
+              <td width="4%">{{i+1}}</td>
+              <td width="12%" class="word-break">{{contactData?.parent_name}}</td>
+              <td width="12%" class="word-break">{{contactData?.trading_name}}</td>
+              <td width="6%">{{contactData.first_name}}</td>
+              <td width="10%">{{contactData.contact_person}}</td>
+              <td width="9%"><span class="orange-color"><mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon></span>
+                {{contactData?.contact_position_id > 0 ? getContactPosition(contactData?.contact_position_id) : ''}}
+              </td>
+              <td width="10%" class="word-break"><span
+                *ngFor="let tempDataTo of convertJsonStringToArray(contactData?.to)">{{tempDataTo}}</span></td>
+              <td width="10%" class="word-break"><span
+                *ngFor="let tempDataCC of convertJsonStringToArray(contactData?.cc)">{{tempDataCC}}</span></td>
+              <td width="9%" class="word-break">{{contactData?.mobile_no | checkEmpty}}</td>
+              <td width="12%" class="word-break">
+                <div class="remarks text-overflow-elipsis">
+                  <span [matTooltip]="contactData?.contact_remark?.notes">{{contactData?.contact_remark?.notes | checkEmpty}}</span>
+                </div>
+              </td>
+              <td width="6%">
+                <a class="wet-asphalt-color MR-5" (click)="onViewContact(contactData)" [matTooltip]="'View'"><i
+                  class="material-icons">remove_red_eye</i></a>
+                <a (click)="viewContactInformationHistory($event,contactData);" [matTooltip]="'View History'">
+                  <i class="material-icons">history</i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="contactList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="contactList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>
+
+<!--&lt;!&ndash;item view modal&ndash;&gt;
+<div *ngIf="activeView == enumView.VIEW_MODAL">
+  <app-contact-view [contactRecord]="selectedContactRecord"
+                    [popupStatus]="isViewContact"  (close)="activeView = null"></app-contact-view>
+</div>-->
+<!-- Start History modal-->
+<div *ngIf="isOpenHistoryDialog">
+  <app-history-dialog (close)="isOpenHistoryDialog = false"></app-history-dialog>
+</div>
+<!-- End History modal-->

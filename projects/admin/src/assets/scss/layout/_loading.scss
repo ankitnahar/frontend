@@ -1,0 +1,161 @@
+// ---------------------------------------------------------------------------------------------
+// ===================================  loading sass file  ======================================
+// ---------------------------------------------------------------------------------------------
+
+@mixin position-absolute($top: null, $left: null, $right: null, $bottom: null) {
+  position: absolute;
+  top: $top;
+  left: $left;
+  right: $right;
+  bottom: $bottom;
+}
+
+.loading-spinner-container {
+  background-color: transparent;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+}
+
+/* spinner style */
+.spinner-eff {
+  position: relative;
+  width: $spinner-dimensions;
+  height: $spinner-dimensions;
+  margin: auto;
+  &:before,
+  &:after {
+    content: "";
+    display: block;
+  }
+
+  .spinner-bar {
+
+    &:before,
+    &:after {
+      content: "";
+      display: block;
+    }
+  }
+}
+
+/* spinner-3 styles */
+.spinner-eff.spinner-eff-3 {
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0);
+    }
+
+    50% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-2 {
+    0% {
+      transform: scale(0);
+    }
+
+    100% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+  }
+
+  .circle {
+    border-radius: 100px;
+    @include position-absolute($left: 0, $right: 0);
+    margin: auto;
+    transform: scale(1);
+    transform-origin: center center;
+    z-index: 555 !important;
+
+    &-1 {
+      width: 200%;
+      height: 200%;
+      background-color: lighten($dark-primary-color, 25%);
+      top: -30px;
+      left: -22px;
+      animation: pulse 1.6s linear 0s infinite;
+    }
+
+    &-2 {
+      width: 120%;
+      height: 120%;
+      background-color: $dark-primary-color;
+      top: -10px;
+      left: -4px;
+      animation: pulse-2 1.6s linear 0s infinite;
+    }
+
+    &-3 {
+      width: 50%;
+      height: 50%;
+      background-color: $dark-primary-color;
+      top: 16.5%;
+    }
+  }
+}
+
+.white-fixed-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff36;
+  z-index: 9999 !important;
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin: auto;
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 51px;
+  height: 51px;
+  margin: 6px;
+  border: 6px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: $primary-color transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

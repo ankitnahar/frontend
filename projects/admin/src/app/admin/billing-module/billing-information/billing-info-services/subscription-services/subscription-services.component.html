@@ -1,0 +1,209 @@
+<div class="bookkeeping-basic-container" *ngIf="isEdit">
+  <span class="panel-title">Subscription Basic</span>
+  <form [formGroup]="subscriptionbasicForm" (submit)="onSubmitSubscriptionInfo(subscriptionbasicForm)">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="frequency_id" placeholder="Invoice frequency" required
+                      (selectionChange)="changeGetRecurringList(serviceInfo['service_id'], 1, $event.value)">
+            <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+              {{ frequency?.frequency_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(subscriptionbasicForm.get('frequency_id'))"
+                          [errMsg]="validationMsg.INVOICE_FREQUENCY_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-11 PL-0">
+            <mat-form-field>
+              <mat-select formControlName="software_id" placeholder="Software" required
+                          (selectionChange)="onChangeSoftware($event.value)">
+                <mat-option *ngFor="let software of softwareList" [value]="software?.id">
+                  {{ software?.software_plan}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(subscriptionbasicForm.get('software_id'))"
+                              [errMsg]="validationMsg.SOFTWARE_REQUIRED"></app-validation>
+            </div>
+          </div>
+          <div class="col-md-1 PL-0 PR-0 MT-15">
+            <a class="cursor-pointer orange-color" (click)="onAddSoftware()">
+              <mat-icon class="material-icons">add</mat-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-11 PL-0">
+            <mat-form-field>
+              <mat-select formControlName="plan_id" placeholder="Plan" required
+                          (selectionChange)="updatePlanDetails($event.value)">
+                <mat-option *ngFor="let plan of planList" [value]="plan?.id">
+                  {{ plan?.software_plan}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(subscriptionbasicForm.get('plan_id'))"
+                              [errMsg]="validationMsg.PLAN_REQUIRED"></app-validation>
+            </div>
+          </div>
+          <div class="col-md-1 PL-0 PR-0 MT-15">
+            <a class="cursor-pointer orange-color" (click)="onAddPlan()">
+              <mat-icon class="material-icons">add</mat-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput placeholder="Discount (%)" formControlName="discount"
+                 (change)="updateFixedFee($event.target.value)"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(subscriptionbasicForm.get('discount'))"
+                          [errMsg]="validationMsg.DISCOUNT_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput placeholder="Standard fee" formControlName="standard_fee" readonly/>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput placeholder="Fixed fee" formControlName="fixed_fee" required *ngIf="isFixedFeeReadOnly"
+                 readonly/>
+          <input matInput placeholder="Fixed fee" formControlName="fixed_fee" required *ngIf="!isFixedFeeReadOnly"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(subscriptionbasicForm.get('fixed_fee'))"
+                          [errMsg]="validationMsg.FIXED_FEE_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(subscriptionbasicForm.get('fixed_fee'))"
+                          [errMsg]="validationMsg.FIXED_FEE_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput readonly placeholder="FF start date" [matDatepicker]="startDateRef" readonly
+                 formControlName="ff_start_date"
+                 (mousedown)="startDateRef.open()" required/>
+          <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+          <mat-datepicker #startDateRef disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(subscriptionbasicForm.get('ff_start_date'))"
+                          [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="recurring_id" placeholder="Recurring"
+                      (selectionChange)="changeAutoInvoice($event.value)">
+            <mat-option value="">Please Select</mat-option>
+            <mat-option *ngFor="let recurring of recurringList" [value]="recurring?.id">
+              {{ recurring?.recurring_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="auto_invoice" placeholder="Auto invoice" required
+                      (selectionChange)="changeAutoInvoiceType($event.value)">
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(subscriptionbasicForm.get('auto_invoice'))"
+                          [errMsg]="validationMsg.AUTO_INVOICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <mat-form-field>
+          <textarea matInput placeholder="Subscription  Notes" formControlName="notes"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 text-right MTB-20">
+        <button type="button" class="btn-default MR-5">Cancel</button>
+        <button [disabled]="subscriptionbasicForm.invalid" type="submit" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<div class="view-billing-info-container" *ngIf="!isEdit">
+  <div class="basic-details-border">
+    <span class="panel-title">Subscription Basic</span>
+    <form>
+      <div class="row">
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Invoice frequency</label>
+            <span>{{getFrequencyName(subscriptionData?.frequency_id)}}</span>
+          </div>
+          <div>
+            <label>Plan</label>
+            <span>{{getPlanName(subscriptionData?.plan_id)}}</span>
+          </div>
+          <div>
+            <label>Standard Fee</label>
+            <span>{{subscriptionData?.standard_fee}}</span>
+          </div>
+          <div>
+            <label>FF Start Date</label>
+            <span>{{(subscriptionData?.ff_start_date !== '' && subscriptionData?.ff_start_date !== '0000-00-00') ? (subscriptionData?.ff_start_date | date: 'dd-MM-yyyy') : ''}}</span>
+          </div>
+          <div>
+            <label>Auto Invoice</label>
+            <span>{{getYesNoStatus(subscriptionData?.auto_invoice)}}</span>
+          </div>
+        </div>
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Software</label>
+            <span>{{getSoftwareName(subscriptionData?.software_id)}}</span>
+          </div>
+          <div>
+            <label>Discount</label>
+            <span>{{subscriptionData?.discount}}</span>
+          </div>
+          <div>
+            <label>Fixed Fee</label>
+            <span>{{subscriptionData?.fixed_fee}}</span>
+          </div>
+          <div>
+            <label>Recurring</label>
+            <span>{{getRecurringName(subscriptionData?.recurring_id)}}</span>
+          </div>
+          <div>
+            <label>Notes</label>
+            <span>{{subscriptionData?.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

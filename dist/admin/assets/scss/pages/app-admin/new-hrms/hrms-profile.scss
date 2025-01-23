@@ -1,0 +1,104 @@
+
+.my-profile-container {
+  .mat-card {
+    padding: 16px !important;
+    border-radius: 4px;
+  }
+  .sub-header-bg {
+    background: #d4ebf7;
+    padding: 15px;
+    .user_img {
+      position: absolute;
+      img {
+        border-radius: 50%;
+        width: 50%;
+        border: 2px solid #3c4251;
+      }
+    }
+    .user_description {
+      position: relative;
+      left: 7%;
+      h3 {
+        color: $dark-primary-color;
+        font-weight: 500;
+      }
+      mat-label {
+        color: $black-color;
+      }
+    }
+  }
+
+  .personal-card {
+
+    li {
+      mat-icon {
+        vertical-align: middle;
+        font-size: 1.6rem;
+        color: $primary-color;
+      }
+    }
+  }
+
+  .personal-info {
+    .col-md-6 {
+      border-bottom: 1px solid #f0f0f0;
+    }
+    mat-label {
+      line-height: 24px;
+    }
+  }
+
+  .hrms_right_blue {
+    padding: 0;
+    .mat-card {
+      padding: 0px !important;
+      border-radius: 4px;
+    }
+    .mat-card-header {
+      font-size: 1.6rem;
+      padding: 16px;
+      border-bottom: 2px solid #f0f0f0;
+      background: $primary-color;
+      color: $white-color;
+      border-radius: 4px 4px 0 0;
+      .mat-card-title {
+        margin-bottom: 0;
+      }
+    }
+    .reporting_to {
+      .user_img {
+        img {
+          border-radius: 50%;
+          width: 100%;
+          border: 2px solid #c9c9c9;
+        }
+      }
+      .user_description {
+        h3 {
+          color: $dark-primary-color;
+          font-weight: 500;
+        }
+        mat-label {
+          color: $black-color;
+        }
+      }
+    }
+    .team_details1 {
+      .user_img {
+        img {
+          border-radius: 50%;
+          width: 100%;
+          border: 2px solid #c9c9c9;
+        }
+      }
+      h5 {
+        color: $primary-color;
+        font-weight: 500;
+        span {
+          color: $black-color;
+        }
+      }
+    }
+  }
+
+}

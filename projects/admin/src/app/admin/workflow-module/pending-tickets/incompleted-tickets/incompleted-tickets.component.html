@@ -1,0 +1,550 @@
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header">
+    <div class="row">
+
+      <div class="col-md-6 leave-type-list">
+        <ul>
+          <li>
+            <a class="orange-color list-alignment">
+              <i class="material-icons">fiber_manual_record</i>Issue Befree</a>
+          </li>
+          <li>
+            <a class="turquoise-color list-alignment"><i class="material-icons">fiber_manual_record</i>Issue Billing</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <ul class="download-icon">
+          <li>
+            <a (click)="onOpenFilter()">
+              <span>Filter</span> <i class="material-icons">filter_list</i>
+            </a>
+          </li>
+
+          <li *ngIf="tabData['export']">
+            <a (click)="downloadExcel();">
+              <span>Excel</span> <i class="material-icons">file_download</i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!-- Start Grid Filter -->
+  <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+    <div class="filter-action-icon">
+          <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <mat-icon
+            class="material-icons">close</mat-icon></span>
+    </div>
+    <div class="grid-filter-container">
+      <div class="filter-title">
+        <h3>Advance Filter</h3>
+      </div>
+      <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+        <div class="row">
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input type="number"  matInput placeholder="Ticket Code" formControlName="code"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Ticket Type" formControlName="type_id">
+                <mat-option *ngFor="let tickettype of ticketTypeList" [value]="tickettype?.id">
+                  {{tickettype?.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Status" formControlName="status_id">
+                <mat-option *ngFor="let ticketstatus of ticketStatusList" [value]="ticketstatus?.id">
+                  {{ ticketstatus?.status}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Subject" formControlName="subject"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <ng-select class="custom" [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Parent Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="onChangeParentEntity($event)"
+                       formControlName="parent_id">
+            </ng-select>
+          </div>
+          <div class="col-md-3 MT-10">
+            <ng-select class="custom" [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id">
+            </ng-select>
+          </div>
+          <div class="col-md-3 MT-10">
+            <ng-select class="custom" [items]="tamList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Division Head/TAM"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="technical_account_manager">
+            </ng-select>
+          </div>
+          <div class="col-md-3 MT-10">
+            <ng-select class="custom" [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Created By"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="created_by">
+            </ng-select>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput [matDatepicker]="craeteddatefrom" placeholder="Created Date From"
+                     formControlName="created_from">
+              <mat-datepicker-toggle matSuffix [for]="craeteddatefrom"></mat-datepicker-toggle>
+              <mat-datepicker #craeteddatefrom></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput [matDatepicker]="craeteddate" placeholder="Created Date To"
+                     formControlName="created_to">
+              <mat-datepicker-toggle matSuffix [for]="craeteddate"></mat-datepicker-toggle>
+              <mat-datepicker #craeteddate></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Problem On Our Side" formControlName="problem_our_side">
+                <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                  {{ yesNo?.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+          <div class="col-md-3 MT-10">
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Assign Staff"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="ticket_assignee">
+            </ng-select>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Team" formControlName="team_id">
+                <mat-option *ngFor="let team of teamList" [value]="team?.id">
+                  {{ team?.team_name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-12 MT-10 text-right">
+            <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+            <button type="submit" class="btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Filter -->
+
+  <!-- Start Filter Tags -->
+  <div class="filter-tags">
+    <form [formGroup]="advanceFilterForm">
+      <div class="tag" *ngIf="ticketCodeField.value">
+        <span class="tag__title">Ticket Code :</span>
+        <span>
+              <mat-form-field>
+                <input type="number"  matInput placeholder="Ticket Code" formControlName="code"/>
+              </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('code')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="ticketTypeIdField.value">
+        <span class="tag__title">Ticket Type :</span>
+        <span>
+           <mat-form-field>
+            <mat-select placeholder="Ticket Type" #selectRef
+                        (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly
+                        formControlName="type_id">
+                  <mat-option *ngFor="let tickettype of ticketTypeList" [value]="tickettype?.id">
+                    {{ tickettype?.name}}
+                  </mat-option>
+                  </mat-select>
+             </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('type_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="ticketStatusIdField.value">
+        <span class="tag__title">Status :</span>
+        <span>
+           <mat-form-field>
+           <mat-select placeholder="Ticket Status" #selectRef
+                       (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly
+                       formControlName="status_id">
+                  <mat-option *ngFor="let status of ticketStatusList" [value]="status?.id">
+                    {{ status?.status}}
+                  </mat-option>
+                  </mat-select>
+             </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('status_id')">close</i>
+      </div>
+
+
+      <div class="tag" *ngIf="ticketSubjectField.value">
+        <span class="tag__title">Subject :</span>
+        <span>
+              <mat-form-field>
+                <input matInput placeholder="subject" formControlName="subject"/>
+              </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('subject')">close</i>
+      </div>
+      <div class="tag" *ngIf="ticketParentTradingField.value">
+        <span class="tag__title">Parent Trading Name:</span>
+        <span>
+            <ng-select class="custom" [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="parent_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+        <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+      </div>
+      <div class="tag" *ngIf="ticketTradingField.value">
+        <span class="tag__title">Client Name :</span>
+        <span>
+              <ng-select class="custom" [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id"
+                         (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('entity_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="ticketTamField.value">
+        <span class="tag__title">Division Head/TAM/ATAM :</span>
+        <span>
+            <ng-select class="custom" [items]="tamList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Division Head/TAM/ATAM"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="technical_account_manager"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('technical_account_manager')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="createdByField.value">
+        <span class="tag__title">Created By :</span>
+        <span>
+             <ng-select class="custom" [items]="userList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="Created By"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="created_by"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('created_by')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="createdOnField.value">
+        <span class="tag__title">Created From Date :</span>
+        <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="craeteddatefrom1" placeholder="Created From Date" #dateRef
+                     formControlName="created_from"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="craeteddatefrom1"></mat-datepicker-toggle>
+              <mat-datepicker #craeteddatefrom1></mat-datepicker>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('created_from')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="createdToField.value">
+        <span class="tag__title">Created To Date :</span>
+        <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="craeteddate1" placeholder="Created To Date" #dateRef
+                     formControlName="created_to" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="craeteddate1"></mat-datepicker-toggle>
+              <mat-datepicker #craeteddate1></mat-datepicker>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('created_to')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="problemFromOurSideField.value">
+        <span class="tag__title">Problem On Our Side :</span>
+        <span>
+            <mat-form-field>
+              <mat-select placeholder="select" #selectRef
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly
+                          formControlName="problem_our_side">
+                 <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                  </mat-select>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('problem_our_side')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="ticketAssigneeField.value">
+        <span class="tag__title">Assign Staff :</span>
+        <span>
+          <ng-select class="custom" [items]="userList"
+                     [closeOnSelect]="true"
+                     bindLabel="userfullname"
+                     placeholder="Assign Staff"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="ticket_assignee"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('ticket_assignee')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="teamIdField.value">
+        <span class="tag__title">Team :</span>
+        <span>
+            <mat-form-field>
+             <mat-select placeholder="Team" #selectRef
+                         (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly
+                         formControlName="team_id">
+                  <mat-option *ngFor="let team of teamList" [value]="team?.id">
+                    {{ team?.team_name}}
+                  </mat-option>
+                  </mat-select>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('team_id')">close</i>
+      </div>
+
+      <div class="clearAll-tags"
+           *ngIf="ticketParentTradingField.value || ticketCodeField.value || ticketTypeIdField.value || ticketStatusIdField.value || ticketSubjectField.value || ticketTradingField.value || teamIdField.value || ticketAssigneeField.value || problemFromOurSideField.value || createdOnField.value || createdByField.value || ticketTamField.value || createdToField.value">
+        <a (click)="resetFilterForm()">Clear all</a>
+      </div>
+    </form>
+  </div>
+  <!-- End Filter Tags -->
+
+  <!-- Start Table -->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="8%">Ticket Code</th>
+
+          <th width="17%"
+              (click)="getSortData('ticket_type', sortBy === 'ticket_type' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Type
+            <i *ngIf="sortBy === 'ticket_type'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'ticket_type' && sortOrder === 'asc', 'icon-down' :  sortBy === 'ticket_type' && sortOrder === 'desc'}">
+              {{sortBy === 'ticket_type' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="10%"
+              (click)="getSortData('status', sortBy === 'status' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Status
+            <i *ngIf="sortBy === 'status'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'status' && sortOrder === 'asc', 'icon-down' :  sortBy === 'status' && sortOrder === 'desc'}">
+              {{sortBy === 'status' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="15%"
+              (click)="getSortData('subject', sortBy === 'subject' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Subject
+            <i *ngIf="sortBy === 'subject'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'subject' && sortOrder === 'asc', 'icon-down' :  sortBy === 'subject' && sortOrder === 'desc'}">
+              {{sortBy === 'subject' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+          <th width="14%">Parent Trading Name</th>
+          <th width="15%"
+              (click)="getSortData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Client Name
+            <i *ngIf="sortBy === 'trading_name'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+              {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="7%">DH/TAM
+          </th>
+
+          <th width="7%">Assign Staff
+          </th>
+
+          <th width="12%">Created By
+            <i *ngIf="sortBy === 'created_by'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_by' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_by' && sortOrder === 'desc'}">
+              {{sortBy === 'created_by' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody *ngIf="incompleteTicket.length">
+          <tr *ngFor="let pendingtickets of incompleteTicket; let i = index" class="hover-icons"
+              [ngClass]="getClasses(pendingtickets?.type_id)">
+            <td width="8%">
+              <mat-icon class="red-color v-align-middle" [matTooltip]="'Discontinue Process Initialized'"
+                        *ngIf="pendingtickets?.discontinue_stage === 1">block
+              </mat-icon>
+              {{pendingtickets?.code}}
+            </td>
+            <td width="17%" class="word-break">
+              <mat-icon class="red-color v-align-middle font_mood" [matTooltip]="'Problem on our side'"
+                        *ngIf="pendingtickets?.problem_our_side == 1">mood_bad
+              </mat-icon>
+              <mat-icon class="turquoise-color v-align-middle font_mood" [matTooltip]="'Problem not on our side'"
+                        *ngIf="pendingtickets?.problem_our_side == 0">mood
+              </mat-icon>
+              {{pendingtickets?.ticket_type}}
+              <span class="turquoise-color">{{getSeverity(pendingtickets?.severity)}}</span>
+              <mat-icon class="red-color v-align-middle" [matTooltip]="'High Priority'"
+                        *ngIf="pendingtickets?.priority == 3">trending_up
+              </mat-icon>
+              <mat-icon class="light-orange-color v-align-middle" [matTooltip]="'Low Priority'"
+                        *ngIf="pendingtickets?.priority == 1">trending_down
+              </mat-icon>
+              <mat-icon class="primary-color v-align-middle" [matTooltip]="'Midium Priority'"
+                        *ngIf="pendingtickets?.priority == 2">trending_flat
+              </mat-icon>
+            </td>
+            <td width="10%" class="word-break">{{pendingtickets?.status}}</td>
+            <td width="15%" class="word-break">{{pendingtickets?.subject}}</td>
+            <td width="14%" class="word-break">{{pendingtickets?.parent_name}}</td>
+            <td width="15%" class="word-break">{{pendingtickets?.trading_name}}</td>
+            <td width="7%" class="text-center">
+              <img *ngIf="(pendingtickets?.user_image!=='' && pendingtickets?.user_image!==null)"
+                   matTooltip="{{pendingtickets?.tam}}" src="{{url+pendingtickets?.user_image}}" width="25"/>
+              <img *ngIf="(pendingtickets?.user_image==='' || pendingtickets?.user_image==null)"
+                   matTooltip="{{pendingtickets?.tam}}" src="/assets/images/profile_placeholder.png" width="25"/>
+            </td>
+            <td width="7%" class="text-center">
+              <div *ngIf="pendingtickets?.ticket_assignee_name">
+                <div class="staff-name-list" *ngIf="pendingtickets?.ticket_assignee_name.split(',').length > 2"
+                     (click)="onOpenAssignStaffList(pendingtickets)">
+                  <span
+                    *ngFor="let j of pendingtickets?.ticket_assignee_name.split(',') | slice:0:3">{{j.charAt(0)}}</span>
+                  <span *ngIf="pendingtickets?.ticket_assignee_name.split(',').length - 3 > 0" class="reset-count">+{{pendingtickets?.ticket_assignee_name.split(',').length - 3}}</span>
+                </div>
+                <div class="staff-name-list" *ngIf="pendingtickets?.ticket_assignee_name.split(',').length <= 2">
+                  <img matTooltip="{{pendingtickets?.ticket_assignee_name}}"
+                       src="/assets/images/profile_placeholder.png" width="25"/>
+                </div>
+              </div>
+            </td>
+            <td width="12%" class="word-break">{{pendingtickets?.created_by?.userfullname}} |
+              {{pendingtickets?.created_on | date : 'dd-MM-yyyy'}}
+            </td>
+            <td class="hover-icons__action">
+              <a class="primary-color" [matTooltip]="'Edit'" (click)="onEditTicket(pendingtickets)"
+                 *ngIf="tabData['add_edit']">
+                <mat-icon class="material-icons">edit</mat-icon>
+              </a>
+              <a class="primary-color" [matTooltip]="'Download'"
+                 *ngIf="pendingtickets?.doc_upload_path !='' && tabData['add_edit']"
+                 (click)="downloadAllDocument(pendingtickets.id)">
+                <mat-icon>archive</mat-icon>
+              </a>
+              <a class="primary-color" [matTooltip]="'View Ticket'" (click)="onViewTicket(pendingtickets)">
+                <mat-icon class="material-icons">remove_red_eye</mat-icon>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <table *ngIf="incompleteTicket.length">
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="incompleteTicket.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Table -->
+</div>

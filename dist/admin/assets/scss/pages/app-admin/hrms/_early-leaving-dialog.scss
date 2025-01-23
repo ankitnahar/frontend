@@ -1,0 +1,46 @@
+// -----------------------------------------------------------------------------------------------
+// ================================= Admin HRMS Early Leaving scss ================================
+// -----------------------------------------------------------------------------------------------
+.early-leaving-dialog-container {
+  .modal__body {
+    mat-label {
+      font-size: 1.3rem;
+      color: $black-color;
+      font-weight: 500;
+    }
+    p, span {
+      color: darken($gray-color, 10%);
+      font-size: 1.3rem;
+    }
+  }
+
+  .modal__footer {
+    img {
+      border-radius: 10rem;
+      border: 2px solid $primary-color;
+    }
+  }
+  .remarks {
+    @include elipsis(10rem);
+    span.leaving-type {
+      background-color: $asbestos-color;
+      color: $white-color;
+      border-radius: .1rem;
+      padding: .2rem .5rem;
+      display: inline-block;
+      font-weight: 500;
+    }
+  }
+}
+
+.shift-change-dialog-list {
+  font-size: 1.3rem;
+  label {
+    color: darken($black-color, 20%);
+    font-weight: 500;
+  }
+  span {
+    color: darken($gray-color, 18%);
+  }
+}
+

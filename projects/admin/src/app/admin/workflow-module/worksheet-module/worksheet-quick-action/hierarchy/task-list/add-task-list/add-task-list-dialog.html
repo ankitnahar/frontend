@@ -1,0 +1,89 @@
+<!--  Start Add Task List dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{(data && data.listData) ? 'Update': 'Add'}} Task List</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <form [formGroup]="addTaskList">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MT-10">
+          <!--<mat-form-field>-->
+          <!--<mat-select placeholder="Master Activity" formControlName="master_id"-->
+          <!--(selectionChange)="getTaskData($event)" [(ngModel)]='selectedActivity'>-->
+          <!--<mat-option *ngFor="let data of masterActivityData; let i = index;" [value]="data.name">{{data.name}}-->
+          <!--</mat-option>-->
+          <!--</mat-select>-->
+          <!--</mat-form-field>-->
+          <ng-select [items]="masterActivityData"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Master Activity"
+                     bindValue="name"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="getTaskData($event)"
+                     formControlName="master_id">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addTaskList.get('master_id'))"
+                            [errMsg]="validationMsg.MASTER_ACTIVITY_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12  MT-10">
+          <mat-form-field>
+            <textarea matInput [(ngModel)]="taskValue" placeholder="Task" formControlName="name" required></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addTaskList.get('name'))"
+                            [errMsg]="validationMsg.TASK_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addTaskList.get('name'))"
+                            [errMsg]="validationMsg.TASK_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12  MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Default due date" formControlName="duedate"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-12  MT-20">
+        <mat-checkbox [(ngModel)]="isCheckedAdHoc" formControlName="addadhocworksheet">Add option tocreate ad-hoc
+          worksheet
+        </mat-checkbox>
+      </div>
+
+      <div class="col-md-12  MT-10">
+        <mat-checkbox [(ngModel)]="isCheckedNotes" formControlName="addoutcomenote">Display Outcome Notes ?
+        </mat-checkbox>
+      </div>
+
+      <div class="col-md-12  MT-10">
+        <mat-checkbox [(ngModel)]="isCheckedAssignee" formControlName="addadditionalassignee">Exclude for primary and
+          additional assignee
+        </mat-checkbox>
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" (click)="updateData()" *ngIf="buttonFlag" [disabled]="addTaskList.invalid">
+            Update
+          </button>
+          <button class="btn-primary" (click)="saveData()" *ngIf="!buttonFlag" [disabled]="addTaskList.invalid">Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Add Task List dialog  -->

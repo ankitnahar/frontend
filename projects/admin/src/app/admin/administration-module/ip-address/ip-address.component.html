@@ -1,0 +1,102 @@
+<!-- IP Address Container -->
+<div class="ip-address-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">IP ADDRESS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn MT-5" *ngIf="tabData['add_edit']" (click)="onAddIpAddressDialog(null)">
+            <mat-icon class="material-icons">add</mat-icon>
+            IP Address
+          </button>
+        </div>
+        <div class="col-md-6">
+          <div class="grid-search">
+            <form [formGroup]="filterForm">
+              <mat-form-field [floatLabel]="'never'">
+                <input matInput placeholder="Search" formControlName="manage_IP_search"
+                       (keyup)="setAdvanceFilter(filterForm)">
+              </mat-form-field>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="15%">From</th>
+            <th width="10%">To</th>
+            <th width="15%">Server access</th>
+            <th width="20%">Belongs to</th>
+            <th width="27%">Modified</th>
+            <th width="8%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let ipaddress of IPAddressList; let i = index">
+              <td width="5%">{{i+1}}</td>
+              <td width="15%" class="word-break">{{ipaddress?.from_ip}}</td>
+              <td width="10%">{{ipaddress?.to_ip}}</td>
+              <td width="15%"><span class="{{getClassNameFromAccessBy(ipaddress?.access_by)}}"><mat-icon
+                class="grid_icon_trip_origin">trip_origin</mat-icon><span class="fw-500">{{ipaddress?.access_by}}</span> </span>
+              </td>
+              <td width="20%" class="word-break">{{ipaddress?.belongs_to}}</td>
+              <td width="27%">{{ipaddress?.modified_by.modified_by}} | {{ipaddress?.modified_on | date:'dd-MM-yyyy'}}
+              </td>
+              <td width="8%">
+                <mat-icon class="light-orange-color" [matTooltip]="'Edit'" *ngIf="tabData['add_edit']"
+                          (click)="onAddIpAddressDialog(ipaddress)">edit
+                </mat-icon>
+                <mat-icon class="red-color" *ngIf="tabData['delete']" [matTooltip]="'Delete'"
+                          (click)="onDeleteConfirmationDialog(ipaddress)">delete
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray" (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>  <!-- End Table -->
+  <!-- End Grid Inner Header -->
+</div>

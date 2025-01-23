@@ -1,0 +1,39 @@
+<!--  Start Information Log dialog  -->
+<div class="modal large-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">Query Reminder Log : {{queryDataList?.trading_name}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <span><span class="panel-title M-0"> Subject :</span> {{queryDataList?.subject}}</span>
+    <!-- Start Request Table -->
+    <div class="table-container dialog-table-container PT-10">
+      <div class="table-block">
+        <table class="PT-0">
+          <thead>
+          <tr>
+            <th width="10%">Sr. No</th>
+            <th width="30%">To</th>
+            <th width="30%">Reminder Date</th>
+            <th width="30%">Created By</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let queryLog of queryLogList; let i = index">
+            <td width="10%">{{i+1}}</td>
+            <td width="30%">{{queryLog?.to}}</td>
+            <td width="30%">{{queryLog?.reminder_date | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+            <td width="30%">{{queryLog?.created_by?.created_by}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- End Request Table -->
+  </div>
+</div>
+<!--  End Favorite menu dialog  -->

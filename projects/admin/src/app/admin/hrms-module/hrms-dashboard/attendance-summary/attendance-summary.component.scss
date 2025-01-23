@@ -1,0 +1,85 @@
+@import "../../../../../assets/scss/main";
+
+.user-approved-request-details {
+  img {
+    vertical-align: middle;
+    margin: 0 .5rem;
+    border: 2px solid $light-gray-color;
+    border-radius: 10rem;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+  }
+  .green-color {
+    position: relative;
+    img {
+      border-color: $green-color;
+      border-width: .2rem;
+    }
+    &:after {
+      content: 'check_circle';
+      position: absolute;
+      font-family: 'Material Icons';
+      right: .4rem;
+      bottom: - .9rem;
+      color: darken($green-color, 16%);
+    }
+  }
+  .red-color {
+    position: relative;
+    img {
+      border-color: $red-color;
+      border-width: .2rem;
+    }
+    &:after {
+      content: 'cancel';
+      position: absolute;
+      font-family: 'Material Icons';
+      right: .1rem;
+      bottom: - .9rem;
+      color: darken($red-color, 16%);
+    }
+  }
+  .orange-color {
+
+    position: relative;
+    img {
+      border-color: $light-orange-color;
+      border-width: .2rem;
+    }
+    /*   &:after {
+         content: 'cancel';
+         position: absolute;
+         font-family: 'Material Icons';
+         right: .1rem;
+         bottom: - .9rem;
+       }*/
+  }
+}
+
+.remarks {
+  /*@include elipsis(10rem);*/
+  span.leaving-type {
+    background-color: $asbestos-color;
+    color: $white-color;
+    border-radius: .1rem;
+    padding: .2rem .5rem;
+    display: inline-block;
+    font-weight: 500;
+  }
+}
+
+.blink {
+  animation: blink 2s steps(5, start) infinite;
+  -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}

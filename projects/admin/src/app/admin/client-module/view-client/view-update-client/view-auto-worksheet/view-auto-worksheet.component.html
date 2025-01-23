@@ -1,0 +1,147 @@
+<div class="auto-worksheet-container">
+  <div class="with-filter-grid-container">
+
+    <!--Start add Trigger form-->
+    <form [formGroup]="addAutoWorksheetForm" class="col-md-12" (submit)="SubmitForm(addAutoWorksheetForm)">
+
+      <div class="with-filter-grid-container">
+        <div class="row">
+          <div class="col-md-12">
+            <div *ngFor="let filterGroup of getworksheetSechduleArray().controls; let i=index;">
+              <span class="panel-title ML-0">{{filterGroup.value['sectionTitle']}}</span>
+              <!-- Start Table -->
+              <div class="table-container">
+                <div class="table-block scrollable-grid">
+                  <table>
+                    <thead>
+                    <tr>
+                      <th width="15%">Master activity</th>
+                      <th width="15%">Task</th>
+                      <th width="15%">Start Date/End Date</th>
+                      <th width="15%">Frequency</th>
+                      <th width="15%">Due Date</th>
+                      <th width="15%">Notes</th>
+                      <th width="10%">Create Now?</th>
+                    </tr>
+                    </thead>
+                  </table>
+                  <div class="table-body">
+                    <table>
+                      <tbody>
+                      <tr *ngFor="let autoworksheetschedule of getFilterFieldArrayData(i).controls; let j = index;">
+                        <td width="15%" class="{{j}}">{{autoworksheetschedule.get('master_name').value}}</td>
+                        <td width="15%">{{autoworksheetschedule.get('task_name').value}}</td>
+                        <td width="15%">
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="startdate" placeholder="Start Date"
+                                   [formControl]="autoworksheetschedule.get('start_date')" [disableControl]="true">
+                            <mat-datepicker-toggle matSuffix [for]="startdate"></mat-datepicker-toggle>
+                            <mat-datepicker #startdate></mat-datepicker>
+                          </mat-form-field>
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="enddate" placeholder="End Date"
+                                   [formControl]="autoworksheetschedule.get('end_date')" [disableControl]="true">
+                            <mat-datepicker-toggle matSuffix [for]="enddate"></mat-datepicker-toggle>
+                            <mat-datepicker #enddate></mat-datepicker>
+                          </mat-form-field>
+                        </td>
+                        <td width="15%">
+                          <mat-form-field class="grid_select_8rem" floatLabel="never">
+                            <mat-select placeholder="Select Frequency"
+                                        (selectionChange)="getFreqValue($event.value, i, j)"
+                                        [formControl]="autoworksheetschedule.get('frequency_id')" [disableControl]="true">
+                              <mat-option *ngFor="let frList of frequencyList" [value]="frList?.id">
+                                {{ frList?.frequency_name}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field
+                            *ngIf="autoworksheetschedule.get('frequency_id').value === 1 || autoworksheetschedule.get('frequency_id').value === 2 || autoworksheetschedule.get('frequency_id').value === 6 || autoworksheetschedule.get('frequency_id').value === 9">
+                            <!-- formControlName="frequency_id" placeholder="Frequency" required (change)="getFreqValue($event)" -->
+                            <mat-select [formControl]="autoworksheetschedule.get('expert_day')" placeholder="Day"
+                                        [multiple]="false" [disableControl]="true">
+                              <mat-option *ngFor="let data of dayData;" [value]="data">{{data}}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <mat-form-field
+                            *ngIf="autoworksheetschedule.get('frequency_id').value === 4 || autoworksheetschedule.get('frequency_id').value === 5">
+                            <mat-select [formControl]="autoworksheetschedule.get('expert_month')" placeholder="Month"
+                                        [multiple]="false" [disableControl]="true">
+                              <mat-option *ngFor="let data of monthData;" [value]="data">{{data}}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <mat-form-field *ngIf="autoworksheetschedule.get('frequency_id').value === 10">
+                            <mat-select [formControl]="autoworksheetschedule.get('expert_day')" placeholder="Day"
+                                        [multiple]="true" [disableControl]="true">
+                              <mat-option *ngFor="let data of dayData;" [value]="data">{{data}}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <mat-form-field *ngIf="autoworksheetschedule.get('frequency_id').value === 3">
+                            <mat-select [formControl]="autoworksheetschedule.get('expert_month')" placeholder="Month"
+                                        [multiple]="true" [disableControl]="true">
+                              <mat-option *ngFor="let data of monthData;" [value]="data">{{data}}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </td>
+                        <td width="15%">
+                          <mat-form-field class="grid_select_8rem" floatLabel="never">
+                            <mat-select placeholder="Select Due Date"
+                                        [value]="autoworksheetschedule.get('due_date_type').value"
+                                        (selectionChange)="onChangeDueDate($event.value,i, j)"
+                                        [formControl]="autoworksheetschedule.get('due_date_type')" [disableControl]="true">
+                              <mat-option [value]="1">After Days</mat-option>
+                              <mat-option [value]="2">On Date of month</mat-option>
+                              <mat-option [value]="3">On Particular Date</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field *ngIf="autoworksheetschedule.get('due_date_type').value === 1">
+                            <input matInput type="number" [formControl]="autoworksheetschedule.get('due_after_day')"
+                                   placeholder="After days" [disableControl]="true">
+                          </mat-form-field>
+                          <mat-form-field *ngIf="autoworksheetschedule.get('due_date_type').value === 2">
+                            <mat-select [formControl]="autoworksheetschedule.get('due_month_day')"
+                                        placeholder="On Date of Month" [disableControl]="true">
+                              <mat-option *ngFor="let data of dateData.slice(1)" [value]="data">{{data}}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field *ngIf="autoworksheetschedule.get('due_date_type').value === 3">
+                            <input [formControl]="autoworksheetschedule.get('due_on_particular_date')" matInput
+                                   [matDatepicker]="particularDate"
+                                   placeholder="Date" [disableControl]="true">
+                            <mat-datepicker-toggle matSuffix [for]="particularDate"></mat-datepicker-toggle>
+                            <mat-datepicker #particularDate></mat-datepicker>
+                          </mat-form-field>
+                        </td>
+                        <td width="15%">
+                          <mat-form-field>
+                            <textarea [formControl]="autoworksheetschedule.get('notes')" matInput autocomplete="off" placeholder="Notes" [disableControl]="true"></textarea>
+                          </mat-form-field>
+                        </td>
+                        <td width="10%">
+                          <mat-checkbox (change)="checkGenerate($event.checked,i, j)"
+                                        [disabled]="true"></mat-checkbox>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <table *ngIf="autoWorksheetScheduleList.length">
+                    <tfoot>
+                    <tr>
+                    </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Table -->
+      </div>
+      <!--End Auto worksheet form-->
+    </form>
+  </div>
+</div>

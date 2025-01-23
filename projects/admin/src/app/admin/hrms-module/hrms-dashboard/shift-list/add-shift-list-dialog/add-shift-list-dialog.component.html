@@ -1,0 +1,164 @@
+<!--  Start Add Shift list dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{(shiftDetail?.id)?'Update':'Add'}} Shift List</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addShiftListForm" (submit)="onSubmit(addShiftListForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="Shift Name" formControlName="shift_name" required>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShiftListForm.get('shift_name'))"
+                            [errMsg]="validationMsg.SHIFT_NAME"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="Shift Time From" aria-label="Shift Time" [ngxTimepicker]="shifttimefrom"
+                   [format]="24" formControlName="from_time"
+                   (ngModelChange)="finalcutoff(addShiftListForm); lateAllowedTime(addShiftListForm)" required readonly>
+            <ngx-material-timepicker #shifttimefrom></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShiftListForm.get('from_time'))"
+                            [errMsg]="validationMsg.SHIFT_TIME_FROM_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Shift Time To" aria-label="Shift Time To" [ngxTimepicker]="shifttimeto"
+                   [format]="24" formControlName="to_time" required readonly>
+            <ngx-material-timepicker #shifttimeto></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShiftListForm.get('to_time'))"
+                            [errMsg]="validationMsg.SHIFT_TIME_TO_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Grace Period" aria-label="Grace Period" [ngxTimepicker]="grace_period"
+                   [format]="24" (ngModelChange)="finalcutoff(addShiftListForm)" formControlName="grace_period" required
+                   readonly>
+            <ngx-material-timepicker #grace_period></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShiftListForm.get('grace_period'))"
+                            [errMsg]="validationMsg.GRACE_PERIOD_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Consider Late Period" aria-label="Consider Late Period"
+                   [ngxTimepicker]="consider_late_period" [format]="24"
+                   (ngModelChange)="lateAllowedTime(addShiftListForm)" formControlName="late_period" required readonly>
+            <ngx-material-timepicker #consider_late_period></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShiftListForm.get('late_period'))"
+                            [errMsg]="validationMsg.CONSIDER_LATE_PERIOD_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Late Coming Allowed Count" aria-label="Late Coming Allowed Count"
+                   formControlName="late_allowed_count" type="number" required>
+            <!--<ngx-material-timepicker #late_coming_allowed></ngx-material-timepicker>-->
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShiftListForm.get('late_allowed_count'))"
+                            [errMsg]="validationMsg.LATE_COMING_ALLOWED_COUNT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Break Time" aria-label="Break Time" [ngxTimepicker]="break_time" [format]="24"
+                   formControlName="break_time" required readonly>
+            <ngx-material-timepicker #break_time></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShiftListForm.get('break_time'))"
+                            [errMsg]="validationMsg.BREAK_TIME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10" *ngIf="shiftDetail?.id">
+        </div>
+        <div class="col-md-6 MT-10" *ngIf="!shiftDetail?.id">
+          <ng-select
+            [items]="shiftListData"
+            [multiple]="false"
+            bindLabel="shift_name"
+            [hideSelected]="true"
+            [closeOnSelect]="false"
+            bindValue="id"
+            placeholder="Copy Holiday of Shift"
+            formControlName="holiday_shift_id">
+          </ng-select>
+        </div>
+        <div class="col-md-6 MT-10" *ngIf="finalCutOff !== ''">
+          <label class="fw-500 MR-10">Final Cut Off:</label>
+          <span>{{finalCutOff}}</span>
+        </div>
+
+        <div class="col-md-6 MT-10" *ngIf="lateAllowTime !== ''">
+          <label class="fw-500 MR-10">Late allowed Time:</label>
+          <span>{{lateAllowTime}}</span>
+        </div>
+        <!--<div class="col-md-12 MT-10">-->
+        <!--<ng-select-->
+        <!--[items]="email_id"-->
+        <!--[multiple]="true"-->
+        <!--bindLabel="email"-->
+        <!--groupBy="id"-->
+        <!--[closeOnSelect]="false"-->
+        <!--bindValue="id"-->
+        <!--placeholder="Email to CC"-->
+        <!--formControlName="email_cc">-->
+        <!--</ng-select>-->
+        <!--</div>-->
+        <div class="col-md-6 MT-15">
+          <ng-select
+            [items]="satOffList"
+            [multiple]="false"
+            bindLabel="label"
+            [hideSelected]="true"
+            [closeOnSelect]="false"
+            bindValue="key"
+            placeholder="Saturday Off"
+            formControlName="sat_off">
+          </ng-select>
+        </div>
+        <div class="col-md-6 MT-15">
+          <mat-form-field>
+            <textarea matInput formControlName="description" rows="3" placeholder="Notes"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addShiftListForm.invalid">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

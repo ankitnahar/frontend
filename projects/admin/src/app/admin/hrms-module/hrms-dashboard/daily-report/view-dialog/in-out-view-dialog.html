@@ -1,0 +1,39 @@
+<!--  Start Favorite menu dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">SUMMARY</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <!-- Start Request Table -->
+    <div class="table-container dialog-table-container">
+      <div class="table-block">
+        <table class="PT-0">
+          <thead>
+          <tr>
+            <th width="10%">Sr. No</th>
+            <th width="15%">Date</th>
+            <th width="30%">Punch Type</th>
+            <th width="30%">Punch Time</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let punchInOut of dailyReport?.inout; let i=index"
+              [ngClass]="(punchInOut?.type === 0) ? 'red-tr' :''">
+            <td>{{i+1}}</td>
+            <td>{{punchInOut?.date | date : 'dd-MM-yyyy'}}</td>
+            <td>{{punchInOut?.punch_type === 1?'In':'Out'}}</td>
+            <td>{{punchInOut?.punch_time}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- End Request Table -->
+  </div>
+</div>
+<!--  End Favorite menu dialog  -->

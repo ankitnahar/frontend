@@ -1,0 +1,457 @@
+<!-- Admin (Administration)Update Information html view -->
+<div class="admin-manage-users-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span><a (click)="onGoInformationRequired()">INFORMATION REQUIRED</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">UPDATE INFORMATION</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active" *ngIf="informationData?.parent_id > 0"> Parent Client : {{informationData?.parent_name}} | </span>
+          <span>{{informationData?.trading_name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <form [formGroup]="editInformationForm" (submit)="onSubmit(editInformationForm)">
+
+    <div class="row">
+      <span class="col-md-5 PLR-0">
+      <span class="panel-title">Frequency:</span> <label class="PT-15">{{informationData?.frequency_name}}</label>
+      <span class="panel-title">Trigger Period:</span> <label class="PT-15">{{informationData?.start_period | date :
+      'dd-MM-yyyy'}} TO
+      {{informationData?.end_period | date : 'dd-MM-yyyy'}}</label>
+      <span class="panel-title">Subject:</span>
+    </span>
+      <span class="col-md-7" *ngIf="informationData?.stage_id?.id !== 5 && informationData?.stage_id?.id !== 6">
+          <mat-form-field>
+            <input matInput formControlName="subject" required/>
+          </mat-form-field>
+        </span>
+      <span class="col-md-7 MT-15" *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6">
+          {{informationData?.subject}}
+        </span>
+    </div>
+    <div class="row">    <!-- Start grid -->
+      <div class="col-md-12 expand-grid">
+        <div class="expand-grid__thead">
+          <table class="PT-0">
+            <thead>
+            <tr>
+              <th width="4%">Sr. No</th>
+              <th width="8%">Information</th>
+              <th width="10%">Type of Account</th>
+              <th width="8%">Account No</th>
+              <th
+                width="{{informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6 ? '11%' : '12%'}}">
+                Period
+              </th>
+              <th
+                width="{{informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6 ? '18%' : '30%'}}">
+                Befree Comments
+              </th>
+              <th
+                width="{{informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6 ? '11%' : '18%'}}">
+                Documents
+              </th>
+              <th width="10%" *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6">
+                Answer
+              </th>
+              <th width="10%" *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6">
+                Client
+                Comments
+              </th>
+              <th width="10%">Status</th>
+            </tr>
+            </thead>
+          </table>
+          <div class="expand-grid__tbody expand-grid-scrollable">
+            <table>
+              <ng-container *ngFor="let updateinfo of getInformationArray().controls; let i = index"
+                            class="hover-icons row-data">
+                <tr>
+                  <td (click)="openRow(i)" width="4%">
+                    <a class="open-inner-data">
+                    </a>{{i + 1}}
+                  </td>
+                  <td width="8%" class="word-break">{{updateinfo.value['bank_other']}}</td>
+                  <td width="10%" class="word-break">{{updateinfo.value['type_account']}}</td>
+                  <td width="8%" class="word-break">{{updateinfo.value['account_no']}}</td>
+                  <td width="12%" class="grid_select_8rem date_no_border"
+                      *ngIf="informationData?.stage_id?.id !== 5 && informationData?.stage_id?.id !== 6">
+                    <div>
+                      <mat-form-field [floatLabel]="'never'">
+                        <input matInput [matDatepicker]="fromdateRef" placeholder="Start Date"
+                               [formControl]="updateinfo.get('start_period')"
+                               (dateChange)="updateDateForInformation(i,$event.value,'start_period')">
+                        <mat-datepicker-toggle matSuffix [for]="fromdateRef"></mat-datepicker-toggle>
+                        <mat-datepicker #fromdateRef></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div>
+                      <mat-form-field [floatLabel]="'never'">
+                        <input matInput [matDatepicker]="todateRef" placeholder="End Date"
+                               [formControl]="updateinfo.get('end_period')"
+                               (dateChange)="updateDateForInformation(i,$event.value,'end_period')">
+                        <mat-datepicker-toggle matSuffix [for]="todateRef"></mat-datepicker-toggle>
+                        <mat-datepicker #todateRef></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                  </td>
+                  <td width="11%" class="word-break"
+                      *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6">
+                    {{updateinfo.value['start_date'] | date :'dd-MM-yyyy'}} - {{updateinfo.value['end_date'] | date
+                    :'dd-MM-yyyy'}}
+                  </td>
+                  <td width="30%" class="word-break"
+                      *ngIf="informationData?.stage_id?.id !== 5 && informationData?.stage_id?.id !== 6">
+                    <mat-form-field appearance="fill">
+                      <textarea matInput value="{{updateinfo.value['befree_comment']}}"
+                                [formControl]="updateinfo.get('befree_comment')"></textarea>
+                    </mat-form-field>
+                  </td>
+                  <td width="18%" class="word-break"
+                      *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6">
+                    {{updateinfo.value['befree_comment']}}
+                  </td>
+                  <td class="word-break"
+                      width="{{informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6 ? '11%': '18%'}}">
+                    <mat-icon class="orange-color" (click)="onFileSelect('addDocument_' + updateinfo.value['id'])"
+                              matTooltip="Add Document">note_add
+                    </mat-icon>
+                    {{uploadDocName[i] ? uploadDocName[i] : ''}}
+                    <input type="file" [hidden]="true" id="{{'addDocument_'+ updateinfo.value['id']}}"
+                           (change)="onUploadDocument($event,updateinfo.value['id'], i)" value=""
+                           [multiple]="true"/>
+
+                    <a (click)="onAddDocumentsDialog(updateinfo.value['id'],i,2)" class="cursor-pointer"
+                       style="vertical-align: super;">
+
+                      <svg id="Capa_1" enable-background="new 0 0 511.696 511.696" class="v-align-middle MR-5"
+                           height="15"
+                           viewBox="0 0 511.696 511.696" width="15" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                          <g id="Drive_4_">
+                            <path
+                              d="m255.395 161.647-106.199 184.2h-.3l61.5 75-137.999 57.9c-2.701-1.5-4.801-3.6-6-5.7l-64.801-120c-3.3-6.601-.599-11.7.3-14.7l173.701-300c1.199-1.8 2.999-3.6 5.4-5.101h.3l89.099 27.601z"
+                              fill="#59c36a"/>
+                          </g>
+                          <path
+                            d="m511.696 345.848-120.3 75-28.5-75-107.5-184.2-74.1-128.402c2.098-1.5 4.799-2.399 7.2-2.399h134.799c3.001.899 9.001.599 12.9 7.5l173.701 300c1.199 2.101 1.8 4.8 1.8 7.501z"
+                            fill="#ffda2d"/>
+                          <path
+                            d="m336.194 38.348c-3.898-6.901-9.899-6.601-12.9-7.5h-67.899v130.8l107.5 184.2 28.5 75 120.3-75c0-2.701-.601-5.4-1.8-7.5z"
+                            fill="#fdbf00"/>
+                          <path
+                            d="m511.696 345.848c0 2.699-.601 5.4-1.5 7.2l-64.801 120c-2.401 3.9-8.099 7.8-13.2 7.8h-352.599c-2.401 0-5.101-.901-7.2-2.1l76.5-132.9z"
+                            fill="#4086f4"/>
+                          <path
+                            d="m255.395 480.848h176.8c5.101 0 10.8-3.9 13.2-7.8l64.801-120c.899-1.8 1.5-4.501 1.5-7.2h-256.3v135z"
+                            fill="#4175df"/>
+                        </g>
+                      </svg>
+                    </a>
+                    <mat-icon matBadge="{{getDocumentArray(i).controls.length}}" matBadgeColor="warn"
+                              matTooltip="View Document" *ngIf="getDocumentArray(i).controls.length > 0"
+                              class="primary-color"
+                              (click)="openRow(i)">cloud_done
+                    </mat-icon>
+                  </td>
+                  <td class="word-break" width="10%"
+                      *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6">
+                    {{getAnswerName(updateinfo.get('answer_type').value)}}
+                  </td>
+                  <td class="word-break" width="10%"
+                      *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6">
+                    {{updateinfo.value['client_comment']}}
+                  </td>
+                  <td class="word-break grid_select_8rem" width="10%">
+                    <mat-form-field>
+                      <mat-select [formControl]="updateinfo.get('status_id')">
+                        <mat-option *ngFor="let statusData of informationStatus" [value]="statusData?.key">
+                          {{ statusData?.label }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr *ngIf="trIndex === i" class="inner-data">
+                  <td [attr.colspan]="informationData?.stage_id?.id >= 5 ? 10 : 8">
+                    <div class="row col-md-12">
+                      <div class="col-md-6" *ngFor="let documentData of getDocumentArray(i).controls; let j = index">
+                        <div class="inner-data__view">
+                          <div class="">{{documentData.value['is_client'] === 1 ? 'Client' : 'Befree'}} :</div>
+                          <div>
+                            <a (click)="onOpenDocumentFile(documentData.value)"
+                               *ngIf="documentData.value['is_drive'] === 1"
+                               class="cursor-pointer">
+                              <mat-icon class="v-align-middle">remove_red_eye</mat-icon>
+                              {{documentData.get('document_name').value}}
+                            </a>
+                            <a (click)="downloadDocument(documentData)" *ngIf="documentData.value['is_drive'] === 0"
+                               class="cursor-pointer">
+                              <mat-icon class="v-align-middle primary-color">get_app</mat-icon>
+                              {{documentData.get('document_name').value}}
+                            </a>
+                            <a (click)="deleteDocument(updateinfo.value['id'], documentData.get('id').value,i)"
+                               *ngIf="documentData.value['is_client'] === 0">
+                              <mat-icon aria-hidden="false" aria-label="delete" class="red-color v-align-middle">delete
+                              </mat-icon>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                </tr>
+              </ng-container>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="row information-card">
+      <div class="col-md-6" *ngIf="informationData?.stage_id?.id !== 5 && informationData?.stage_id?.id !== 6">
+        <mat-card>
+          <div class="panel-title ML-0">Additional Information</div>
+          <form [formGroup]="editAdditionalInformationForm" #addAdditionaInfoForm="ngForm"
+                (submit)="onSubmitAdditionalInfo(editAdditionalInformationForm)">
+            <div class="col-md-12 PL-0">
+              <mat-form-field>
+                <mat-label>Comment</mat-label>
+                <input matInput formControlName="comment"/>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(editAdditionalInformationForm.get('comment'))"
+                                [errMsg]="validationMsg.QUERY_COMMENTS_REQUIRED"></app-validation>
+              </div>
+            </div>
+            <div class="col-md-12 PL-0 text-right">
+              <button type="submit" class="btn-primary" [disabled]="editAdditionalInformationForm.invalid">
+                Add
+              </button>
+            </div>
+          </form>
+        </mat-card>
+      </div>
+      <div class="col-md-6 PL-0">
+        <mat-card>
+          <!-- Start Table -->
+          <div class="expand-grid">
+            <div class="expand-grid__thead">
+              <table *ngIf="additionalInformationListing.length">
+                <thead>
+                <tr>
+                  <th width="7%">Sr. No</th>
+                  <th width="50%">Additional Information</th>
+                  <th width="{{informationData?.stage_id?.id >= 6 ? '25%' : '43%'}}">Document</th>
+                  <th *ngIf="informationData?.stage_id?.id >= 6" width="18%">Client Comment</th>
+                  <th width="10%">Action</th>
+                </tr>
+                </thead>
+              </table>
+
+              <div class="expand-grid__tbody expand-grid-scrollable">
+                <table>
+                  <tbody *ngFor="let updateAdditionalinfo of additionalInformationListing; let j = index">
+                  <tr [ngClass]="{'is-active-row' : trIndexInner === j}" class="hover-icons row-data">
+                    <td width="7%">
+                      {{j + 1}}
+                    </td>
+                    <td width="50%" class="word-break">{{updateAdditionalinfo?.comment}}</td>
+                    <td width="{{informationData?.stage_id?.id >= 6 ? '25%' : '43%'}}" class="word-break">
+                      <input type="file" [hidden]="true" id="{{'addDocumentAdd_'+ updateAdditionalinfo.id}}"
+                             (change)="onUploadDocumentAdditional($event, updateAdditionalinfo.id, j)"
+                             [multiple]="true"/>
+
+                      <mat-icon class="orange-color"
+                                (click)="onFileSelect('addDocumentAdd_' + updateAdditionalinfo.id)"
+                                matTooltip="Add Document">note_add
+                      </mat-icon>
+
+                      <a (click)="onAddDocumentsDialog(updateAdditionalinfo.id,j,4)" class="cursor-pointer"
+                         style="vertical-align: super;">
+
+                        <svg id="Capa_1" enable-background="new 0 0 511.696 511.696" class="v-align-middle MR-5"
+                             height="15"
+                             viewBox="0 0 511.696 511.696" width="15" xmlns="http://www.w3.org/2000/svg">
+                          <g>
+                            <g id="Drive_4_">
+                              <path
+                                d="m255.395 161.647-106.199 184.2h-.3l61.5 75-137.999 57.9c-2.701-1.5-4.801-3.6-6-5.7l-64.801-120c-3.3-6.601-.599-11.7.3-14.7l173.701-300c1.199-1.8 2.999-3.6 5.4-5.101h.3l89.099 27.601z"
+                                fill="#59c36a"/>
+                            </g>
+                            <path
+                              d="m511.696 345.848-120.3 75-28.5-75-107.5-184.2-74.1-128.402c2.098-1.5 4.799-2.399 7.2-2.399h134.799c3.001.899 9.001.599 12.9 7.5l173.701 300c1.199 2.101 1.8 4.8 1.8 7.501z"
+                              fill="#ffda2d"/>
+                            <path
+                              d="m336.194 38.348c-3.898-6.901-9.899-6.601-12.9-7.5h-67.899v130.8l107.5 184.2 28.5 75 120.3-75c0-2.701-.601-5.4-1.8-7.5z"
+                              fill="#fdbf00"/>
+                            <path
+                              d="m511.696 345.848c0 2.699-.601 5.4-1.5 7.2l-64.801 120c-2.401 3.9-8.099 7.8-13.2 7.8h-352.599c-2.401 0-5.101-.901-7.2-2.1l76.5-132.9z"
+                              fill="#4086f4"/>
+                            <path
+                              d="m255.395 480.848h176.8c5.101 0 10.8-3.9 13.2-7.8l64.801-120c.899-1.8 1.5-4.501 1.5-7.2h-256.3v135z"
+                              fill="#4175df"/>
+                          </g>
+                        </svg>
+                      </a>
+                      <mat-icon matBadge="{{updateAdditionalinfo['document'].length}}" matBadgeColor="warn"
+                                matTooltip="View Document" (click)="openRowAdditionalComments(j)" class="primary-color"
+                                *ngIf="updateAdditionalinfo['document'].length">cloud_done
+                      </mat-icon>
+                    </td>
+                    <td *ngIf="informationData?.stage_id?.id >= 6" width="18%" class="word-break">
+                      {{updateAdditionalinfo?.client_comment}}
+                    </td>
+                    <td width="10%">
+                      <a (click)="removeAdditionalInfo(updateAdditionalinfo)"
+                         *ngIf="updateAdditionalinfo?.is_deleted != 1 && informationData?.stage_id?.id < 5">
+                        <mat-icon aria-hidden="false" aria-label="delete" class="red-color"
+                                  matTooltip="Resolve Information">playlist_add_check
+                        </mat-icon>
+                      </a>
+                      <mat-icon *ngIf="updateAdditionalinfo?.is_deleted == 1"
+                                matTooltip="Resolve Information on {{updateAdditionalinfo?.deleted_on | date : 'dd-MM-yyy HH:mm:ss'}}"
+                                class="turquoise-color">done_all
+                      </mat-icon>
+                    </td>
+                  </tr>
+                  <tr *ngIf="trIndexInner === j" class="inner-data">
+                    <div class="row PT-10">
+                      <div class="col-md-6"
+                           *ngFor="let documentsList of updateAdditionalinfo['document']; let j = index">
+                        <div class="inner-data__view">
+                          <div class="PT-5">{{documentsList?.is_client === 1 ? 'Client' : 'Befree'}} :</div>
+                          <div>
+                            <a (click)="onOpenDocumentFile(documentsList)" *ngIf="documentsList?.is_drive === 1"
+                               class="cursor-pointer v-align-middle">
+                              <mat-icon>remove_red_eye</mat-icon>
+                              {{documentsList?.document_name}}
+                            </a>
+                            <a (click)="downloadDocument(documentsList, 1)" *ngIf="documentsList?.is_drive === 0"
+                               class="cursor-pointer v-align-middle">
+                              <mat-icon class="v-align-middle">get_app</mat-icon>
+                              {{documentsList?.document_name}}
+                            </a>
+                            <a (click)="deleteAdditionalDocument(documentsList?.id)"
+                               *ngIf="documentsList?.is_client === 0">
+                              <mat-icon aria-hidden="false" aria-label="delete" class="red-color v-align-middle">delete
+                              </mat-icon>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </tr>
+
+                  </tbody>
+                </table>
+              </div>
+              <table *ngIf="isSendToClient">
+                <tfoot>
+                <tr>
+                  <td colspan="8" class=""></td>
+                  <td colspan="2" class="PR-10" style="float: right"
+                      *ngIf="informationData?.stage_id?.id !== 5 && informationData?.stage_id?.id !== 6">
+                    <mat-form-field>
+                      <mat-select placeholder="Reminder Days" formControlName="reminder">
+                        <mat-option *ngFor="let days of snoozeOrReminderDays" [value]="days['key']">
+                          {{days['label']}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(editInformationForm.get('reminder'))"
+                                      [errMsg]="validationMsg.REMINDER_REQUIRED"></app-validation>
+                    </div>
+                  </td>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+          <!-- End Grid -->
+        </mat-card>
+      </div>
+    </div>
+    <div class="row col-md-12">
+      <div class="col-md-6 PL-0" *ngIf="informationData?.sendback_reason_tm">
+        <span class="panel-title">Send Back Reason to TM :</span> {{informationData?.sendback_reason_tm}}
+      </div>
+      <div class="col-md-6 PL-0" *ngIf="informationData?.sendback_reason_atl">
+        <span class="panel-title">Send Back Reason to ATL :</span> {{informationData?.sendback_reason_atl}}
+      </div>
+      <div class="col-md-6 PL-0" *ngIf="informationData?.sendback_reason_tl">
+        <span class="panel-title"> Send Back Reason to TL :</span> {{informationData?.sendback_reason_tl}}
+      </div>
+    </div>
+    <div class="col-md-12 PB-20">
+      <div class="row MT-30">
+        <div class="col-md-6 PL-0">
+          <button *ngIf="informationData?.stage_id?.id !== 5 && informationData?.stage_id?.id !== 6" type="submit"
+                  class="btn-primary"
+                  (click)="updateStatusIdWithDraft(informationData.stage_id.id, 1,'draft')">
+            Save
+          </button>
+          <button *ngIf="informationData?.stage_id?.id === 5 || informationData?.stage_id?.id === 6" type="submit"
+                  class="btn-primary"
+                  (click)="updateStatusIdWithDraft(informationData.stage_id.id, 0,'submit')">
+            Submit
+          </button>
+        </div>
+        <div class="col-md-6 text-right PR-0">
+          <button
+            *ngIf="informationData.stage_id.id === 2 || informationData.stage_id.id === 3 || informationData.stage_id.id === 4"
+            (click)="onSendtoStaff(informationData,1,1)" type="button" class="btn-dark-blue MR-5">Send back to
+            Staff
+          </button>
+          <button *ngIf="informationData.stage_id.id === 3 || informationData.stage_id.id === 4"
+                  (click)="onSendtoStaff(informationData,2,2)" type="button" class="btn-orange MR-5">Send back
+            to
+            ATL
+          </button>
+          <button *ngIf="informationData.stage_id.id === 4"
+                  (click)="onSendtoStaff(informationData,3,3)" type="button" class="btn-dark-blue MR-5">Send back
+            to
+            TL
+          </button>
+          <button
+            *ngIf="informationData.stage_id.id === 1"
+            (click)="updateStatusIdWithDraft(2, 0, 'ATL')" type="submit" class="btn-orange MR-5"
+            [disabled]="editInformationForm.invalid">Send to ATL
+          </button>
+          <button
+            *ngIf="informationData.stage_id.id === 1 || informationData.stage_id.id === 2"
+            (click)="updateStatusIdWithDraft(3, 0, 'TL')" type="submit" class="btn-dark-blue MR-5"
+            [disabled]="editInformationForm.invalid">Send to TL
+          </button>
+          <button
+            *ngIf="informationData.stage_id.id === 1 || informationData.stage_id.id === 2 || informationData.stage_id.id === 3"
+            (click)="updateStatusIdWithDraft(4, 0, 'TAM')" type="submit" class="btn-primary MR-5"
+            [disabled]="editInformationForm.invalid">Send to TAM
+          </button>
+          <button
+            *ngIf="(informationData.stage_id.id === 1 || informationData.stage_id.id === 2 || informationData.stage_id.id === 3 || informationData.stage_id.id === 4) && (isSendToClient === true)"
+            (click)="updateStatusIdWithDraft(informationData.stage_id.id, 0, 'Client');" type="submit"
+            class="btn-success" [disabled]="editInformationForm.invalid">Send to Client
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,188 @@
+<div class="admin-worksheet-training-list-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">
+            <a (click)="onWorksheetDashboard()">WORKSHEET</a>
+          </span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">VIEW WORKSHEET COMMENTS</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+
+    <div class="content-card chat-view">
+      <!-- CHAT -->
+      <div class="row col-md-12 chat MT-15">
+
+        <!-- CHAT TOOLBAR -->
+        <mat-toolbar class="chat-toolbar">
+
+          <div>
+
+            <div>
+
+
+              <!-- CHAT CONTACT-->
+              <div class="row chat-contact">
+
+                <div class="avatar-wrapper col-md-2 PL-0">
+
+                  <img src="assets/images/ico.png" class="avatar"
+                       alt="Contact name"/>
+
+                  <mat-icon class="s-16 status">
+                  </mat-icon>
+                </div>
+
+                <div class="chat-contact-name MT-10 col-md-10 PLR-0">
+                  Name- View Comments -Worksheet Details
+                </div>
+
+              </div>
+              <!-- / CHAT CONTACT-->
+            </div>
+
+          </div>
+        </mat-toolbar>
+        <!-- / CHAT TOOLBAR -->
+
+        <!-- CHAT CONTENT -->
+        <div id="chat-content" class="col-md-12">
+          <div class="chat-messages">
+            <!-- MESSAGE -->
+            <div class="message-row me first-of-group">
+
+              <div class="bubble">
+                <div class="message">Lorem ipsume dummy text</div>
+                <div class="time secondary-text">3/22/17, 3:00 AM</div>
+              </div>
+
+            </div>
+            <!-- / MESSAGE -->
+            <div class="message-row contact last-of-group">
+              <img
+                src="assets/images/ico.png"
+                class="avatar">
+
+              <div class="bubble">
+                <div class="message">Lorem ipsume dummy text</div>
+                <div class="time secondary-text">3/22/17, 3:00 AM</div>
+              </div>
+
+            </div>
+            <!-- MESSAGE -->
+            <div class="message-row contact last-of-group">
+
+              <img
+                src="assets/images/ico.png"
+                class="avatar">
+
+              <div class="bubble">
+                <div class="message">Lorem ipsume dummy text</div>
+                <div class="time secondary-text">3/22/17, 3:00 AM</div>
+              </div>
+
+            </div>
+            <!-- / MESSAGE -->
+            <!-- MESSAGE -->
+            <div class="message-row me first-of-group last-of-group">
+
+              <div class="bubble">
+                <div class="message">Lorem ipsume dummy text</div>
+                <div class="time secondary-text">02/08/2021, 3:00 AM</div>
+                <div class="time attachment MT-25" fxLayout="row" fxLayoutAlign="space-between center">
+                  <div class="PT-10">
+                    <span class="filename">attachment-2.doc</span>
+                    <span class="size">(12 Kb)</span>
+                  </div>
+
+                  <button mat-icon-button aria-label="Download attachment" (click)="onDownload()">
+                    <mat-icon class="gray-color">file_download</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- / MESSAGE -->
+
+            <!-- MESSAGE -->
+            <div class="message-row contact last-of-group">
+
+              <img
+                src="assets/images/ico.png"
+                class="avatar">
+
+              <div class="bubble">
+                <div class="message">Lorem ipsume dummy text</div>
+                <div class="time secondary-text">3/22/17, 3:00 AM</div>
+                <div class="time attachment MT-25" fxLayout="row" fxLayoutAlign="space-between center">
+                  <div class="PT-10">
+                    <span class="filename">attachment-2.doc</span>
+                    <span class="size">(12 Kb)</span>
+                  </div>
+
+                  <button mat-icon-button aria-label="Download attachment" (click)="onDownload()">
+                    <mat-icon class="gray-color">file_download</mat-icon>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+            <!-- / MESSAGE -->
+          </div>
+        </div>
+        <!-- / CHAT CONTENT -->
+
+        <!-- CHAT FOOTER -->
+        <div class="row col-md-12 chat-footer">
+
+          <!-- REPLY FORM -->
+          <div class="col-md-11 reply-form">
+
+            <form #replyForm="ngForm"
+                  (ngSubmit)="reply($event)"
+                  (keydown.enter)="reply($event)">
+
+              <mat-form-field class="message-text" floatLabel="never" appearance="standard">
+                    <textarea matInput #replyInput placeholder="Type your message"
+                              [rows]="1" [matTextareaAutosize]="true"></textarea>
+              </mat-form-field>
+
+              <button class="send-message-button PR-20" mat-icon-button type="submit" aria-label="Send message">
+                <mat-icon class="orange-color">send</mat-icon>
+              </button>
+
+            </form>
+          </div>
+          <!-- / REPLY FORM -->
+          <div class="col-md-1">
+            <button mat-mini-fab class="MT-20" style="background: #03A9F4;">
+              <mat-icon>attach_file</mat-icon>
+            </button>
+          </div>
+        </div>
+        <!-- / CHAT FOOTER-->
+
+      </div>
+      <!-- / CHAT -->
+    </div>
+  </div>
+  <!-- End Data Grid -->
+</div>

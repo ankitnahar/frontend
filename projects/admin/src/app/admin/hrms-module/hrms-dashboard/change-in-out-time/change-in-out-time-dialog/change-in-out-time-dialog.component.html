@@ -1,0 +1,89 @@
+<!--  Start Change InOut Time dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{(ChangeInOutData.id) ? 'Update' : 'Add'}} In-Out Time</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addChangeInOutForm" (submit)="onSubmitAddChangeIn(addChangeInOutForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 custom-ng-select-dropdown">
+          <ng-select [items]="userList"
+                     [closeOnSelect]="true"
+                     bindLabel="userfullname"
+                     placeholder="User Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="user_id"
+                     [disableControl]="(ChangeInOutData.id)?true:false">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addChangeInOutForm.get('user_id'))"
+                            [errMsg]="validationMsg.USERNAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput [matDatepicker]="DateRef" placeholder="Date"
+                   [max]="currentDate" formControlName="date" required
+                   [disableControl]="(ChangeInOutData.id)?true:false"/>
+            <mat-datepicker-toggle matSuffix [for]="DateRef"></mat-datepicker-toggle>
+            <mat-datepicker #changeInOutDate #DateRef></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addChangeInOutForm.get('date'))"
+                            [errMsg]="validationMsg.DATE"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <mat-select formControlName="punch_type" placeholder="In/Out" required
+                        [disabled]="(ChangeInOutData.id)?true:false">
+              <mat-option *ngFor="let option of inOutdropdown.slice(1)" [value]="option?.key">
+                {{option?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addChangeInOutForm.get('punch_type'))"
+                            [errMsg]="validationMsg.ADD_IN_OUT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Select Time" aria-label="Select Time" [ngxTimepicker]="selecttime"
+                   [format]="24" formControlName="punch_time" required>
+            <ngx-material-timepicker #selecttime></ngx-material-timepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Reason" formControlName="reason" required></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <!--<small class="red-color MR-10" *ngIf="this.isModified === 1">Not Allow To Update Time</small>-->
+          <!--<small class="red-color MR-10" *ngIf="this.isModified === 0">Can't change, Once updated</small>-->
+          <button class="btn-primary" [disabled]="addChangeInOutForm.invalid">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

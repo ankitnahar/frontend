@@ -1,0 +1,91 @@
+<!--  Start Send to Client dialog  -->
+<div class="modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">SEND TO CLIENT - {{informationRequired?.trading_name}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addSendtoClientForm" (submit)="onSubmit(addSendtoClientForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MB-10">
+          <mat-form-field>
+            <mat-select placeholder="From" formControlName="from_email" required>
+              <mat-option [value]="sendToClientFormData['from_email']">{{sendToClientFormData['from_email']}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSendtoClientForm.get('from_email'))"
+                            [errMsg]="validationMsg.FROM_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MB-20">
+          <mat-form-field>
+            <input matInput placeholder="To" formControlName="to" required>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSendtoClientForm.get('to'))"
+                            [errMsg]="validationMsg.TO_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addSendtoClientForm.get('to'))"
+                            [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MB-20">
+          <mat-form-field>
+            <input matInput placeholder="CC" formControlName="cc">
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addSendtoClientForm.get('cc'))"
+                            [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MB-20">
+          <mat-form-field>
+            <input matInput placeholder="BCC" formControlName="bcc">
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addSendtoClientForm.get('bcc'))"
+                            [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MB-20">
+          <mat-form-field>
+            <input matInput placeholder="Subject" formControlName="subject" required>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSendtoClientForm.get('subject'))"
+                            [errMsg]="validationMsg.EMAIL_SUBJECT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MB-20">
+          <p class="PB-10">Message</p>
+          <editor [formControl]="addSendtoClientForm.controls['content']"
+                  [init]="{'menubar': 'false', 'height': 420, 'relative_urls': false, 'remove_script_host': false, 'convert_urls': true}"></editor>
+          <div class="validation-msg MT-10">
+            <app-validation *ngIf="isRequiredField(addSendtoClientForm.get('content'))"
+                            [errMsg]="validationMsg.EMAIL_CONTENT_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addSendtoClientForm.invalid">Send</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Send to Client dialog  -->

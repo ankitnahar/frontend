@@ -1,0 +1,46 @@
+<!--  Start Attendance summary dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">LEAVE ADJUSTMENT :: {{attendanceSummaryReport?.assignee?.userfullname}}</div>
+  </div>
+
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="laveAdjustmentForm" (submit)="onSubmit(laveAdjustmentForm)">
+    <div class="modal__body admin-hrms-attendance-summary-container">
+      <div class="row">
+        <div class="col-md-8 MT-10">
+          <label>Month :: {{attendanceSummaryReport?.month}}</label>
+        </div>
+        <div class="col-md-8 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Adjustment" formControlName="adjustment" aria-label="Adjustment" type="number">
+          </mat-form-field>
+          <div class="validation-msg"></div>
+        </div>
+        <div class="col-md-8 MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Reason of Adjustment" formControlName="reason" aria-label="Reason of Adjustment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-6 text-left approval-name user-approved-request-details">
+
+        </div>
+        <div class="col-md-6 text-right">
+          <button type="submit" class="btn-primary"  [disabled]="laveAdjustmentForm.invalid">Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

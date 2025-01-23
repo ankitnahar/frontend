@@ -1,0 +1,165 @@
+/**
+* Add time sheet page scss
+*/
+.add-timesheet-container {
+
+}
+
+/**
+* Add users time sheet page scss
+*/
+.add-users-timesheet-container {
+
+}
+
+/**
+* Add work sheet page scss
+*/
+.add-worksheet-container {
+  .mat-radio-label-content {
+    color: $gray-color;
+  }
+}
+
+/**
+* Task checklist page scss
+*/
+.task-checklist-container {
+  .task-checklist-data {
+    margin-top: 1.5rem;
+    .row {
+      .col-md-6 {
+        margin-bottom: 1.5rem;
+        &:first-child {
+          span {
+            color: $black-color;
+            font-weight: 500;
+          }
+        }
+
+        &:last-child {
+          span {
+            color: $gray-color;
+          }
+        }
+      }
+    }
+
+    .blue-tag, .red-tag {
+      min-width: 2rem;
+      display: inline-block;
+      text-align: center;
+      font: {
+        size: 1.2rem;
+        weight: 600;
+      }
+    }
+  }
+
+  .uploaded-documents {
+    margin-top: 2.5rem;
+    &__block {
+      display: block;
+      background: lighten($light-gray-color, 23%);
+      padding: 1.5rem;
+      margin-top: 1rem;
+      max-height: 30rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      &__input {
+        display: block;
+        width: 100%;
+        position: relative;
+        margin-bottom: 1rem;
+        input[type="text"] {
+          display: block;
+          width: 100%;
+          padding: 1rem 1rem 1rem 4rem;
+          border: .1rem solid lighten($gray-color, 40%);
+          cursor: default;
+          color: lighten($black-color, 50%);
+
+          &:focus {
+            outline: none;
+          }
+        }
+        .img_ico_doc {
+          position: absolute;
+          left: .1rem;
+          top: .1rem;
+          font-size: 37px;
+          color: $dark-blue-color;
+        }
+        img {
+          position: absolute;
+          height: 3rem;
+          width: 3rem;
+          background: red;
+          left: .4rem;
+          top: .4rem;
+        }
+      }
+
+      &__action {
+        position: absolute;
+        right: .5rem;
+        top: .9rem;
+        mat-icon {
+          font-size: 2rem;
+        }
+      }
+
+      .black-color {
+        font: {
+          size: 1.3rem;
+          weight: 500;
+        }
+      }
+    }
+  }
+
+  .blue-tag, .red-tag {
+    font: {
+      size: .9rem;
+      weight: 500;
+    }
+    color: $white-color !important;
+    padding: .3rem;
+    border-radius: .2rem;
+  }
+
+  .blue-tag {
+    background: $primary-color;
+  }
+
+  .red-tag {
+    background: $red-color;
+  }
+
+  .alignment-text {
+    vertical-align: middle;
+    font-size: 2rem;
+    position: relative;
+    top: -0.2rem;
+  }
+  .errorMsgStyle {
+    color: #FF5252 !important;
+    top: 0px;
+    position: relative;
+    font-size: 1.3rem;
+    .mat-select-arrow {
+      color: #FF5252 !important;
+    }
+  }
+  .reviewer_comment_label {
+    label {
+      font-weight: 500;
+      display: inline-block;
+    }
+    label span {
+      font-weight: 400;
+    }
+
+  }
+}

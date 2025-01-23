@@ -1,0 +1,455 @@
+<div class="client-checklist-container"></div>
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header PT-5">
+
+    <div class="row">
+      <div class="col-md-2">
+        <mat-form-field floatLabel="never">
+          <mat-select (selectionChange)="onChangeCheckList($event.value)" [(value)]="selected"
+                      placeholder="Checklist/ Question">
+            <mat-option value="checklist">Client checklist</mat-option>
+            <mat-option value="question">Client question</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-10 text-right MT-5">
+        <ul class="download-icon">
+          <li class="width-15 MR-20">
+            <a *ngIf="activeView == enumView.CLIENT_QUESTION" class="filter-checklist" (click)="onOpenFilter()">
+              <span>Filter</span>
+              <i class="material-icons">filter_list</i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Start Grid Filter -->
+  <div class="filter opacity-0" [ngClass]="{'opacity-1': isFilterView}">
+    <div class="filter-action-icon">
+      <span class="filter-close" *ngIf="isFilterView" (click)="onCloseQuestionFilter()">Esc
+        <i class="material-icons">close</i>
+      </span>
+    </div>
+    <div class="grid-filter-container">
+      <div class="filter-title">
+        <h3>Advance Filter</h3>
+      </div>
+      <form [formGroup]="questionFilterForm" (submit)="questionAdvanceFilter(questionFilterForm)">
+        <div class="row">
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Checklist name" formControlName="entity_checklist_id">
+                <mat-option *ngFor="let checklist of questionChecklistList" value="{{checklist.id}}">
+                  {{checklist.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Master activity" formControlName="master_activity_id">
+                <mat-option *ngFor="let activity of questionMasterActivityList" value="{{activity.id}}">
+                  {{activity.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Task" formControlName="task_id">
+                <mat-option *ngFor="let task of questionTaskList" value="{{task.id}}">{{task.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Question" formControlName="question_name">
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Is Applicable" formControlName="is_applicable">
+                <mat-option value="0">Please select</mat-option>
+                <mat-option value="1">Applicable</mat-option>
+                <mat-option value="2">Not Applicable</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-9 MT-10 text-right">
+            <button type="button" class="btn-cancel" (click)="resetQuestionFilterForm()">Clear</button>
+            <button type="submit" class="btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Filter -->
+
+  <!-- Start Filter Tags -->
+  <div *ngIf="activeView == enumView.CLIENT_QUESTION" class="filter-tags">
+    <form [formGroup]="questionFilterOuterViewForm">
+      <div class="tag" *ngIf="entityChecklistIdField.value">
+        <span class="tag__title">Checklist name :</span>
+        <span>
+          <mat-form-field>
+            <mat-select placeholder="Checklist name" (selectionChange)="selectRef.readOnly = false" readonly #selectRef
+                        formControlName="entity_checklist_id"
+                        [(ngModel)]="entityChecklistIdField.value"
+                        (change)="questionAdvanceFilterKeyUp($event, questionFilterOuterViewForm, true)">
+              <mat-option *ngFor="let checklist of questionChecklistList" value="{{checklist.id}}">
+                {{checklist.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('entity_checklist_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="masterActivityIdField.value">
+        <span class="tag__title">Master activity :</span>
+        <span>
+          <mat-form-field>
+            <mat-select placeholder="Master activity" (selectionChange)="selectRef.readOnly = false" readonly #selectRef
+                        formControlName="master_activity_id"
+                        [(ngModel)]="masterActivityIdField.value"
+                        (change)="questionAdvanceFilterKeyUp($event, questionFilterOuterViewForm, true)">
+              <mat-option *ngFor="let activity of questionMasterActivityList" value="{{activity.id}}">
+                {{activity.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('master_activity_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="taskIdField.value">
+        <span class="tag__title">Task :</span>
+        <span>
+          <mat-form-field>
+            <mat-select placeholder="Task" (selectionChange)="selectRef.readOnly = false" readonly #selectRef
+                        formControlName="task_id"
+                        [(ngModel)]="taskIdField.value"
+                        (change)="questionAdvanceFilterKeyUp($event, questionFilterOuterViewForm, true)">
+              <mat-option *ngFor="let task of questionTaskList" value="{{task.id}}">{{task.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('task_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="questionField.value">
+        <span class="tag__title">Question :</span>
+        <span>
+          <mat-form-field>
+            <input matInput placeholder="Question" formControlName="question_name" [value]="questionField.value"
+                   (keyup)="questionAdvanceFilterKeyUp($event, questionFilterOuterViewForm, false)">
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('question_name')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="isApplicableField.value">
+        <span class="tag__title">Applicable :</span>
+        <span>
+          <mat-form-field>
+            <mat-select placeholder="Is Applicable" (selectionChange)="selectRef.readOnly = false" readonly #selectRef
+                        formControlName="is_applicable"
+                        [(ngModel)]="isApplicableField.value"
+                        (change)="questionAdvanceFilterKeyUp($event, questionFilterOuterViewForm, true)">
+              <mat-option value="0">Please select</mat-option>
+              <mat-option value="1">Applicable</mat-option>
+              <mat-option value="2">Not Applicable</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('is_applicable')">close</i>
+      </div>
+
+      <div class="clearAll-tags" *ngIf="(entityChecklistIdField.value) || (masterActivityIdField.value)
+      || (taskIdField.value) || (questionField.value) || (isApplicableField.value)">
+        <a (click)="resetQuestionFilterForm()">Clear all</a>
+      </div>
+    </form>
+  </div>
+  <!-- End Filter Tags -->
+
+
+  <!--Client checklist table start-->
+  <div *ngIf="activeView == enumView.CLIENT_CHECKLIST">
+    <div class="table-container table-no-striped">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr No.</th>
+            <th width="25%" (click)="getSortClientChecklistData('name',
+             (clientChecklistSortBy === 'name') ? (clientChecklistSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Checklist name
+              <i *ngIf="clientChecklistSortBy === 'name'" [ngClass]="{'material-icons': true,
+            'active' : (clientChecklistSortBy === 'name'),
+            'icon-up' : ((clientChecklistSortBy === 'name') && (clientChecklistSortOrder === 'asc')),
+            'icon-down' : true}">
+                {{(clientChecklistSortBy === 'name') ? ((clientChecklistSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+            <th width="25%" (click)="getSortClientChecklistData('master_activity_name',
+             (clientChecklistSortBy === 'master_activity_name') ? (clientChecklistSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Master activity
+              <i *ngIf="clientChecklistSortBy === 'master_activity_name'" [ngClass]="{'material-icons': true,
+            'active' : (clientChecklistSortBy === 'master_activity_name'),
+            'icon-up' : ((clientChecklistSortBy === 'master_activity_name') && (clientChecklistSortOrder === 'asc')),
+            'icon-down' : true}">
+                {{(clientChecklistSortBy === 'master_activity_name') ? ((clientChecklistSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward')
+                : 'arrow_downward'}}
+              </i>
+            </th>
+            <th width="30%" (click)="getSortClientChecklistData('task_name',
+             (clientChecklistSortBy === 'task_name') ? (clientChecklistSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Task name
+              <i *ngIf="clientChecklistSortBy === 'task_name'" [ngClass]="{'material-icons': true,
+            'active' : (clientChecklistSortBy === 'task_name'),
+            'icon-up' : ((clientChecklistSortBy === 'task_name') && (clientChecklistSortOrder === 'asc')),
+            'icon-down' : true}">
+                {{(clientChecklistSortBy === 'task_name') ? ((clientChecklistSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+            <th width="15%">Applicable / Not applicable</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr class="hover-icons"
+                *ngFor="let clientChecklist of clientChecklistList; let i = index">
+              <td width="5%">{{i + 1}}</td>
+              <td width="25%" class="word-break">{{clientChecklist.name}}</td>
+              <td width="25%">{{clientChecklist.master_activity_name}}</td>
+              <td width="30%" class="word-break">{{clientChecklist.task_name}}</td>
+              <td width="15%">
+                <div *ngIf="(clientChecklist.is_applicable).toString() == 0">
+                  -
+                </div>
+                <div *ngIf="(clientChecklist.is_applicable).toString() == 1">
+                  Applicable
+                </div>
+                <div *ngIf="(clientChecklist.is_applicable).toString() == 2">
+                  Not Applicable
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Client question table start-->
+  <div *ngIf="activeView == enumView.CLIENT_QUESTION">
+    <div class="table-container table-no-striped">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr No.</th>
+            <th width="15%" (click)="getSortClientQuestionsData('checklist_name',
+             (clientQuestionSortBy === 'checklist_name') ? (clientQuestionSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Checklist name
+              <i *ngIf="clientQuestionSortBy === 'checklist_name'" [ngClass]="{'material-icons': true,
+               'active': (clientQuestionSortBy === 'checklist_name'),
+               'icon-up' : ((clientQuestionSortBy === 'checklist_name') && (clientQuestionSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientQuestionSortBy === 'checklist_name') ? ((clientQuestionSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th width="15%" (click)="getSortClientQuestionsData('masteractivity_name',
+             (clientQuestionSortBy === 'masteractivity_name') ? (clientQuestionSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Master activity
+              <i *ngIf="clientQuestionSortBy === 'masteractivity_name'" [ngClass]="{'material-icons': true,
+               'active': (clientQuestionSortBy === 'masteractivity_name'),
+               'icon-up' : ((clientQuestionSortBy === 'masteractivity_name') && (clientQuestionSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientQuestionSortBy === 'masteractivity_name') ? ((clientQuestionSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward')
+                : 'arrow_downward'}}
+              </i>
+            </th>
+            <th width="20%" (click)="getSortClientQuestionsData('task_name',
+             (clientQuestionSortBy === 'task_name') ? (clientQuestionSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Task name
+              <i *ngIf="clientQuestionSortBy === 'task_name'" [ngClass]="{'material-icons': true,
+               'active': (clientQuestionSortBy === 'task_name'),
+               'icon-up' : ((clientQuestionSortBy === 'task_name') && (clientQuestionSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientQuestionSortBy === 'task_name') ? ((clientQuestionSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+            <th width="45%" (click)="getSortClientQuestionsData('question_name',
+             (clientQuestionSortBy === 'question_name') ? (clientQuestionSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Question
+              <i *ngIf="clientQuestionSortBy === 'question_name'" [ngClass]="{'material-icons': true,
+               'active': (clientQuestionSortBy === 'question_name'),
+               'icon-up' : ((clientQuestionSortBy === 'question_name') && (clientQuestionSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientQuestionSortBy === 'question_name') ? ((clientQuestionSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr class="hover-icons"
+                *ngFor="let question of clientQuestionsList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="15%">{{question?.checklist_name}}</td>
+              <td width="15%">{{question?.masteractivity_name}}</td>
+              <td width="20%">{{question?.task_name}}</td>
+              <td width="45%">
+                <div>
+                  {{question?.question_name}}
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray" (page)="onClientQuestionsListPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div *ngIf="!(clientQuestionsList.length)" class="panel-title red-color"> No Data Found!</div>
+    </div>
+  </div>
+  <!--table over-->
+
+  <!--client checklist question view-->
+  <div *ngIf="activeView == enumView.CLIENT_QUESTION_LIST" class="checklist-question">
+    <div class="row">
+      <div class="col-md-2 PR-0">
+        <div class="checklist-question__left">
+          <b>Checklist name</b>
+          <ul>
+            <li *ngFor="let checklist of questionViewChecklist">
+              <a [ngClass]="{'active': (selectedChecklist.id === checklist.id)}" [matTooltip]="checklist.checklistname"
+                 (click)="onChangeQuestionViewChecklist(checklist)">{{checklist.checklistname}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div class="checklist-question__right">
+          <div class="row MTB-10">
+            <div class="col-md-9 PL-0">
+            <span class="primary-color">
+              <b>Task Name:</b> {{selectedChecklist.taskname}} |
+              <b>Master Activity:</b> {{selectedChecklist.masteractivityname}}
+            </span>
+            </div>
+            <div class="col-md-3 PR-0 text-right">
+              <a class="cursor-pointer primary-color " (click)="allExpandState = !allExpandState">
+                {{allExpandState ? 'Collapse All' : 'Expand All'}}
+              </a>
+              <a (click)="openDialog()" class="primary-color cursor-pointer ML-15">
+                <i class="material-icons">add</i> Add Question
+              </a>
+            </div>
+          </div>
+
+          <mat-accordion [multi]="true">
+            <mat-expansion-panel *ngFor="let group of questionViewGroup; let i = index;" [expanded]="allExpandState"
+                                 (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{group.value}}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div *ngFor="let questionArray of questionViewData">
+                <div *ngIf="questionArray['id'] === group['id']">
+                  <div *ngFor="let questionObj of questionArray['value']; let j = index;" class="row MB-10">
+                    <div class="col-md-7 PL-0">
+                      <mat-form-field>
+                      <textarea rows="2" matInput placeholder="Question" value="{{questionObj.question_name}}"
+                                (change)="(availableQuestions === 0) ?
+                                onChangeQuestion($event['target']['value'], questionObj['master_checklist_question_id'],
+                                 questionArray['id'], 'question_name') :
+                                onChangeQuestion($event['target']['value'], questionObj['id'],
+                      questionArray['id'], 'question_name')">
+                      </textarea>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field>
+                      <textarea rows="2" matInput placeholder="Help text" value="{{questionObj.help_text}}" (change)="(availableQuestions === 0) ?
+                                 onChangeQuestion($event['target']['value'],questionObj['master_checklist_question_id'],
+                                  questionArray['id'], 'help_text') :
+                                 onChangeQuestion($event['target']['value'], questionObj['id'],
+                                 questionArray['id'], 'help_text')"></textarea>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-1 text-right PR-0 MT-15">
+                      <mat-form-field>
+                        <mat-select placeholder="Is Applicable" [value]="(questionObj.is_applicable).toString()"
+                                    (selectionChange)="(availableQuestions === 0) ?
+                                  onChangeQuestion(+($event.value), questionObj['master_checklist_question_id'],
+                                    questionArray['id'], 'is_applicable') :
+                                  onChangeQuestion(+($event.value), questionObj['id'],
+                                  questionArray['id'], 'is_applicable')">
+                          <mat-option value="0">Please select</mat-option>
+                          <mat-option value="1">Applicable</mat-option>
+                          <mat-option value="2">Not Applicable</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+        <div class="MTB-15 text-right">
+          <button type="submit" class="btn-primary" (click)="addUpdateQuestionView()">
+            {{(availableQuestions === 0) ? 'Save' : 'Update'}}
+          </button>
+          <button type="button" class="btn-default" (click)="onCancelAddUpdateQuestionView()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!(clientInformation.is_service)" class="panel-title red-color">
+    No service agreed by client!
+  </div>
+
+</div>

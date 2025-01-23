@@ -1,0 +1,77 @@
+<!--  Start Assignee dialog  -->
+<div class="modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">Assignee User : {{informationRequired?.trading_name}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addAssigneeForm" (submit)="onSubmitAssigneeForm(addAssigneeForm)">
+    <div class="modal__body">
+      <span><span class="orange-color">Subject : </span>{{informationRequired?.subject}}</span>
+      <div class="row PT-10">
+        <div class="col-md-12 MT-15 PLR-0">
+          <ng-select [items]="tlList"
+                     [closeOnSelect]="true"
+                     bindLabel="userfullname"
+                     placeholder="TL Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="additional_tl">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAssigneeForm.get('additional_tl'))"
+                            [errMsg]="validationMsg.TL_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10 MB-10 PLR-0">
+          <ng-select [items]="atlList"
+                     [closeOnSelect]="true"
+                     bindLabel="userfullname"
+                     placeholder="ATL Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="additional_atl">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAssigneeForm.get('additional_atl'))"
+                            [errMsg]="validationMsg.ATL_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 MT-10 MB-10 PLR-0">
+          <ng-select [items]="userList"
+                     [closeOnSelect]="true"
+                     bindLabel="userfullname"
+                     placeholder="Staff Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="additional_tm">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAssigneeForm.get('additional_tm'))"
+                            [errMsg]="validationMsg.STAFF_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addAssigneeForm.invalid">Assign</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Assignee dialog  -->

@@ -1,0 +1,288 @@
+<!-- Worksheet checklist Group Container -->
+<!-- Start Data Grid -->
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header">
+    <div class="row">
+      <div class="col-md-6 inner-header-title">
+        <button class="open-dialog-btn" (click)="openAddEditChecklistGroupDialog()">
+          <i class="material-icons">add</i> Add Checklist Group
+        </button>
+      </div>
+      <div class="col-md-6">
+        <ul class="download-icon">
+          <li>
+            <a (click)="onToggleFilter()">
+              <span>Filter</span>
+              <i class="material-icons">filter_list</i>
+            </a>
+          </li>
+
+          <li (click)="downloadExcel()">
+            <a>
+              <span>Excel</span><i class="material-icons">file_download</i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!-- Start Grid Filter -->
+  <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+    <div class="filter-action-icon">
+      <span class="filter-close" *ngIf="isOpenFilterView" (click)="onToggleFilter()">Esc
+        <i class="material-icons">close</i>
+      </span>
+    </div>
+    <div class="grid-filter-container">
+      <div class="filter-title">
+        <h3>Advance Filter</h3>
+      </div>
+      <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+        <div class="row">
+          <!--<div class="col-md-4">-->
+          <!--<ng-select [items]="masterActivityData"-->
+          <!--[closeOnSelect]="true"-->
+          <!--bindLabel="name"-->
+          <!--placeholder="Master Checklist"-->
+          <!--bindValue="id"-->
+          <!--[virtualScroll]="true"-->
+          <!--[searchable]="true"-->
+          <!--[hideSelected]="true"-->
+          <!--(change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"-->
+          <!--formControlName="master_checklist_id">-->
+          <!--</ng-select>-->
+          <!--</div>-->
+
+          <div class="col-md-4">
+            <mat-form-field>
+              <!-- <mat-select placeholder="Checklist Group" formControlName="filterchecklistgroup">
+                <mat-option value="1">Special Notes</mat-option>
+                <mat-option value="2">Reconciliation of Bank / CC / Paypal</mat-option>
+                <mat-option value="3">Bookkeeping Processing</mat-option>
+              </mat-select> -->
+              <input matInput placeholder="Checklist Group" formControlName="name"/>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="modifieddate" placeholder="Modified date" formControlName="modified_on">
+              <mat-datepicker-toggle matSuffix [for]="modifieddate"></mat-datepicker-toggle>
+              <mat-datepicker #modifieddate></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 MT-10">
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Modified By"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="modified_by">
+            </ng-select>
+          </div>
+
+          <div class="col-md-8 MT-20 text-right">
+            <button type="button" class="btn-cancel" (click)="onClearTags()">Clear</button>
+            <button type="submit" class="btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Filter -->
+
+  <!-- Start Filter Tags -->
+  <div class="filter-tags">
+    <form [formGroup]="advanceFilterForm">
+      <!--<div class="tag" *ngIf="master_checklist_id.value">-->
+      <!--<span class="tag__title">Master Checklist :</span>-->
+      <!--<span>-->
+      <!--<ng-select [items]="masterActivityData"-->
+      <!--[closeOnSelect]="true"-->
+      <!--bindLabel="name"-->
+      <!--placeholder="Master Checklist"-->
+      <!--bindValue="id"-->
+      <!--[virtualScroll]="true"-->
+      <!--[searchable]="true"-->
+      <!--[hideSelected]="true"-->
+      <!--(change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"-->
+      <!--formControlName="master_checklist_id">-->
+      <!--</ng-select>-->
+      <!--</span>-->
+      <!--<i class="material-icons tag__close" (click)="onClearTag('master_checklist_id')">close</i>-->
+      <!--</div>-->
+
+      <div class="tag" *ngIf="name.value">
+        <span class="tag__title">Checklist Group :</span>
+        <span>
+          <mat-form-field>
+            <input matInput placeholder="Checklist Group" formControlName="name"
+                   (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('name')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="modified_on.value">
+        <span class="tag__title">Modified Date :</span>
+        <span>
+          <mat-form-field>
+            <input matInput [matDatepicker]="modifieddate1" placeholder="Date" formControlName="modified_on"
+                   (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+            <mat-datepicker-toggle matSuffix [for]="modifieddate1"></mat-datepicker-toggle>
+            <mat-datepicker #modifieddate1></mat-datepicker>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('modified_on')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="modified_by.value">
+        <span class="tag__title">Modified By :</span>
+        <span>
+         <ng-select [items]="userList"
+                    [closeOnSelect]="true"
+                    bindLabel="userfullname"
+                    placeholder="Modified By"
+                    bindValue="id"
+                    [virtualScroll]="true"
+                    [searchable]="true"
+                    [hideSelected]="true"
+                    (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                    formControlName="modified_by">
+            </ng-select>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('modified_by')">close</i>
+      </div>
+
+      <div class="clearAll-tags" *ngIf="
+      modified_by.value ||
+      modified_on.value ||
+      name.value
+      ">
+        <!--master_checklist_id.value-->
+        <a (click)="onClearTags()">Clear all</a>
+      </div>
+    </form>
+  </div>
+  <!-- End Filter Tags -->
+
+  <!-- Start Table -->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr. No</th>
+
+          <th width="20%" (click)="getSortData('name',
+            (sortBy === 'name') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Checklist Group
+            <i *ngIf="sortBy === 'name'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'name'),
+                 'icon-up' : ((sortBy === 'name') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+              {{(sortBy === 'name') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+            </i>
+          </th>
+
+
+          <th width="20%" (click)="getSortData('is_require_timesheet',
+                (sortBy === 'is_require_timesheet') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Timesheet
+            validation check
+            <i *ngIf="sortBy === 'is_require_timesheet'" [ngClass]="{'material-icons': true,
+                    'active' : (sortBy === 'is_require_timesheet'),
+                     'icon-up' : ((sortBy === 'is_require_timesheet') && (sortOrder === 'asc')),
+                     'icon-down' : true}">
+              {{(sortBy === 'is_require_timesheet') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+
+          <th width="30%" (click)="getSortData('subactivity_id',
+                  (sortBy === 'subactivity_id') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Subactivity
+            <i *ngIf="sortBy === 'subactivity_id'" [ngClass]="{'material-icons': true,
+                      'active' : (sortBy === 'subactivity_id'),
+                       'icon-up' : ((sortBy === 'subactivity_id') && (sortOrder === 'asc')),
+                       'icon-down' : true}">
+              {{(sortBy === 'subactivity_id') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+
+          <th width="12%" (click)="getSortData('created_by',
+                  (sortBy === 'created_by') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Created By
+            <i *ngIf="sortBy === 'created_by'" [ngClass]="{'material-icons': true,
+                      'active' : (sortBy === 'created_by'),
+                       'icon-up' : ((sortBy === 'created_by') && (sortOrder === 'asc')),
+                       'icon-down' : true}">
+              {{(sortBy === 'created_by') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+          <th width="8%">Action</th>
+        </tr>
+        </thead>
+      </table>
+
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let data of masterActivityListData; let i = index">
+            <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+            <!--<td width="15%">{{data?.master_checklist_id?.name}}</td>-->
+            <td width="20%">{{data?.name}}</td>
+            <td width="20%" *ngIf="data?.is_require_timesheet == 0">Please select</td>
+            <td width="20%" *ngIf="data?.is_require_timesheet == 1" class="turquoise-color fw-500">
+              <mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin
+              </mat-icon>
+              Yes
+            </td>
+            <td width="20%" *ngIf="data?.is_require_timesheet == 2" class="red-color fw-500">
+              <mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin
+              </mat-icon>
+              No
+            </td>
+            <td width="30%">{{data?.subactivity_id?.subactivity_name}}</td>
+            <td width="12%">{{data?.created_by?.userfullname}} | {{data?.created_on | date : 'dd-MM-yyyy'}}</td>
+            <td width="8%">
+              <mat-icon class="light-orange-color" [matTooltip]="'Edit'"
+                        (click)="openAddEditMasterActivityDialog(data)">
+                edit
+              </mat-icon>
+              <mat-slide-toggle [matTooltip]="slideData[i] ? 'Inactive' : 'Active'" [(ngModel)]="slideData[i]"
+                                (change)="onDisabledConfirmDialog($event, data, i)"></mat-slide-toggle>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <table>
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <!-- End Table -->
+</div>
+<!-- End Data Grid -->

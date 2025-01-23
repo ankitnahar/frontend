@@ -1,0 +1,322 @@
+<div class="auto-worksheet-container">
+  <div class="with-filter-grid-container">
+   <!--Start add Trigger form-->
+    <!--<form [formGroup]="addAutoWorksheetForm" class="col-md-12" (submit)="SubmitForm(addAutoWorksheetForm)">-->
+
+      <!--<div class="with-filter-grid-container">-->
+        <!--<div class="row">-->
+          <!--<div class="col-md-12">-->
+            <!--<div *ngFor="let filterGroup of getworksheetSechduleArray().controls; let i=index;">-->
+              <!--<span class="panel-title ML-0">{{filterGroup.value['sectionTitle']}}</span>-->
+              <!--&lt;!&ndash; Start Table &ndash;&gt;-->
+              <!--<div class="table-container">-->
+                <!--<div class="table-block scrollable-grid">-->
+                  <!--<table>-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                      <!--<th width="15%">Master activity</th>-->
+                      <!--<th width="15%">Task</th>-->
+                      <!--<th width="15%">Start Date/End Date</th>-->
+                      <!--<th width="15%">Frequency</th>-->
+                      <!--<th width="15%">Due Date</th>-->
+                      <!--<th width="15%">Notes</th>-->
+                      <!--<th width="10%">Create Now?</th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                  <!--</table>-->
+                  <!--<div class="table-body">-->
+                    <!--<table>-->
+                      <!--<tbody>-->
+                      <!--<tr *ngFor="let autoworksheetschedule of getFilterFieldArrayData(i).controls; let j = index;">-->
+                        <!--<td width="15%" class="{{j}}">{{autoworksheetschedule.get('master_name').value}}</td>-->
+                        <!--<td width="15%">{{autoworksheetschedule.get('task_name').value}}</td>-->
+                        <!--<td width="15%">-->
+                          <!--<mat-form-field>-->
+                            <!--<input matInput [matDatepicker]="startdate" placeholder="Start Date"-->
+                                   <!--[formControl]="autoworksheetschedule.get('start_date')">-->
+                            <!--<mat-datepicker-toggle matSuffix [for]="startdate"></mat-datepicker-toggle>-->
+                            <!--<mat-datepicker #startdate></mat-datepicker>-->
+                          <!--</mat-form-field>-->
+                          <!--<mat-form-field>-->
+                            <!--<input matInput [matDatepicker]="enddate" placeholder="End Date"-->
+                                   <!--[formControl]="autoworksheetschedule.get('end_date')">-->
+                            <!--<mat-datepicker-toggle matSuffix [for]="enddate"></mat-datepicker-toggle>-->
+                            <!--<mat-datepicker #enddate></mat-datepicker>-->
+                          <!--</mat-form-field>-->
+                        <!--</td>-->
+                        <!--<td width="15%">-->
+                          <!--<mat-form-field class="grid_select_8rem" floatLabel="never">-->
+                            <!--<mat-select placeholder="Select Frequency"-->
+                                        <!--(selectionChange)="getFreqValue($event.value, i, j)"-->
+                                        <!--[formControl]="autoworksheetschedule.get('frequency_id')">-->
+                              <!--<mat-option *ngFor="let frList of frequencyList" [value]="frList?.id">-->
+                                <!--{{ frList?.frequency_name}}-->
+                              <!--</mat-option>-->
+                            <!--</mat-select>-->
+                          <!--</mat-form-field>-->
+                          <!--<mat-form-field-->
+                            <!--*ngIf="autoworksheetschedule.get('frequency_id').value === 1 || autoworksheetschedule.get('frequency_id').value === 2 || autoworksheetschedule.get('frequency_id').value === 6 || autoworksheetschedule.get('frequency_id').value === 9">-->
+                            <!--&lt;!&ndash; formControlName="frequency_id" placeholder="Frequency" required (change)="getFreqValue($event)" &ndash;&gt;-->
+                            <!--<mat-select [formControl]="autoworksheetschedule.get('expert_day')" placeholder="Day"-->
+                                        <!--[multiple]="false">-->
+                              <!--<mat-option *ngFor="let data of dayData;" [value]="data">{{data}}</mat-option>-->
+                            <!--</mat-select>-->
+                          <!--</mat-form-field>-->
+
+                          <!--<mat-form-field-->
+                            <!--*ngIf="autoworksheetschedule.get('frequency_id').value === 4 || autoworksheetschedule.get('frequency_id').value === 5">-->
+                            <!--<mat-select [formControl]="autoworksheetschedule.get('expert_month')" placeholder="Month"-->
+                                        <!--[multiple]="false">-->
+                              <!--<mat-option *ngFor="let data of monthData;" [value]="data">{{data}}</mat-option>-->
+                            <!--</mat-select>-->
+                          <!--</mat-form-field>-->
+
+                          <!--<mat-form-field *ngIf="autoworksheetschedule.get('frequency_id').value === 10">-->
+                            <!--<mat-select [formControl]="autoworksheetschedule.get('expert_day')" placeholder="Day"-->
+                                        <!--[multiple]="true">-->
+                              <!--<mat-option *ngFor="let data of dayData;" [value]="data">{{data}}</mat-option>-->
+                            <!--</mat-select>-->
+                          <!--</mat-form-field>-->
+
+                          <!--<mat-form-field *ngIf="autoworksheetschedule.get('frequency_id').value === 3">-->
+                            <!--<mat-select [formControl]="autoworksheetschedule.get('expert_month')" placeholder="Month"-->
+                                        <!--[multiple]="true">-->
+                              <!--<mat-option *ngFor="let data of monthData;" [value]="data">{{data}}</mat-option>-->
+                            <!--</mat-select>-->
+                          <!--</mat-form-field>-->
+                        <!--</td>-->
+                        <!--<td width="15%">-->
+                          <!--<mat-form-field class="grid_select_8rem" floatLabel="never">-->
+                            <!--<mat-select placeholder="Select Due Date"-->
+                                        <!--[value]="autoworksheetschedule.get('due_date_type').value"-->
+                                        <!--(selectionChange)="onChangeDueDate($event.value,i, j)"-->
+                                        <!--[formControl]="autoworksheetschedule.get('due_date_type')">-->
+                              <!--<mat-option [value]="1">After Days</mat-option>-->
+                              <!--<mat-option [value]="2">On Date of month</mat-option>-->
+                              <!--<mat-option [value]="3">On Particular Date</mat-option>-->
+                            <!--</mat-select>-->
+                          <!--</mat-form-field>-->
+                          <!--<mat-form-field *ngIf="autoworksheetschedule.get('due_date_type').value === 1">-->
+                            <!--<input matInput type="number" [formControl]="autoworksheetschedule.get('due_after_day')"-->
+                                   <!--placeholder="After days">-->
+                          <!--</mat-form-field>-->
+                          <!--<mat-form-field *ngIf="autoworksheetschedule.get('due_date_type').value === 2">-->
+                            <!--<mat-select [formControl]="autoworksheetschedule.get('due_month_day')"-->
+                                        <!--placeholder="On Date of Month">-->
+                              <!--<mat-option *ngFor="let data of dateData.slice(1)" [value]="data">{{data}}</mat-option>-->
+                            <!--</mat-select>-->
+                          <!--</mat-form-field>-->
+                          <!--<mat-form-field *ngIf="autoworksheetschedule.get('due_date_type').value === 3">-->
+                            <!--<input [formControl]="autoworksheetschedule.get('due_on_particular_date')" matInput-->
+                                   <!--[matDatepicker]="particularDate"-->
+                                   <!--placeholder="Date">-->
+                            <!--<mat-datepicker-toggle matSuffix [for]="particularDate"></mat-datepicker-toggle>-->
+                            <!--<mat-datepicker #particularDate></mat-datepicker>-->
+                          <!--</mat-form-field>-->
+                        <!--</td>-->
+                        <!--<td width="15%">-->
+                          <!--<mat-form-field>-->
+                          <!--<textarea [formControl]="autoworksheetschedule.get('notes')" matInput autocomplete="off" placeholder="Notes"></textarea>-->
+                          <!--</mat-form-field>-->
+                        <!--</td>-->
+                        <!--<td width="10%">-->
+                          <!--<mat-checkbox (change)="checkGenerate($event.checked,i, j)"-->
+                                        <!--[disabled]="autoworksheetschedule.invalid"></mat-checkbox>-->
+                        <!--</td>-->
+                      <!--</tr>-->
+                      <!--</tbody>-->
+                    <!--</table>-->
+                  <!--</div>-->
+                  <!--<table *ngIf="autoWorksheetScheduleList.length">-->
+                    <!--<tfoot>-->
+                    <!--<tr>-->
+                    <!--</tr>-->
+                    <!--</tfoot>-->
+                  <!--</table>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="col-md-12 text-right">-->
+          <!--<button type="submit" class="btn-success MR-5">Save-->
+          <!--</button>-->
+          <!--<button type="button" class="btn-default MR-5">Cancel</button>-->
+        <!--</div>-->
+        <!--&lt;!&ndash; End Table &ndash;&gt;-->
+      <!--</div>-->
+      <!--&lt;!&ndash;End Auto worksheet form&ndash;&gt;-->
+    <!--</form>-->
+    <div class="grid-inner-header PT-5">
+      <div class="row">
+        <div class="col-md-6 leave-type-list">
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+          </ul>
+          <div class="grid-search">
+          </div>
+        </div>
+
+      </div>
+      <!-- Start Grid Filter -->
+      <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+        <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+        </div>
+        <div class="grid-filter-container">
+          <div class="filter-title">
+            <h3>Advance Filter</h3>
+          </div>
+          <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+            <div class="row">
+              <div class="col-md-3 MT-10">
+                <ng-select class="custom" [items]="masterActivityList"
+                           [closeOnSelect]="true"
+                           bindLabel="name"
+                           placeholder="Master Activity"
+                           bindValue="id"
+                           [virtualScroll]="true"
+                           [searchable]="true"
+                           [hideSelected]="true"
+                           formControlName="master_activity_id">
+                </ng-select>
+              </div>
+              <div class="col-md-3 MT-10">
+                <ng-select class="custom" [items]="taskList"
+                           [closeOnSelect]="true"
+                           bindLabel="name"
+                           placeholder="Task"
+                           bindValue="id"
+                           [virtualScroll]="true"
+                           [searchable]="true"
+                           [hideSelected]="true"
+                           formControlName="task_id">
+                </ng-select>
+              </div>
+              <div class="col-md-3 MT-20 text-right">
+                <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+                <button type="submit" class="btn-primary">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- End Grid Filter -->
+
+      <!-- Start Filter Tags -->
+      <div class="filter-tags">
+        <form [formGroup]="advanceFilterForm">
+          <div class="tag" *ngIf="masterActivityID.value">
+            <span class="tag__title">Master Activity:</span>
+            <span>
+            <ng-select class="custom" [items]="masterActivityList"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Master Activity"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="master_activity_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+            <mat-icon class="material-icons tag__close" (click)="onClearTag('master_activity_id')">close</mat-icon>
+          </div>
+          <div class="tag" *ngIf="taskID.value">
+            <span class="tag__title">Task:</span>
+            <span>
+            <ng-select class="custom" [items]="taskList"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Task"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="task_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+            <mat-icon class="material-icons tag__close" (click)="onClearTag('task_id')">close</mat-icon>
+          </div>
+
+          <div class="clearAll-tags"
+               *ngIf="masterActivityID.value || taskID.value">
+            <a (click)="resetFilterForm()">Clear all</a>
+          </div>
+        </form>
+      </div>
+      <!-- End Filter Tags -->
+    </div>
+
+    <div class="expand-grid">
+      <div class="expand-grid__thead">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="20%">Master Activity</th>
+            <th width="15%">Task</th>
+            <th width="15%">Start / End Date</th>
+            <th width="7%">Frequency</th>
+            <th width="8%">Due Date</th>
+            <th width="25%">Notes</th>
+            <th width="5%">Action</th>
+          </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="expand-grid__tbody expand-grid-scrollable">
+        <table *ngIf="autoWorksheetScheduleList.length">
+          <tbody *ngFor="let autoWorksheetSchedule of autoWorksheetScheduleList; let i = index">
+          <tr [ngClass]="{'is-active-row' : trIndex === i}" class="hover-icons row-data">
+            <td width="5%">
+              {{i+1}}
+            </td>
+            <td width="20%" class="word-break">{{autoWorksheetSchedule?.name}}</td>
+            <td width="15%" class="word-break">{{autoWorksheetSchedule?.task_name}}</td>
+            <td width="15%" class="word-break">{{autoWorksheetSchedule?.start_date | date : 'dd-MM-yyyy'}} TO {{autoWorksheetSchedule?.end_date | date : 'dd-MM-yyyy'}}</td>
+            <td width="7%" class="word-break">{{getFrequencyValue(autoWorksheetSchedule?.frequency_id)}}</td>
+            <td width="8%" class="word-break">
+              <span *ngIf="autoWorksheetSchedule && autoWorksheetSchedule.due_date_type === 1">After Days : {{autoWorksheetSchedule?.due_after_day}}</span>
+              <span *ngIf="autoWorksheetSchedule && autoWorksheetSchedule.due_date_type === 2">On Date of month : {{autoWorksheetSchedule?.due_month_day}}</span>
+              <span *ngIf="autoWorksheetSchedule && autoWorksheetSchedule.due_date_type === 3">On Particular Date : {{autoWorksheetSchedule?.due_on_particular_date | date : 'dd-MM-yyyy'}}</span>
+            </td>
+            <td width="25%" class="word-break">{{autoWorksheetSchedule?.notes}}</td>
+            <td width="5%">
+              <span class="delete-icon" (click)="openConfirmationDialog(autoWorksheetSchedule)">
+              <i class="material-icons">delete</i>
+              </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="expand-grid__tfoot" *ngIf="autoWorksheetScheduleList.length">
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,357 @@
+<div class="change-in-out-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">PUNCH IN/OUT TIME AMENDMENT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-12">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()" *ngIf="tabData['export']">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <mat-icon
+          class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userSuperiorList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Superior Staff"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="created_by">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Staff Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userApprovalList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Approval Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="approved_by">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="fromdate" placeholder="From Date" formControlName="from_date">
+                <mat-datepicker-toggle matSuffix [for]="fromdate"></mat-datepicker-toggle>
+                <mat-datepicker #fromdate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="todate" placeholder="To Date" formControlName="to_date">
+                <mat-datepicker-toggle matSuffix [for]="todate"></mat-datepicker-toggle>
+                <mat-datepicker #todate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Reason For Rejection" formControlName="reason_for_rejection"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="createdBy.value">
+          <span class="tag__title">Superior Staff :</span>
+          <span>
+             <ng-select [items]="userSuperiorList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="Superior Staff"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="created_by"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('created_by')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="userId.value">
+          <span class="tag__title">Staff Name :</span>
+          <span>
+             <ng-select [items]="userList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="Staff Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="user_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('user_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="approvedBy.value">
+          <span class="tag__title">Approval Staff :</span>
+          <span>
+             <ng-select [items]="userApprovalList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="Approval Staff"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="approved_by"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('approved_by')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="fromDateField.value">
+          <span class="tag__title">From Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="fromdate1" placeholder="Date" #dateRef formControlName="from_date"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="fromdate1"></mat-datepicker-toggle>
+              <mat-datepicker #fromdate1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('from_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="reasonforrejection.value">
+          <span class="tag__title">Reason For Rejection:</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="Reason For Rejection" formControlName="reason_for_rejection"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('reason_for_rejection')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="toDateField.value">
+          <span class="tag__title">To Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="todate1" placeholder="Date" #dateRef formControlName="to_date"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="todate1"></mat-datepicker-toggle>
+              <mat-datepicker #todate1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('to_date')">close</mat-icon>
+        </div>
+        <div class="clearAll-tags"
+             *ngIf="createdBy.value || userId.value || approvedBy.value || fromDateField.value || toDateField.value || reasonforrejection.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+
+            <th width="15%"
+                (click)="getSortData('created_by', sortBy === 'created_by' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Superior Staff
+              <i *ngIf="sortBy === 'created_by'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_by' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_by' && sortOrder === 'desc'}">
+                {{sortBy === 'created_by' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="15%"
+                (click)="getSortData('user_id', sortBy === 'user_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Staff Name
+              <i *ngIf="sortBy === 'user_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'user_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'user_id' && sortOrder === 'desc'}">
+                {{sortBy === 'user_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="15%"
+                (click)="getSortData('approved_by', sortBy === 'approved_by' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Approval Staff
+              <i *ngIf="sortBy === 'approved_by'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'approved_by' && sortOrder === 'asc', 'icon-down' :  sortBy === 'approved_by' && sortOrder === 'desc'}">
+                {{sortBy === 'approved_by' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="7%"
+                (click)="getSortData('date', sortBy === 'date' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Date
+              <i *ngIf="sortBy === 'date'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'date' && sortOrder === 'asc', 'icon-down' :  sortBy === 'date' && sortOrder === 'desc'}">
+                {{sortBy === 'date' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="20%"
+                (click)="getSortData('reason_for_rejection', sortBy === 'reason_for_rejection' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Reason
+              for rejection
+              <i *ngIf="sortBy === 'reason_for_rejection'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'reason_for_rejection' && sortOrder === 'asc', 'icon-down' :  sortBy === 'reason_for_rejection' && sortOrder === 'desc'}">
+                {{sortBy === 'reason_for_rejection' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <!--<th width="5%" align="center">-->
+            <!--Punch-->
+            <!--</th>-->
+
+            <!--<th width="10%" align="center">-->
+            <!--Punch Time-->
+            <!--</th>-->
+
+            <!--<th width="23%">-->
+            <!--Reason-->
+            <!--</th>-->
+
+            <th width="5%" align="center">Status</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let amendmentinout of punchInOutAmendmentList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="15%">{{amendmentinout?.created_by?.userfullname}}</td>
+              <td width="15%">{{amendmentinout?.user_id?.userfullname}}</td>
+              <td width="15%">
+                {{(amendmentinout?.approved_by?.userfullname)?amendmentinout?.approved_by?.userfullname:'-'}}
+              </td>
+              <td width="7%">{{amendmentinout?.date | date:"dd-MM-yyyy"}}</td>
+              <td width="20%">{{amendmentinout?.modified_reason_for_rejection !==
+                null?amendmentinout?.modified_reason_for_rejection:'-'}}
+                <a *ngIf="amendmentinout?.is_reason_limit_exceed === 1" (click)="openApproveDialog(amendmentinout)"
+                   class="red-color cursor-pointer">(Read more)</a>
+              </td>
+              <!--<td width="5%" align="center">-->
+              <!--<span class="turquoise-color fw-500" *ngIf="amendmentinout?.punch_type === 1">In</span>-->
+              <!--<span class="red-color" *ngIf="amendmentinout?.punch_type === 0">Out</span>-->
+              <!--</td>-->
+              <!--<td width="10%" align="center">{{amendmentinout?.punch_time}}</td>-->
+              <!--<td width="23%">{{amendmentinout?.reason}}</td>-->
+              <td width="5%" align="center">
+                <mat-icon class="light-orange-color" matTooltip="Pending for approval"
+                          *ngIf="amendmentinout?.status === 0 && tabData['add_edit'] === 1"
+                          (click)="openApproveDialog(amendmentinout)">
+                  hourglass_empty
+                </mat-icon>
+                <mat-icon class="orange-color" matTooltip="Pending for approval"
+                          *ngIf="amendmentinout?.status === 0 && tabData['add_edit'] === 0">
+                  thumbs_up_down
+                </mat-icon>
+                <mat-icon class="turquoise-color" matTooltip="Approved" *ngIf="amendmentinout?.status === 1"
+                          (click)="openApproveDialog(amendmentinout)">thumb_up
+                </mat-icon>
+                <mat-icon class="red-color" matTooltip="Rejected" *ngIf="amendmentinout?.status === 2"
+                          (click)="openApproveDialog(amendmentinout)">
+                  thumb_down
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="punchInOutAmendmentList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div *ngIf="!punchInOutAmendmentList.length" class="panel-title red-color">
+        No Records Found!
+      </div>
+    </div>
+  </div>
+  <!-- End Data Grid -->
+</div>

@@ -1,0 +1,56 @@
+<!--  Workflow Pending Ticket Start-->
+<div class="pending-ticket-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">PENDING TICKET</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <button type="button" class="btn-dark-blue btn-add btn-small-add MR-10" *ngIf="tabData['add_edit']"
+                      (click)="onAddTicket()">
+                <mat-icon>add</mat-icon>
+                Add Ticket
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--start tab menu-->
+  <div>
+    <!--<mat-tab-group class="demo-tab-group" [selectedIndex]="selectedIndexData" (selectedIndexChange)="onSelectedIndexChange($event)">-->
+    <!--<mat-tab *ngFor="let tab of tabList" label="{{tab?.name}}">-->
+    <!--<app-incompleted-tickets *ngIf="tab.id === 0"></app-incompleted-tickets>-->
+    <!--<app-completed-tickets *ngIf="tab.id === 1"></app-completed-tickets>-->
+    <!--</mat-tab>-->
+    <!--</mat-tab-group>-->
+
+    <mat-tab-group [selectedIndex]="isActiveTab" (selectedIndexChange)="onSelectedIndexChange($event)">
+      <mat-tab label="Incompleted Tickets">
+        <div *ngIf="isActiveTab === 0">
+          <app-incompleted-tickets
+            [checkFirstTimeRedirectionParam]="checkFirstTimeRedirectionParam"></app-incompleted-tickets>
+        </div>
+      </mat-tab>
+      <mat-tab label="Completed Tickets">
+        <div *ngIf="isActiveTab === 1">
+          <app-completed-tickets
+            [checkFirstTimeRedirectionParam]="checkFirstTimeRedirectionParam"></app-completed-tickets>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

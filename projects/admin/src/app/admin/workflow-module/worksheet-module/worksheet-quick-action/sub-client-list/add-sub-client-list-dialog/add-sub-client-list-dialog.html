@@ -1,0 +1,77 @@
+<!--  Start Sub Client List dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{(subClient) ? 'Update' : 'Add'}} Sub Client</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addSubClientListForm" #addEditForm="ngForm"
+        (submit)="onSubmitAddSubClientListForm(addSubClientListForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12">
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="entity_id" required>
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSubClientListForm.get('entity_id'))"
+                            [errMsg]="validationMsg.PRACTICE_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Client Name" formControlName="subclient" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSubClientListForm.get('subclient'))"
+                            [errMsg]="validationMsg.CLIENT_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <mat-select placeholder="Status" formControlName="is_active" required>
+              <mat-option *ngFor="let active of activeInactiveList.slice(1)" [value]="active?.key">
+                {{ active.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSubClientListForm.get('is_active'))"
+                            [errMsg]="validationMsg.STATUS_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-6">
+          <button type="submit" class="btn-orange btn-bordered" [disabled]="addSubClientListForm.invalid"
+                  (click)="updateIsNew()">
+            {{subClient ? 'Update & Add New' : 'Save & Add New'}}
+          </button>
+        </div>
+
+        <div class="col-md-6 PR-25 text-right">
+          <button type="submit" class="btn-primary" [disabled]="addSubClientListForm.invalid">
+            {{subClient ? 'Update' : 'Save'}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change Sub client list dialog  -->

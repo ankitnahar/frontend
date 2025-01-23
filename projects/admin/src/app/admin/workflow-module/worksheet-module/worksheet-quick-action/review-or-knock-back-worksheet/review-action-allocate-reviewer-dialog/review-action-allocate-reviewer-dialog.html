@@ -1,0 +1,95 @@
+<!--  Start ReviewActionAllocateReviewer dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{userTypePlaceHolder.toUpperCase()}}
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addAllocateReviewerForm" (submit)="onSubmitAllocateReviewerForm(addAllocateReviewerForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="row col-md-12 PL-0">
+          <div class="col-md-4 MT-15">
+            <label class="fw-500">Client Name</label> :
+          </div>
+          <div class="col-md-8 MT-15">
+            <span>{{worksheetData.trading_name}}</span>
+          </div>
+
+          <div class="col-md-4 MT-15">
+            <label class="fw-500">Period</label> :
+          </div>
+          <div class="col-md-8 MT-15">
+            <span>{{worksheetData.start_date | date : 'dd-MM-yyyy'}} TO {{worksheetData.end_date | date : 'dd-MM-yyyy'}}</span>
+          </div>
+
+          <div class="col-md-4 MT-15 PR-0">
+            <label class="fw-500">Master Activity</label> :
+          </div>
+          <div class="col-md-8 MT-15">
+            <span>{{worksheetData.master_activity_id?.name}}</span>
+          </div>
+
+          <div class="col-md-4 MT-15 PR-0">
+            <label class="fw-500">Team Member</label> :
+          </div>
+          <div class="col-md-8 MT-15">
+            <span>{{worksheetData.worksheet_actual_teammember?.userfullname}}</span>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-15 custom-ng-select-dropdown MB-30">
+          <ng-select [items]="assingeeList"
+                     bindLabel="userfullname"
+                     bindValue="id"
+                     groupBy="name"
+                     placeholder="{{userTypePlaceHolder}}"
+                     formControlName="user_id"
+                     [selectableGroup]="false">
+            <ng-template ng-optgroup-tmp let-item="item">
+              {{item.name}}
+            </ng-template>
+          </ng-select>
+          <!--<mat-form-field>-->
+          <!--<mat-select placeholder="{{userTypePlaceHolder}}" formControlName="user_id" required-->
+          <!--*ngIf="userSubmitType === 1">-->
+          <!--<mat-optgroup *ngFor="let group of assingeeList" [label]="group.name"-->
+          <!--[disabled]="group.disabled">-->
+          <!--<mat-option *ngFor="let user of group.userData" [value]="user.id">-->
+          <!--{{user.userfullname}}-->
+          <!--</mat-option>-->
+          <!--</mat-optgroup>-->
+          <!--</mat-select>-->
+          <!--<mat-select placeholder="{{userTypePlaceHolder}}" formControlName="user_id" required-->
+          <!--*ngIf="userSubmitType === 2 || userSubmitType === 3">-->
+          <!--<mat-option *ngFor="let user of assingeeList" [value]="user['id']">-->
+          <!--{{user['userfullname']}}-->
+          <!--</mat-option>-->
+          <!--</mat-select>-->
+          <!--</mat-form-field>-->
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAllocateReviewerForm.get('user_id'))"
+                            [errMsg]="validationMsg.ALLOCATE_REVIEWER_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary MR-5" [disabled]="addAllocateReviewerForm.invalid">Assign</button>
+          <button class="btn-default" [disabled]="!this.existUserID" (click)="changeRemoveType()"
+                  *ngIf="this.userSubmitType === 1">Remove Assignee
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change Sub client list dialog  -->

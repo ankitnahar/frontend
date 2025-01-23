@@ -1,0 +1,103 @@
+<!-- Admin (Client) Add Edit Turnover html view  -->
+<div class="add-edit-container">
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isPanelOpen" (opened)="createClientTurnoverForm()"
+                         (closed)="onClosePanel()">
+      <mat-expansion-panel-header (click)="changeOpenPanelState()">
+        <mat-panel-title> {{clientTurnover ? 'Update' : 'Add'}} Client Turnover</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <form [formGroup]="addEditTurnoverForm" (submit)="onSubmitTurnoverForm(addEditTurnoverForm)">
+        <div class="row">
+          <div class="col-md-3">
+            <ng-select class="custom" [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id">
+            </ng-select>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(addEditTurnoverForm.get('entity_id'))"
+                              [errMsg]="validationMsg.CLIENET_NAME_REQUIRED"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <mat-form-field>
+              <mat-select placeholder="Year" formControlName="year">
+                <mat-option *ngFor="let year of yearList" [value]="year">{{year}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(addEditTurnoverForm.get('year'))"
+                              [errMsg]="validationMsg.YEAR_REQUIRED"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <mat-form-field>
+              <input matInput placeholder="Total" formControlName="total"/>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isValidField(addEditTurnoverForm.get('total'))"
+                              [errMsg]="validationMsg.NUMBER_VALID"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <mat-form-field>
+              <input matInput placeholder="Sept Qtr" formControlName="sept_qtr"/>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isValidField(addEditTurnoverForm.get('sept_qtr'))"
+                              [errMsg]="validationMsg.NUMBER_VALID"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Dec Qtr" formControlName="dec_qtr"/>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isValidField(addEditTurnoverForm.get('dec_qtr'))"
+                              [errMsg]="validationMsg.NUMBER_VALID"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="March Qtr" formControlName="march_qtr"/>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isValidField(addEditTurnoverForm.get('march_qtr'))"
+                              [errMsg]="validationMsg.NUMBER_VALID"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="June Qtr" formControlName="june_qtr"/>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isValidField(addEditTurnoverForm.get('june_qtr'))"
+                              [errMsg]="validationMsg.NUMBER_VALID"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-3 MT-20">
+            <div class="text-right">
+              <button type="button" class="btn-default" (click)="onClickClear()">Clear</button>
+              <button type="submit" class="btn-primary" [disabled]="addEditTurnoverForm.invalid">
+                {{clientTurnover ? 'Update' : 'Add'}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

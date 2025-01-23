@@ -1,0 +1,58 @@
+<div class="bookkeeping-basic-container">
+  <span class="panel-title" *ngIf="!isEdit">Hosting User List</span>
+  <div class="row">
+    <div class="col-md-12 MT-10">
+      <button class="open-dialog-btn MB-20" (click)="onAddHostingDialog()" *ngIf="isEdit === 1">
+        <mat-icon>add</mat-icon>
+        Hosting User List
+      </button>
+      <div class="table-container">
+        <div class="table-block">
+          <table class="table">
+            <thead>
+            <tr>
+              <th width="8%">Sr. No.</th>
+              <th width="12%">Username</th>
+              <th width="10%">Type</th>
+              <th width="10%">Rate</th>
+              <th width="10%">Status</th>
+              <th width="10%">Activation Date</th>
+              <th width="10%">Inactivation Date</th>
+              <th width="22%">Notes</th>
+              <th width="8%" *ngIf="isEdit ===1">Action</th>
+            </tr>
+            </thead>
+
+            <tbody *ngIf="hostingUserList.length">
+            <tr *ngFor="let hostingUser of hostingUserList; let i = index">
+              <td width="8%">{{i + 1}}</td>
+              <td width="12%">{{hostingUser?.username}}</td>
+              <td width="10%">{{getHostingPlanType(hostingUser?.plan_type)}}</td>
+              <td width="10%">{{hostingUser?.rate}}</td>
+              <td width="10%">{{(hostingUser?.is_active === 1) ? 'Active' : 'Inactive'}}</td>
+              <td width="10%">{{(hostingUser?.activedate !== '' && hostingUser?.activedate !== '0000-00-00') ?
+                (hostingUser?.activedate | date : 'dd-MM-yyyy') : ''}}
+              </td>
+              <td width="10%">{{(hostingUser?.inactivedate !== '' && hostingUser?.inactivedate !== '0000-00-00') ?
+                (hostingUser?.inactivedate | date : 'dd-MM-yyyy') : ''}}
+              </td>
+              <td width="22%">{{hostingUser?.notes}}</td>
+              <td width="8%" *ngIf="isEdit === 1">
+                <mat-icon class="orange-color" [matTooltip]="'Edit'" (click)="onAddHostingDialog(hostingUser)">edit
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+            <tbody *ngIf="hostingUserList.length === 0">
+            <tr>
+              <td colspan="9">
+                <p class="orange-color">No Records Found!</p>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

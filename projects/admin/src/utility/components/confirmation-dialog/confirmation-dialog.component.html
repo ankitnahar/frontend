@@ -1,0 +1,22 @@
+<!-- Admin system setup Confirmation dialog  -->
+<div>
+  <div class="modal__body">
+    <div>
+      <div class="col-md-12 text-center">
+        {{data.content}}
+      </div>
+    </div>
+  </div>
+
+  <div class="modal__footer">
+    <div class="row">
+      <div class="col-md-12"
+           [ngClass]="{'text-right': data?.isEnableSubmitButton, 'text-center': !(data?.isEnableSubmitButton)}">
+        <button *ngIf="!data?.ticketButton" type="button" class="btn-primary MR-10" (click)="onCloseDialog(true)">Yes
+        </button>
+        <button *ngIf="!data?.ticketButton" type="button" class="btn-default" (click)="onCloseDialog(false)">No</button>
+        <button *ngIf="data?.ticketButton" type="button" class="btn-primary" (click)="onCloseDialog(true)">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>

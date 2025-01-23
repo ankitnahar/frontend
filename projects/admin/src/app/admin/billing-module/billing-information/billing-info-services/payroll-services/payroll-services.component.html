@@ -1,0 +1,17 @@
+<div>
+  <mat-tab-group class="demo-tab-group contact-tab" (selectedTabChange)="onSelectTab($event)">
+    <mat-tab label="Basic">
+      <div>
+        <app-payroll-basic *ngIf="isActiveTab === 0" [isEdit]="isEdit" [billingInformation]="billingInformation"
+                           [serviceInfo]="serviceInfo" (onAddUpdate)="getPayrollDataInfo();"></app-payroll-basic>
+      </div>
+    </mat-tab>
+    <mat-tab label="Additional Activity Calculator" *ngIf="isUpdated === 1">
+      <div>
+        <app-payroll-additional-activity-calculator [isEdit]="isEdit" *ngIf="isActiveTab === 1"
+                                                    [billingInformation]="billingInformation"
+                                                    [serviceInfo]="serviceInfo"></app-payroll-additional-activity-calculator>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,0 +1,515 @@
+<!--basic tab html start-->
+<div class="basic-main-tab-container">
+  <span class="panel-title orange-color">Update entity from here</span>
+
+  <form [formGroup]="basicMainForm" #basicForm="ngForm"
+        (submit)="onSubmitBasicMainform(basicMainForm.value,basicMainForm.valid)">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Billing Name" formControlName="billing_name" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('billing_name'))"
+                          [errMsg]="validationMsg.BILLING_NAME_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Legal Name" formControlName="name"
+                 (blur)="checkClientUniqueName('name', $event.target.value, 'Legal Name')" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('name'))"
+                          [errMsg]="validationMsg.LEGAL_NAME_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Trading Name"
+                 (blur)="checkClientUniqueName('trading_name', $event.target.value, 'Trading Name')"
+                 formControlName="trading_name" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('trading_name'))"
+                          [errMsg]="validationMsg.TRADING_NAME_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput [matDatepicker]="signedDate" placeholder="Contract Signed Date"
+                 formControlName="contract_signed_date" required/>
+          <mat-datepicker-toggle matSuffix [for]="signedDate"></mat-datepicker-toggle>
+          <mat-datepicker #signedDate disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('contract_signed_date'))"
+                          [errMsg]="validationMsg.CONTRACT_DATE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <!--<div class="col-md-4">-->
+      <!--<mat-form-field>-->
+      <!--<input matInput formControlName="entity_writeoff" placeholder="Client Write Off" required/>-->
+      <!--</mat-form-field>-->
+      <!--<div class="validation-msg">-->
+      <!--<app-validation *ngIf="isRequiredField(basicMainForm.get('entity_writeoff'))"-->
+      <!--[errMsg]="validationMsg.CLIENT_WRITE_REQUIRED"></app-validation>-->
+      <!--</div>-->
+      <!--</div>-->
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput formControlName="reviewer_budgeted_unit" placeholder="Reviewer budgeted unit" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('reviewer_budgeted_unit'))"
+                          [errMsg]="validationMsg.BUDGETED_UNIT_REQUIRED"></app-validation>
+          <app-validation *ngIf="isValidField(basicMainForm.get('reviewer_budgeted_unit'))"
+                          [errMsg]="validationMsg.BUDGETED_UNIT_VALID"></app-validation>
+          <app-validation *ngIf="isValidLength(basicMainForm.get('reviewer_budgeted_unit'))"
+                          [errMsg]="validationMsg.BUDGETED_UNIT_LENGTH"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Related entity" formControlName="related_entity">
+            <mat-option *ngFor="let YesNoData of YesNo.slice(1)" [value]="YesNoData?.key">
+              {{ YesNoData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput placeholder="ABN number" formControlName="abn_number"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('abn_number'))"
+                          [errMsg]="validationMsg.ABN_NUMBER_REQUIRED"></app-validation>
+          <app-validation *ngIf="isValidField(basicMainForm.get('abn_number'))"
+                          [errMsg]="validationMsg.ABN_NUMBER_VALID"></app-validation>
+          <app-validation *ngIf="isValidLength(basicMainForm.get('abn_number'))"
+                          [errMsg]="validationMsg.ABN_NUMBER_LENGTH"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput placeholder="ABN Branch Code" formControlName="abn_branch_code"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('abn_branch_code'))"
+                          [errMsg]="validationMsg.ABN_BRANCH_CODE_REQUIRED"></app-validation>
+          <app-validation *ngIf="isValidField(basicMainForm.get('abn_branch_code'))"
+                          [errMsg]="validationMsg.ABN_BRANCH_CODE_VALID"></app-validation>
+          <app-validation *ngIf="isValidLength(basicMainForm.get('abn_branch_code'))"
+                          [errMsg]="validationMsg.ABN_BRANCH_CODE_LENGTH"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-12 MT-5">
+        <ng-select [items]="clientList"
+                   [multiple]="true"
+                   [closeOnSelect]="true"
+                   bindLabel="trading_name"
+                   placeholder="Select Related Entity"
+                   bindValue="id"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="related_entity_id">
+        </ng-select>
+        <div class="validation-msg">
+        </div>
+      </div>
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Parent Entity?" formControlName="is_parent"
+                      (selectionChange)="onChangeParent($event.value)" required>
+            <mat-option *ngFor="let YesNoData of YesNo.slice(1)" [value]="YesNoData?.key">
+              {{ YesNoData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+      <div class="col-md-4 MT-5" *ngIf="basicMainForm.get('is_parent').value === 0">
+        <ng-select [items]="clientList"
+                   [closeOnSelect]="true"
+                   bindLabel="trading_name"
+                   placeholder="Select Parent Entity"
+                   bindValue="id"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="parent_id">
+        </ng-select>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(basicMainForm.get('parent_id'))"
+                          [errMsg]="validationMsg.PAREN_ENTITY_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput [matDatepicker]="registeredABN" placeholder="Date from when client is registered for ABN"
+                 formControlName="abn_register_date"/>
+          <mat-datepicker-toggle matSuffix [for]="registeredABN"></mat-datepicker-toggle>
+          <mat-datepicker #registeredABN disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="TFN number" formControlName="tfn_number"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(basicMainForm.get('tfn_number'))"
+                          [errMsg]="validationMsg.TFN_NUMBER_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Type of Business" formControlName="business_type"/>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Type of Entity" formControlName="entity_type"
+                      (selectionChange)="showEntityTypeOther($event.value)">
+            <mat-option *ngFor="let EntityTypeData of EntityType.slice(1)" [value]="EntityTypeData?.key">
+              {{ EntityTypeData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="entityTypeOther">
+        <mat-form-field>
+          <input matInput placeholder="Other" formControlName="entity_type_ifother"/>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Bookkeeping Done By" formControlName="bk_doneby"
+                      (selectionChange)="showBKdoneByOther($event.value)">
+            <mat-option *ngFor="let BkDonebyData of BkDoneby.slice(1)" [value]="BkDonebyData?.key">
+              {{ BkDonebyData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="bkDoneByOther">
+        <mat-form-field>
+          <input matInput placeholder="Other" formControlName="bk_doneby_ifother"/>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Registered For GST?" formControlName="gst_register">
+            <mat-option *ngFor="let YesNoData of YesNo.slice(1)" [value]="YesNoData?.key">
+              {{ YesNoData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput [matDatepicker]="registeredGST" placeholder="Date from which client is registered for GST"
+                 formControlName="gst_register_date"/>
+          <mat-datepicker-toggle matSuffix [for]="registeredGST"></mat-datepicker-toggle>
+          <mat-datepicker #registeredGST disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="BAS Frequency" formControlName="bas_frequency">
+            <mat-option *ngFor="let BasFrequencyData of BasFrequency.slice(1)" [value]="BasFrequencyData?.key">
+              {{ BasFrequencyData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="BAS is on Accrual or Cash?" formControlName="bas_accrualorcash">
+            <mat-option *ngFor="let BasAccrualorcashData of BasAccrualorcash.slice(1)"
+                        [value]="BasAccrualorcashData?.key">
+              {{ BasAccrualorcashData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="PAYG Frequency" formControlName="payg_frequency">
+            <mat-option *ngFor="let PaygFrequencyData of PaygFrequency.slice(1)" [value]="PaygFrequencyData?.key">
+              {{ PaygFrequencyData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Financial Institution detail updated on ATO?"
+                      formControlName="financial_institution_updateon_ato"
+                      (selectionChange)="showFinancialOther($event.value)">
+            <mat-option *ngFor="let YesNoOtherData of YesNoOther.slice(1)" [value]="YesNoOtherData?.key">
+              {{ YesNoOtherData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="FinancialInstitutionUpdateonAto">
+        <mat-form-field>
+          <input matInput placeholder="Other" formControlName="financial_institution_updateon_ato_ifother"/>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Activity statement delivery preference"
+                      formControlName="statement_delivery_preference">
+            <mat-option *ngFor="let StatementDeliveryPreferenceData of StatementDeliveryPreference.slice(1)"
+                        [value]="StatementDeliveryPreferenceData?.key">
+              {{ StatementDeliveryPreferenceData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Is this client registered for FBT?" formControlName="entity_registerfor_fbt">
+            <mat-option *ngFor="let YesNoNaData of YesNoNa.slice(1)" [value]="YesNoNaData?.key">
+              {{ YesNoNaData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Is this client registered for fuel Tax Credit?"
+                      formControlName="entity_registerfor_fueltaxcredit">
+            <mat-option *ngFor="let YesNoNaData of YesNoNa.slice(1)" [value]="YesNoNaData?.key">
+              {{ YesNoNaData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Group client belongs to?" formControlName="group_client_belongsto">
+            <mat-option *ngFor="let ClientBelongsToResponseData of ClientBelongsToResponse"
+                        [value]="ClientBelongsToResponseData?.id">
+              {{ClientBelongsToResponseData?.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Franchise" formControlName="franchise">
+            <mat-option *ngFor="let FranchiseData of Franchise.slice(1)" [value]="FranchiseData?.key">
+              {{ FranchiseData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Website" formControlName="website"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(basicMainForm.get('website'))"
+                          [errMsg]="validationMsg.WEBSITE_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Xero Email ID" formControlName="xero_email_id"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(basicMainForm.get('xero_email_id'))"
+                          [errMsg]="validationMsg.XERO_EMAIL_ID_VALID"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Myob Email ID" formControlName="myob_email_id"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(basicMainForm.get('myob_email_id'))"
+                          [errMsg]="validationMsg.XERO_EMAIL_ID_VALID"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Is Client console visible to client?"
+                      formControlName="is_dashboard" (selectionChange)="onChangeDashboard($event.value)" required>
+            <mat-option *ngFor="let YesNoData of YesNo.slice(1)" [value]="YesNoData?.key">
+              {{ YesNoData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="basicMainForm.get('is_dashboard').value === 0">
+        <mat-form-field>
+          <input matInput placeholder="Reason to not display dashboard to client" formControlName="dashboard_reason"/>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <ng-select [items]="userList"
+                   [multiple]="false"
+                   [closeOnSelect]="true"
+                   bindLabel="userfullname"
+                   placeholder="User Signature"
+                   bindValue="id"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="user_signature">
+        </ng-select>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Business Type" formControlName="entity_business_type" required>
+            <mat-option *ngFor="let clientTypeInfo of ClientType.slice(1)" [value]="clientTypeInfo?.key">
+              {{ clientTypeInfo?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Billing From BDMS?" formControlName="billing_from" required>
+            <mat-option *ngFor="let billingFromInfo of billingFrom.slice(1)" [value]="billingFromInfo?.key">
+              {{ billingFromInfo?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select placeholder="Team type" formControlName="team_type" >
+            <mat-option *ngFor="let teamType of teamTypeForm" [value]="teamType?.key">
+              {{ teamType?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <ng-select
+          [items]="userList"
+          [closeOnSelect]="true"
+          bindLabel="userfullname"
+          placeholder="Feedback Assignee"
+          bindValue="id"
+          [virtualScroll]="true"
+          [searchable]="true"
+          [hideSelected]="true"
+          formControlName="feedback_assignee">
+        </ng-select>
+        <div class="validation-msg">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <ng-select
+          [items]="clientPayrollList"
+          [closeOnSelect]="true"
+          bindLabel="label"
+          placeholder="Client Payroll"
+          bindValue="key"
+          [virtualScroll]="true"
+          [searchable]="true"
+          [hideSelected]="true"
+          formControlName="client_payroll">
+        </ng-select>
+        <div class="validation-msg">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right MB-20">
+        <button type="button" class="btn-default MR-5" (click)="onClient()">Cancel</button>
+        <button [disabled]="basicMainForm.invalid" type="submit" class="btn-primary">Update</button>
+      </div>
+    </div>
+  </form>
+</div>
+<!--basic tab html over-->

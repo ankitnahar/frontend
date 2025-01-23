@@ -1,0 +1,36 @@
+<!--  Start Worksheet Notes dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">View Notes
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="notesForm" (submit)="submitNotes(notesForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MT-15">
+          <mat-form-field *ngIf="worksheetData.status_id.id !== 4">
+            <textarea matInput rows="9" placeholder="Note" formControlName="notes"></textarea>
+          </mat-form-field>
+          <span *ngIf="worksheetData.status_id.id === 4">
+           {{worksheetData.notes}}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row" *ngIf="worksheetData.status_id.id !== 4">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="notesForm.invalid">Update</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Worksheet Log dialog  -->

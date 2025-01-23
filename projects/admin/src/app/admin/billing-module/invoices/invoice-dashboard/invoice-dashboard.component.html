@@ -1,0 +1,60 @@
+<!-- Admin (Invoices) Dashboard html view -->
+<div class="admin-invoice-dashboard-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"> INVOICE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start button  container -->
+  <div class="with-button-container PB-10">
+    <button type="button" class="btn-primary btn-add MR-5 ML-10" [matMenuTriggerFor]="recurringMenu"
+            *ngIf="tabData['view']">
+      Recurring
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #recurringMenu="matMenu" [overlapTrigger]="false">
+      <button mat-menu-item (click)="onAddRecurring()" *ngIf="tabData['add_edit']">Add Recurring</button>
+      <button mat-menu-item (click)="onManageRecurring()" *ngIf="tabData['view']">Manage Recurring</button>
+    </mat-menu>
+
+    <button type="button" class="btn-primary btn-add MR-5" (click)="onNewInvoice()" *ngIf="tabDataNew['add_edit']">
+      <mat-icon>add</mat-icon>
+      New Invoice
+    </button>
+
+    <button type="button" class="btn-primary btn-add MR-5" (click)="onOneOffInvoice()" *ngIf="tabDataOne['add_edit']">
+      <mat-icon>add</mat-icon>
+      One-off Invoice
+    </button>
+
+    <button type="button" class="btn-primary btn-add" (click)="onAdjustWip()" *ngIf="tabDataAdj['add_edit']">
+      <mat-icon>add</mat-icon>
+      Adjust WIP
+    </button>
+  </div>
+  <!-- End button container -->
+
+  <div class="invoice-tabs-container">
+    <mat-tab-group class="demo-tab-group" [selectedIndex]="selectedIndexData"
+                   (selectedIndexChange)="onSelectedIndexChange($event)">
+      <mat-tab *ngFor="let tab of tabList" label="{{tab?.name}}"></mat-tab>
+    </mat-tab-group>
+
+    <div class="tab-content">
+      <app-awaiting-review [invoiceSelectedStatus]="selectedInvoiceStatus"
+                           [invoiceselectedTabID]="selectedTabID"></app-awaiting-review>
+    </div>
+
+  </div>
+</div>

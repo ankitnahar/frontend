@@ -1,0 +1,289 @@
+<div class="holiday-list-out-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">HOLIDAY LIST</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn" (click)="onAddEditHolidayListDialog()">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add Holiday List
+          </button>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <mat-icon
+          class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="holidayListFilterForm" (submit)="setAdvanceFilter(holidayListFilterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Year" formControlName="year">
+                  <mat-option *ngFor="let yr of yearList" [value]="yr['key']">
+                    {{'January - '+yr['key']+' To December - '+yr['key']}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="shifList"
+                         [closeOnSelect]="true"
+                         bindLabel="shift_name"
+                         placeholder="Shift Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="shift_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="holidaydate" placeholder="Holiday Date" formControlName="date">
+                <mat-datepicker-toggle matSuffix [for]="holidaydate"></mat-datepicker-toggle>
+                <mat-datepicker #holidaydate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="filterHolidayListForm">
+        <div class="tag" *ngIf="year.value">
+          <span class="tag__title">Year:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Year" formControlName="year"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, filterHolidayListForm, true)">
+                  <mat-option *ngFor="let yr of yearList" [value]="yr['key']">
+                    {{'January - '+yr['key']+' To December - '+yr['key']}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('year')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="shiftId.value">
+          <span class="tag__title">Shift Name :</span>
+          <span>
+              <ng-select [items]="shifList"
+                         [closeOnSelect]="true"
+                         bindLabel="shift_name"
+                         placeholder="Shift Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="shift_id"
+                         (change)="setAdvanceFilterKeyUp($event, filterHolidayListForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('shift_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="dateField.value">
+          <span class="tag__title">Holiday Date:</span>
+          <span>
+              <mat-form-field>
+                <input matInput [matDatepicker]="date" placeholder="Date" #dateRef formControlName="date"
+                       (dateChange)="setAdvanceFilterKeyUp($event, filterHolidayListForm, true)">
+                <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                <mat-datepicker #date></mat-datepicker>
+              </mat-form-field>
+            </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('date')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags" *ngIf="year.value || shiftId.value || dateField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr. No</th>
+
+            <!--<th width="8%">Holiday Date-->
+            <!--<mat-icon class="material-icons icon-up active">arrow_upward</mat-icon>-->
+            <!--<mat-icon class="material-icons icon-down" *ngIf="false">arrow_downward</mat-icon>-->
+            <!--</th>-->
+
+            <th width="8%"
+                (click)="getSortData('date', sortBy === 'date' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Holiday Date
+              <i *ngIf="sortBy === 'date'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'date' && sortOrder === 'asc', 'icon-down' :  sortBy === 'date' && sortOrder === 'desc'}">
+                {{sortBy === 'date' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+              <!--<mat-icon class="material-icons icon-up active">arrow_upward</mat-icon>-->
+              <!--<mat-icon class="material-icons icon-down" *ngIf="false">arrow_downward</mat-icon>-->
+            </th>
+
+            <th width="13%"
+                (click)="getSortData('year', sortBy === 'year' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Year
+              <i *ngIf="sortBy === 'year'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'year' && sortOrder === 'asc', 'icon-down' :  sortBy === 'year' && sortOrder === 'desc'}">
+                {{sortBy === 'year' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+              <!--<mat-icon class="material-icons icon-up active">arrow_upward</mat-icon>-->
+              <!--<mat-icon class="material-icons icon-down" *ngIf="false">arrow_downward</mat-icon>-->
+            </th>
+
+            <th width="15%">Shift Name</th>
+
+            <th width="22%"
+                (click)="getSortData('description', sortBy === 'description' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Notes
+              <i *ngIf="sortBy === 'description'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'description' && sortOrder === 'asc', 'icon-down' :  sortBy === 'description' && sortOrder === 'desc'}">
+                {{sortBy === 'description' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+              <!--<mat-icon class="material-icons icon-up">arrow_upward</mat-icon>-->
+              <!--<mat-icon class="material-icons icon-down" *ngIf="false">arrow_downward</mat-icon>-->
+            </th>
+
+            <th width="15%">Created</th>
+
+            <th width="15%">Modified</th>
+
+            <th width="8%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let holidaylist of holidayList; let i = index">
+              <td width="4%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="8%">{{holidaylist?.date |date:"dd-MM-yyyy"}}</td>
+              <td width="13%">{{holidaylist?.holiday_year}}</td>
+              <td width="15%">
+                <div class="client-name-list" *ngIf="holidaylist?.shift_name?.split(',').length > 1"
+                     (click)="onOpenShiftList(holidaylist)">
+                  <span *ngFor="let j of holidaylist?.shift_name?.split(',') | slice:0:3">{{j.charAt(0)}}</span>
+                  <span *ngIf="holidaylist?.shift_name?.split(',').length - 3 > 0" class="reset-count">+{{holidaylist?.shift_name?.split(',').length - 3}}</span>
+                </div>
+                <div class="client-name-list" *ngIf="holidaylist?.shift_name?.split(',').length <= 1">
+                  <p *ngFor="let shiftName of holidaylist?.shift_name?.split(',')">
+                    {{shiftName}}
+                  </p>
+                </div>
+              </td>
+              <td width="22%" class="word-break">{{holidaylist?.description}}</td>
+              <td width="15%">{{holidaylist?.created_by?.userfullname}} | {{holidaylist?.created_on | date:
+                'dd-MM-yyyy'}}
+              </td>
+              <td width="15%">{{holidaylist?.modified_by?.userfullname}} | {{holidaylist?.modified_on | date:
+                'dd-MM-yyyy'}}
+              </td>
+              <td width="8%">
+                <ul>
+                  <li>
+                    <a>
+                      <mat-icon [matMenuTriggerFor]="menuaction">more_vert</mat-icon>
+                      <mat-menu #menuaction="matMenu" class="column-menu">
+                        <button mat-menu-item class="menu-header">
+                          <h3>Action</h3>
+                        </button>
+                        <button mat-menu-item (click)="onAddEditHolidayListDialog(holidaylist)">
+                          <mat-icon>edit</mat-icon>
+                          Edit
+                        </button>
+                        <button mat-menu-item (click)="onDeleteHolidayListDialog(holidaylist)">
+                          <mat-icon>delete</mat-icon>
+                          Delete
+                        </button>
+                        <button mat-menu-item (click)="onChangeRemark(holidaylist)">
+                          <mat-icon>history</mat-icon>
+                          Run Cron For Update Remark
+                        </button>
+                      </mat-menu>
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="holidayList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    <div *ngIf="!holidayList.length" class="panel-title red-color">
+      No Records Found!
+    </div>
+  </div>
+  <!-- End Data Grid -->
+</div>

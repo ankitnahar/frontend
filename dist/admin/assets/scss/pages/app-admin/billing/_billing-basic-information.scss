@@ -1,0 +1,32 @@
+// -----------------------------------------------------------------------------------------------
+// ================================ Admin Biiling Module Basic Information scss =========================
+// -----------------------------------------------------------------------------------------------
+.billing-basic-info-container {
+  .mat-expansion-panel-header {
+    padding: 0 1rem;
+  }
+  .mat-expansion-panel-body {
+    padding: 1rem 0;
+  }
+  .mat-expansion-panel:not([class*=mat-elevation-z]) {
+    box-shadow: 0 0 0 -2px rgba(0, 0, 0, 0.2), 0 0px 0px 0 rgba(0, 0, 0, 0.14), 0 0 0px 0 rgba(0, 0, 0, 0.12);
+    background: lighten($light-gray-color, 23%);
+    border: .1rem solid lighten($gray-color, 40%);
+  }
+  .mat-expansion-panel-header-title {
+    color: $dark-primary-color;
+  }
+  .mat-form-field-infix {
+    width: 9rem;
+  }
+  .table-container {
+    background-color: lighten($gray-color, 50%);
+    thead {
+      tr {
+        td {
+          border: none;
+        }
+      }
+    }
+  }
+}

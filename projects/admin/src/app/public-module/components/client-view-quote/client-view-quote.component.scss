@@ -1,0 +1,69 @@
+.client-view-quote-container {
+  position: relative;
+  z-index: 999;
+  top: -53px;
+  background: #fff;
+
+  .header {
+    padding: 10px;
+    box-shadow: 0 0 3px 0 #cccc;
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+    background: #fff;
+    a {
+      text-decoration: none;
+      position: relative;
+      top: 18px;
+      color: #000000;
+    }
+  }
+
+  .body-container {
+    padding-top: 65px;
+    .preview-quote-container {
+      width: 800px;
+      margin: 0 auto;
+
+      strong {
+        font-weight: 500;
+        font-size: 16px;
+        margin-bottom: 4px;
+        display: inline-block;
+      }
+    }
+  }
+
+  .footer {
+    padding: 10px;
+    box-shadow: 0 -1px 3px 0 #cccc;
+    width: 100%;
+    background: #fff;
+    position: relative;
+    top: 50px;
+    a {
+      text-decoration: none;
+      position: relative;
+      color: #000000;
+    }
+    img {
+      margin-left: 10px;
+    }
+  }
+
+  .sign-your-document-container {
+    width: 500px;
+    text-align: center;
+    margin: 0 auto;
+    min-height: calc(100vh - 400px);
+    p {
+      margin-top: 5px;
+    }
+  }
+}
+
+td {
+  b {
+    font-weight: 500;
+  }
+}

@@ -1,0 +1,38 @@
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">WORKSHEET STATUS LOG</div>
+  </div>
+
+  <div class="modal__close">
+    <a (click)="onClose()"> <i class="material-icons">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <div class="table-container dialog-table-container">
+      <div class="table-block">
+        <table class="PT-0">
+          <thead>
+          <tr>
+            <th>Sr. No.</th>
+            <th>Master Activity</th>
+            <th>Task</th>
+            <th>Status</th>
+            <th>Updated By</th>
+            <th>Updated on</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let statusLog of statusLogList; let i = index">
+            <td class="text-center">{{i+1}}</td>
+            <td>{{statusLog?.masteractivity_name}}</td>
+            <td>{{statusLog?.task_name}}</td>
+            <td>{{statusLog?.status_id?.status_name}}</td>
+            <td>{{statusLog?.created_by?.userfullname}}</td>
+            <td>{{statusLog?.created_on | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

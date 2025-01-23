@@ -1,0 +1,99 @@
+<!--  Start Add Master Checklist Question dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo"> {{ data.masterData ? 'Update' : 'Add'}} Master Checklist Question</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <form [formGroup]="addMasterChecklistQuestionForm">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12">
+          <ng-select [items]="masterChackList"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Master checklist"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="changeMasterCheckList($event)"
+                     formControlName="addMasterChecklist">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addMasterChecklistQuestionForm.get('addMasterChecklist'))"
+                            [errMsg]="validationMsg.MASTER_CHECKLIST_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Master Checklist" value="N/A" readonly
+                   formControlName="addMasterChecklistread"/>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Task" value="N/A" readonly formControlName="addTask"/>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <ng-select [items]="groupArray"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Group"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="addGroup">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addMasterChecklistQuestionForm.get('addGroup'))"
+                            [errMsg]="validationMsg.GROUP_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Question" formControlName="addQuestion" required></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addMasterChecklistQuestionForm.get('addQuestion'))"
+                            [errMsg]="validationMsg.QUESTION_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addMasterChecklistQuestionForm.get('addQuestion'))"
+                            [errMsg]="validationMsg.QUESTION_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Help text" formControlName="addHelpText"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addMasterChecklistQuestionForm.get('addHelpText'))"
+                            [errMsg]="validationMsg.HELP_TEXT_VALID"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div *ngIf="data.masterData" class="col-md-12 PR-25" (click)="updateData()">
+          <button class="btn-primary" [disabled]="addMasterChecklistQuestionForm.invalid">Update</button>
+        </div>
+
+        <div *ngIf="!data.masterData" class="col-md-12 PR-25" (click)="saveData()">
+          <button class="btn-primary" [disabled]="addMasterChecklistQuestionForm.invalid">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

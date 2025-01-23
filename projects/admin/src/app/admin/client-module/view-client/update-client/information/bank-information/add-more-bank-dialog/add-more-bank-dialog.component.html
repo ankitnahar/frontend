@@ -1,0 +1,82 @@
+<!-- Start add more bank modal -->
+<div class="modal large-modal bank-dialog">
+  <div class="modal__header">
+    <div class="modal__header__logo">Add More Bank</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <form [formGroup]="addBankForm" #addMoreBankForm="ngForm"
+          (submit)="onBankSubmit(addBankForm.value, addBankForm.valid,bankObject)" *ngIf="tabDataBank['add_edit']">
+      <div class="row">
+        <div class="col-md-6 PL-0">
+          <mat-form-field>
+            <input formControlName="bank_name" matInput type="text" autocomplete="off" placeholder="Bank" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBankForm.get('bank_name'))"
+                            [errMsg]="validationMsg.BANK_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <button [disabled]="addBankForm.invalid" class="btn-primary" type="submit">Save</button>
+        </div>
+      </div>
+    </form>
+    <div class="table-container dialog-table-container">
+      <div class="table-block">
+        <div class="row">
+          <!--<div class="col-md-4 PL-0">
+            <div class="position-relative search-bank-information">
+              <i class="material-icons">search</i>
+              <input placeholder="Search" type="text" />
+            </div>
+          </div>-->
+          <div class="col-md-12 PR-0">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </div>
+        </div>
+        <table>
+          <thead>
+          <tr>
+            <th width="10%">Sr. no.</th>
+            <th width="35%">Bank</th>
+            <th width="20%">Last Modified on</th>
+            <th width="20%">Last Modified by</th>
+            <th width="20%">Action</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let bankData of bankList; let i = index">
+            <td>{{i+1}}</td>
+            <td>
+              <a *ngIf="!isBankUpdate" (click)="isBankUpdate = true">{{bankData?.bank_name}}</a>
+              <input *ngIf="isBankUpdate" type="text" value={{bankData?.bank_name}}
+                     (blur)="onBankNameUpdate($event.target.value,bankData);isBankUpdate = false"/>
+            </td>
+            <td>{{bankData?.modified_on | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+            <td>{{bankData?.modified_by?.modified_by}}</td>
+            <td>
+              <mat-slide-toggle [checked]="(bankData?.is_active) ? true : false" *ngIf="tabDataBank['add_edit']"
+                                (change)="activeInactiveBank($event.checked,bankData)"></mat-slide-toggle>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-layer" (click)="onClose()"></div>
+<!-- End add more bank  modal -->

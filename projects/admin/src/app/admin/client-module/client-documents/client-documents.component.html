@@ -1,0 +1,543 @@
+<!-- Admin (Client) Documents Container -->
+<div class="client-documents-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0 col-sm-9">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>CLIENT</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onClient()">VIEW CLIENT</a></span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">CLIENT DOCUMENT | {{clientData?.code}} - {{clientData?.name}}</span>
+        </div>
+      </div>
+
+      <div class="col-md-3 PR-0 col-sm-3">
+        <div class="text-right">
+          <button class="btn-dark-blue btn-add btn-small-add MR-10 ng-star-inserted" type="button"
+                  (click)="onClickHowToProcess()">
+            <mat-icon class="mat-icon material-icons">help</mat-icon>
+            How to Process
+          </button>
+          <span (mouseleave)="hideMenu()">
+          <a class="profile" (mouseenter)="onOpenQuickMenu('profile')"
+             [ngClass]="{'active': activeView == enumView.QUICK_MENU_LIST}">
+            <label class="black-color">Quick actions</label>
+            <i class="material-icons v-align-middle">more_vert</i>
+            <ul class="profile__menu opacity-0"
+                [ngClass]="{'opacity-1': activeView == enumView.QUICK_MENU_LIST}">
+              <li *ngIf="tabDataClientAllocation['add_edit']">
+                <a (click)="onClientAllocation()">
+                  <mat-icon class="material-icons">how_to_reg</mat-icon>
+                  Client Allocation</a>
+              </li>
+              <li>
+                <a (click)="onCreateFolder()"
+                   *ngIf="(googleDriveCurrentFolder) && (googleDriveCurrentFolder.make_folder > 0)">
+                  <mat-icon class="material-icons">create_new_folder</mat-icon>
+                  Create Directory</a>
+              </li>
+              <span *ngIf="isCreateMasterFolder">
+                  <li>
+                    <a (click)="onCreateYearFolder()">
+                      <mat-icon class="material-icons">create_new_folder</mat-icon> Create Year/Master Folder</a>
+                  </li></span>
+              <span *ngIf="isCreateBacklogFolder && getServiceIDExistOrNot(1)">
+                  <li>
+                    <a (click)="onCreateBacklogFolder()" *ngIf="isCreateBacklogFolder">
+                      <mat-icon class="material-icons">create_new_folder</mat-icon> Create Backlog Folder</a>
+                  </li>
+                  </span>
+              <li>
+                <a (click)="onAddAudioLinkDialog()">
+                  <mat-icon class="material-icons">playlist_add</mat-icon>
+                  Add Audio Link</a>
+              </li>
+            </ul>
+          </a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-11 inner_breadcrumb PL-0 col-sm-10">
+          <ul class="MT-10 ML-5">
+            <li>
+              <button (click)="onRefreshFolder()" class="btn-success btn-add MR-5">
+                <i class="material-icons">refresh</i>
+              </button>
+            </li>
+            <li>
+              <span *ngIf="googleDriveCurrentFolder && googleDriveCurrentFolder?.id > 0">
+                <button (click)="onCreateFile()" class="cursor-pointer btn-default btn-add MR-5">
+                  <i class="material-icons">insert_drive_file</i> Create File
+                </button>
+              </span>
+            </li>
+
+            <li *ngIf="googleDriveCurrentFolder && googleDriveCurrentFolder?.id > 0">
+              <span>
+                <button (click)="onUploadDocumentsDragnDrop()" class="cursor-pointer btn-primary btn-add MR-5">
+                  <i class="material-icons">cloud_upload</i> Upload Documents
+                </button>
+              </span>
+            </li>
+            <li>
+              <span *ngIf="googleDriveCurrentFolder && googleDriveCurrentFolder?.id > 0">
+                <button (click)="loadGoogleDrive()" class="cursor-pointer btn-primary btn-add MR-5">
+                  <i class="material-icons alignment-text">cloud_upload</i> Pick From My Drive
+                </button>
+              </span>
+            </li>
+            <li *ngIf="selectedFileArray.length > 0 && isPasteEnabled === true">
+              <span>
+                <button (click)="onCopyMoveDialog()" class="cursor-pointer btn-default btn-add MR-5">
+                  <i class="material-icons">insert_drive_file</i> Paste to Folder
+                </button>
+              </span>
+            </li>
+            <li *ngIf="(selectedFolderArray.length > 0 || selectedFileArray.length > 0) || (isPasteEnabled === true)">
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="cursor-pointer btn-default btn-add PL-10 PR-5">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngIf="selectedFolderArray.length > 0 || selectedFileArray.length > 0"
+                        (click)="onConfirmationDelete()">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+                <button mat-menu-item *ngIf="selectedFileArray.length > 0" (click)="onMultipleCopyOrCut(1)">
+                  <mat-icon>content_copy</mat-icon>
+                  <span>Copy</span>
+                </button>
+                <button mat-menu-item *ngIf="selectedFileArray.length > 0" (click)="onMultipleCopyOrCut(2)">
+                  <mat-icon>content_cut</mat-icon>
+                  <span>Cut</span>
+                </button>
+                <button mat-menu-item *ngIf="isPasteEnabled" (click)="onPasteFile()">
+                  <mat-icon>content_paste</mat-icon>
+                  <span>Paste</span>
+                </button>
+                <button mat-menu-item *ngIf="selectedFileArray.length" (click)="downloadDocument()">
+                  <mat-icon>vertical_align_bottom</mat-icon>
+                  <span>Download</span>
+                </button>
+                <button mat-menu-item *ngIf="selectedFileArray.length && clientData.xero_email_id"
+                        (click)="sendDocumentAsEmail(1)">
+                  <mat-icon>email</mat-icon>
+                  <span>Send To Xero</span>
+                </button>
+                <button mat-menu-item *ngIf="selectedFileArray.length && clientData.myob_email_id"
+                        (click)="sendDocumentAsEmail(1)">
+                  <mat-icon>email</mat-icon>
+                  <span>Send To Myob</span>
+                </button>
+              </mat-menu>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-1 inner_breadcrumb text-right col-sm-2">
+          <mat-form-field>
+            <mat-label>Select View</mat-label>
+            <mat-select>
+              <mat-option (click)=toggleDisplay(false)>
+                <mat-icon>view_module</mat-icon>
+                <span>Large Icon</span>
+              </mat-option>
+
+              <mat-option (click)=toggleDisplay(true)>
+                <mat-icon>list</mat-icon>
+                <span>Details</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <div class="row col-md-12 PLR-0">
+      <div class="col-md-3 PLR-0 tree-bg col-sm-3">
+        <div class="breadcrumb-top-header__breadcrumbs" *ngFor="let breadCrum of breadCrumsList; let b = index">
+          <span *ngIf="b ===0" class="cursor-pointer black-color"
+                (click)="openBreadCrumFolder(breadCrum.entity_id, breadCrum.id, b, breadCrum.folder, breadCrum.subclient_id)">
+          <i *ngIf="b ===0" class="material-icons PR-10">home</i>
+            {{breadCrum.directory_name}}</span>
+          <a class="inner_breadcrumbs inactive cursor-pointer" *ngIf="b !==0 && b !== breadCrumsList.length - 1"
+             (click)="openBreadCrumFolder(breadCrum.entity_id, breadCrum.id, b, breadCrum.folder, breadCrum.subclient_id)">
+            <mat-icon *ngIf="b !==0" class="black-color">arrow_right</mat-icon>
+
+            <img *ngIf="b !==0" src="../../../../images/doc/folder-com.svg"/>
+            <span>{{breadCrum.directory_name}}</span>
+            <span *ngIf="b !==0 && b === breadCrumsList.length - 1" class="active cursor-pointer"
+                  (click)="openBreadCrumFolder(breadCrum.entity_id, breadCrum.id, b, breadCrum.folder, breadCrum.subclient_id)">{{breadCrum.directory_name}}</span>
+          </a>
+          <a class="inner_breadcrumbs active cursor-pointer" *ngIf="b !==0 && b === breadCrumsList.length - 1"
+             (click)="openBreadCrumFolder(breadCrum.entity_id, breadCrum.id, b, breadCrum.folder, breadCrum.subclient_id)">
+            <mat-icon *ngIf="b !==0" class="black-color">arrow_right</mat-icon>
+
+            <img *ngIf="b !==0" src="../../../../images/doc/folder-com.svg"/>
+            <span>{{breadCrum.directory_name}}</span>
+          </a>
+
+        </div>
+      </div>
+
+      <div class="row col-md-9 PLR-0 sub_docDetailsSection col-sm-9">
+        <div class="row col-md-12 leave-type-list">
+          <div class="col-md-2 PL-0 MT-10 col-sm-3">
+            <button (click)="onSelectAllFileItem(true, googleDriveFileList)"
+                    *ngIf="googleDriveFileList.length > 0 && googleDriveCurrentFolder?.id !== -1 && maxFileAllowed !== selectedFileArray.length "
+                    class="cursor-pointer btn-default btn-add">
+              <i class="material-icons">check_box_outline_blank</i> Select {{maxFileAllowed}} Files
+            </button>
+            <button (click)="onSelectAllFileItem(false, googleDriveFileList)"
+                    *ngIf="selectedFileArray.length > 0 && googleDriveFileList.length > 0 && googleDriveCurrentFolder?.id !== -1 && maxFileAllowed === selectedFileArray.length"
+                    class="cursor-pointer btn-default btn-add">
+              <i class="material-icons">check_box</i> DeSelect {{maxFileAllowed}} Files
+            </button>
+          </div>
+          <div class="col-md-7 grid-search  PLR-0 col-sm-6">
+
+
+            <!-- This template displays the overlay content and is connected to the button -->
+
+            <form>
+              <mat-form-field appearance="fill">
+                <mat-label>Search</mat-label>
+                <input matInput type="text"
+                       value="{{filterForm.get('type').value !== null ? 'Type: ' + filterForm.get('type').value : ''}}{{filterForm.get('modified_on_from').value !== null ? ' Modified From: ' + (filterForm.get('modified_on_from').value | date : 'dd-MM-yyy')  : ''}}{{filterForm.get('modified_on_to').value !== null ? ' Modified Up To: ' + (filterForm.get('modified_on_to').value | date : 'dd-MM-yyy') : ''}}{{filterForm.get('file_name').value !== null ? ' File Name: ' + filterForm.get('file_name').value : ''}}{{filterForm.get('path').value !== null ? 'Path: ' + filterForm.get('path').value : ''}}">
+                <button type="button" mat-button matSuffix mat-icon-button (click)="onToggleFilter()"
+                        class="search_btn">
+                  <mat-icon>filter_list</mat-icon>
+                </button>
+              </mat-form-field>
+              <!-- Start search Filter -->
+              <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+                <div class="filter-action-icon">
+                <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+                  class="material-icons">close</i></span>
+                </div>
+                <div class="grid-filter-container">
+                  <div class="filter-title">
+                    <h3 style="text-align: left;">Advance Filter</h3>
+                  </div>
+                  <form [formGroup]="filterForm" (submit)="searchFilesFromEntity(filterForm)">
+
+                    <div class="row col-md-12">
+                      <div class="col-md-3 PT-20">
+                        <label>Type</label>
+                      </div>
+                      <div class="col-md-9">
+                        <mat-form-field>
+                          <mat-select placeholder="File Type" formControlName="type">
+                            <mat-option *ngFor="let fileType of fileTypeList; let i = index"
+                                        [value]="fileType?.extensionSearch">{{fileType?.labelSearch}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="row col-md-12 MT-5">
+                      <div class="col-md-3 PT-20">
+                        <label>Date Modified</label>
+                      </div>
+                      <div class="col-md-9">
+                        <mat-form-field>
+                          <input matInput [matDatepicker]="modifiedDate" placeholder="Modified From Date"
+                                 formControlName="modified_on_from" [max]="maxDateForSelect"/>
+                          <mat-datepicker-toggle matSuffix [for]="modifiedDate"></mat-datepicker-toggle>
+                          <mat-datepicker #modifiedDate disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field>
+                          <input matInput [matDatepicker]="modifiedDateTo" placeholder="Modified To Date"
+                                 formControlName="modified_on_to" [min]="filterForm.get('modified_on_from').value"
+                                 [max]="maxDateForSelect"/>
+                          <mat-datepicker-toggle matSuffix [for]="modifiedDateTo"></mat-datepicker-toggle>
+                          <mat-datepicker #modifiedDateTo disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                    </div>
+
+                    <div class="row col-md-12 MT-5">
+                      <div class="col-md-3 PT-20">
+                        <label>File Name</label>
+                      </div>
+                      <div class="col-md-9">
+                        <mat-form-field>
+                          <input matInput placeholder="File Name" formControlName="file_name"/>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="row col-md-12 MT-5">
+                      <div class="col-md-3 PT-20">
+                        <label>File Path</label>
+                      </div>
+                      <div class="col-md-9">
+                        <mat-form-field>
+                          <input matInput placeholder="File Path" formControlName="path"/>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="row col-md-12">
+                      <div class="col-md-12  MT-10 text-right">
+                        <button type="button" class="btn-cancel" (click)="resetFilterForm()">Reset</button>
+                        <button type="submit" class="btn-primary">Search</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <!-- End search Filter -->
+            </form>
+          </div>
+
+          <div class="col-md-3 PR-0 col-sm-3">
+            <mat-button-toggle-group>
+              <mat-button-toggle matTooltip="Sort by name"
+                                 (click)="getSortData('name', sortBy === 'name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                <mat-icon>sort_by_alpha</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle matTooltip="Modified date"
+                                 (click)="getSortData('modified_by', sortBy === 'modified_by' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                <mat-icon>av_timer</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle matTooltip="Sort by size"
+                                 (click)="getSortData('size', sortBy === 'size' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                <mat-icon>sort</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </div>
+
+        <div class="row col-md-12 folder_structure" *ngIf="!isShow">
+          <div class="col-md-1 col-xs-1 col-sm-2 doc_visited"
+               *ngFor="let folderData of googleDriveFolderList; let i = index">
+            <div class="" (contextmenu)="onContextMenu($event, folderData, 1)"
+                 (dblclick)="openSubFolder(folderData.entity_id, folderData.id, folderData.subclient_id)">
+              <ul>
+                <li *ngIf="folderData?.directory_id === 0 && googleDriveCurrentFolder?.id !== -1">
+                  <mat-checkbox (change)="onSelectFolderItem($event, folderData)"></mat-checkbox>
+                </li>
+                <li *ngIf="folderData?.folderType === 0">
+                  <img src="../../../../images/doc/folder-create_blank.svg"/>
+                </li>
+                <li *ngIf="folderData?.folderType === 1">
+                  <img src="../../../../images/doc/folder-created.svg"/>
+                </li>
+                <li *ngIf="folderData?.folderType === 2">
+                  <img src="../../../../images/doc/folder-com.svg"/>
+                </li>
+                <li *ngIf="folderData?.folderType === 3">
+                  <img src="../../../../images/doc/trash-folder.svg"/>
+                </li>
+                <li *ngIf="folderData?.folderType === 4">
+                  <img src="../../../../images/doc/all_folder.svg"/>
+                </li>
+                <li class="user-details">
+                  <h3>{{folderData.directory_name}}</h3>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-1 col-xs-1 col-sm-2 doc_visited"
+               *ngFor="let fileData of googleDriveFileList; let j = index">
+            <div class="sub_docDetailsSection" (contextmenu)="onContextMenu($event, fileData, 2)"
+                 (dblclick)="onContextMenuFileAction(fileData, 1)">
+              <ul>
+                <li *ngIf="googleDriveCurrentFolder?.id !== -1">
+                  <mat-checkbox
+                    [disabled]="(selectedFileArray.length >= maxFileAllowed) ?  (selectedFileArray.indexOf(fileData.file_id) !== -1) ? false : true : false"
+                    (change)="onSelectFileItem($event, fileData)"
+                    [checked]="selectedFileArray.indexOf(fileData.file_id) !== -1 ? true : false"></mat-checkbox>
+                </li>
+                <li>
+                  <img src="{{getGoogleDriveMetaDataType('extensionSearch',fileData.file_name, 'icon')}}"/>
+                </li>
+                <li class="user-details">
+                  <!--<h3 class="red-color">Demo.pdf</h3>-->
+                  <h3 [class]="getGoogleDriveMetaDataType('extensionSearch',fileData.file_name, 'class')">
+                    <mat-icon *ngIf="fileData.is_completed === 0 && googleDriveCurrentFolder?.id !== -1"><a
+                      (click)="onMarkAsCompleteFile(fileData, 1)">star_outline</a>
+                    </mat-icon>
+                    <mat-icon *ngIf="fileData.is_completed === 1 && googleDriveCurrentFolder?.id !== -1"><a
+                      (click)="onMarkAsCompleteFile(fileData, 0)">star</a></mat-icon>
+                    {{fileData.file_name}}
+                  </h3>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row  col-md-12 PLR-0 folder_structure" *ngIf="isShow">
+          <!-- Start Table -->
+          <div class="table-container">
+            <div class="table-block">
+              <table>
+                <thead>
+                <tr>
+                  <th width="2%">
+                    <!--<mat-checkbox (change)="onSelectAllFileItem($event.checked, googleDriveFileList)" *ngIf="googleDriveFileList.length > 0 && googleDriveCurrentFolder?.id !== -1"></mat-checkbox>-->
+                  </th>
+                  <th width="1%">
+                  </th>
+                  <th width="4%">
+                    <mat-icon>folder</mat-icon>
+                  </th>
+                  <th width="21%">Name</th>
+                  <th width="44%">File Path</th>
+                  <th width="8%">Size</th>
+                  <th width="20%">Date Modified</th>
+                </tr>
+                </thead>
+              </table>
+
+              <div class="table-body">
+                <table>
+                  <tbody *ngIf="googleDriveFolderList.length">
+                  <tr *ngFor="let folderData of googleDriveFolderList; let i = index"
+                      (contextmenu)="onContextMenu($event, folderData, 1)"
+                      (dblclick)="openSubFolder(folderData.entity_id, folderData.id, folderData.subclient_id)">
+                    <td width="2%" class="text-center">
+                    <span *ngIf="folderData?.directory_id === 0 && googleDriveCurrentFolder?.id !== -1">
+                        <mat-checkbox (change)="onSelectFolderItem($event, folderData)"></mat-checkbox>
+                    </span>
+                    </td>
+                    <td width="1%"></td>
+                    <td width="4%">
+                      <img src="../../../../images/doc/folder-create_blank.svg" *ngIf="folderData?.folderType === 0"/>
+                      <img src="../../../../images/doc/folder-created.svg" *ngIf="folderData?.folderType === 1"/>
+                      <img src="../../../../images/doc/folder-com.svg" *ngIf="folderData?.folderType === 2"/>
+                      <img src="../../../../images/doc/trash-folder.svg" *ngIf="folderData?.folderType === 3"/>
+                      <img src="../../../../images/doc/all_folder.svg" *ngIf="folderData?.folderType === 4"/>
+                    </td>
+                    <td width="21%" class="word-break">{{folderData?.directory_name}}
+                    </td>
+                    <td width="44%" class="word-break">{{folderData?.directory_path}}</td>
+                    <td width="8%" class="word-break"></td>
+                    <td width="20%" class="word-break">{{folderData?.modified_on | date : 'dd-MM-yyyy HH:mm:ss' |
+                      checkEmpty}}
+                    </td>
+                  </tr>
+                  </tbody>
+                  <tbody *ngIf="googleDriveFileList.length">
+                  <tr *ngFor="let fileData of googleDriveFileList; let j = index"
+                      (contextmenu)="onContextMenu($event, fileData, 2)"
+                      (dblclick)="onContextMenuFileAction(fileData, 1)">
+                    <td width="2%" class="text-center">
+                    <span *ngIf="googleDriveCurrentFolder?.id !== -1">
+                        <mat-checkbox
+                          [disabled]="(selectedFileArray.length >= maxFileAllowed) ?  (selectedFileArray.indexOf(fileData.file_id) !== -1) ? false : true : false"
+                          (change)="onSelectFileItem($event, fileData)"
+                          [checked]="selectedFileArray.indexOf(fileData.file_id) !== -1 ? true : false"></mat-checkbox>
+                    </span>
+                    </td>
+                    <td width="1%" class="icon-star list_view_star">
+                      <mat-icon *ngIf="fileData.is_completed === 0 && googleDriveCurrentFolder?.id !== -1"><a
+                        (click)="onMarkAsCompleteFile(fileData, 1)">star_outline</a>
+                      </mat-icon>
+                      <mat-icon *ngIf="fileData.is_completed === 1 && googleDriveCurrentFolder?.id !== -1"><a
+                        (click)="onMarkAsCompleteFile(fileData, 0)">star</a></mat-icon>
+                    </td>
+                    <td width="4%"><img
+                      src="{{getGoogleDriveMetaDataType('extensionSearch',fileData.file_name, 'icon')}}"/>
+                    </td>
+                    <td width="21%" class="word-break">{{fileData.file_name}}</td>
+                    <td width="44%" class="word-break">{{fileData?.path}}</td>
+                    <td width="8%" class="word-break">{{getFileSizeInFormat(fileData?.size)}}</td>
+                    <td width="20%" class="word-break">{{fileData?.modified_on | date : 'dd-MM-yyyy HH:mm:ss' |
+                      checkEmpty}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>  <!-- End Table -->
+      </div>
+
+
+    </div>
+  </div>
+
+</div>
+
+<div style="visibility: hidden; position: fixed"
+     [style.left]="contextMenuPosition.x"
+     [style.top]="contextMenuPosition.y"
+     [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu" class="contexitems">
+  <ng-template matMenuContent let-item="item">
+    <button mat-menu-item (click)="onContextMenuFolderAction(item, 1)" *ngIf="menuOptionsType === 1">
+      <mat-icon>folder_open</mat-icon>
+      Open
+    </button>
+    <button mat-menu-item (click)="onContextMenuFolderAction(item, 2)"
+            *ngIf="menuOptionsType === 1 && item.directory_id === 0">
+      <mat-icon>edit</mat-icon>
+      Rename
+    </button>
+    <button mat-menu-item (click)="onContextMenuFolderAction(item, 3)"
+            *ngIf="menuOptionsType === 1 && item.directory_id === 0 && item.emptyFolder === 1">
+      <mat-icon>delete</mat-icon>
+      Move To Trash
+    </button>
+
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 1)"
+            *ngIf="menuOptionsType === 2 && googleDriveCurrentFolder?.id !== -1">
+      <mat-icon>folder_open</mat-icon>
+      Open
+    </button>
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 2)"
+            *ngIf="menuOptionsType === 2 && googleDriveCurrentFolder?.id !== -1">
+      <mat-icon>content_copy</mat-icon>
+      Copy
+    </button>
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 3)"
+            *ngIf="((menuOptionsType === 2 || menuOptionsType === 3) && isPasteEnabled && googleDriveCurrentFolder?.id !== -1)">
+      <mat-icon>content_paste</mat-icon>
+      Paste
+    </button>
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 4)"
+            *ngIf="menuOptionsType === 2 && googleDriveCurrentFolder?.id !== -1">
+      <mat-icon>content_cut</mat-icon>
+      Cut
+    </button>
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 8)"
+            *ngIf="menuOptionsType === 2 && googleDriveCurrentFolder?.id !== -1">
+      <mat-icon>edit</mat-icon>
+      Rename File
+    </button>
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 5)"
+            *ngIf="menuOptionsType === 2 && googleDriveCurrentFolder?.id !== -1">
+      <mat-icon>vertical_align_bottom</mat-icon>
+      Download
+    </button>
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 6)"
+            *ngIf="menuOptionsType === 2 && googleDriveCurrentFolder?.id !== -1">
+      <mat-icon>delete</mat-icon>
+      Move To Trash
+    </button>
+    <button mat-menu-item (click)="onContextMenuFileAction(item, 7)"
+            *ngIf="menuOptionsType === 2 && googleDriveCurrentFolder?.id === -1">
+      <mat-icon>restore_from_trash</mat-icon>
+      Restore From Trash
+    </button>
+  </ng-template>
+</mat-menu>

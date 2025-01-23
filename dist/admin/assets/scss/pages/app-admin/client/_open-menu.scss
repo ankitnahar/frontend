@@ -1,0 +1,22 @@
+// -----------------------------------------------------------------------------------------------
+// =================================== Admin Client open menu scss ===============================
+// -----------------------------------------------------------------------------------------------
+
+//
+// Client Turnover / Employee Information / AM Notes(CRM Views) / Management Call / Feedback Call / Software
+//
+
+.client-open-menu-container {
+  .add-edit-container {
+    .mat-expansion-panel-header-title {
+      color: #0288D1;
+      font-weight: 500;
+    }
+    .mat-expansion-panel:not([class*=mat-elevation-z]) {
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, .2), 0 0 0 0 rgba(0, 0, 0, .14), 0 1px 0 0 rgba(0, 0, 0, .12) !important;
+    }
+  }
+  .with-filter-grid-container {
+    border-top: 20px solid lighten($light-gray-color, 20%);
+  }
+}

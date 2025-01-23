@@ -1,0 +1,296 @@
+<div class="admin-hrms-attendance-summary-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">ATTENDANCE SUMMARY REPORT</span>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('pendingtimesheet')">User Pending Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('pendingtimesheetapproved')"
+                          *ngIf="PTAData['add_edit']">User Pending Timesheet
+                    Approved
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('pendingtimesheetapproved')" *ngIf="PTAData['view']">
+                    {{PTAData['tab_name']}}
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('attendancesummary')">Attendance Summary</button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3>Attendance Summary Report</h3>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel();">
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="onUploadAdjustList()">
+                <span>Upload Leave Adjustment</span> <i class="material-icons">file_upload</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <mat-icon
+          class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="User Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="shiftList"
+                         [closeOnSelect]="true"
+                         bindLabel="shift_name"
+                         placeholder="Shift Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="shift_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Month-Year" formControlName="month">
+                  <mat-option *ngFor="let month of monthList" value="{{month.key}}">{{month.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Month-Year" formControlName="year">
+                  <mat-option *ngFor="let year of yearList" value="{{year.key}}">{{year.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12 MT-10 text-right">
+              <button type="button" class="btn-cancel" (submit)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="userId.value">
+          <span class="tag__title">User Name :</span>
+          <span>
+             <ng-select [items]="userList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="User Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="user_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('user_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="shiftId.value">
+          <span class="tag__title">Shift Name :</span>
+          <span>
+             <ng-select [items]="shiftList"
+                        [closeOnSelect]="true"
+                        bindLabel="shift_name"
+                        placeholder="Shift Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="shift_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('shift_id')">close</mat-icon>
+        </div>
+
+        <div class="tag">
+          <span class="tag__title">Month :</span>
+          <span>
+             <mat-form-field>
+                <mat-select placeholder="Month-Year" formControlName="month"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let month of monthList" value="{{month.key}}">{{month.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close">close</mat-icon>
+        </div>
+
+
+        <div class="tag">
+          <span class="tag__title">Year :</span>
+          <span>
+             <mat-form-field>
+                <mat-select placeholder="Year" formControlName="year"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let year of yearList" value="{{year.key}}">{{year.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags" *ngIf="userId.value || shiftId.value || monthField.value || yearField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="5%">Bio Id</th>
+            <th width="10%">Staff Name
+            </th>
+            <th width="10%">Shift Name
+            </th>
+            <th width="5%">Month-Year
+            </th>
+            <th width="10%">Holiday Working
+            </th>
+            <th width="10%" class="text-center">Holiday Adjustment
+            </th>
+            <th width="10%" class="text-center">Total Holiday
+            </th>
+            <th width="5%" class="text-center">Leaves
+            </th>
+            <th width="10%" class="text-center">Leave Adjustment
+            </th>
+            <th width="10%" class="text-center">Total Leave
+            </th>
+            <th width="10%" class="text-center">Adjustment Reason
+            </th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let attendancsummrayreportlist of attendanceSummaryReportList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="5%">{{attendancsummrayreportlist?.assignee?.user_bio_id}}</td>
+              <td width="10%">{{attendancsummrayreportlist?.assignee?.userfullname}}</td>
+              <td width="10%">{{attendancsummrayreportlist?.shift_id?.shift_name}}</td>
+              <td width="5%">{{attendancsummrayreportlist?.month}}</td>
+              <td width="10%" class="text-center"><a class="label-turquoise-bg-color cursor-pointer"
+                                                     (click)="onAttendanceSummary(attendancsummrayreportlist?.assignee?.id, attendancsummrayreportlist?.created_on, 'holidayworking')"
+                                                     *ngIf="(attendancsummrayreportlist?.userHolidayworking !== '')">
+                <span class="label-turquoise-bg-color">{{attendancsummrayreportlist.userHolidayworking}}</span></a>
+                <span *ngIf="(attendancsummrayreportlist?.userHolidayworking === '')">0</span>
+              </td>
+              <td width="10%">{{attendancsummrayreportlist?.holiday_adjustment}}</td>
+              <td width="10%">{{attendancsummrayreportlist?.total_holiday}}</td>
+              <td width="10%" class="text-center"><a class="label-orange-bg-color cursor-pointer"
+                                                     (click)="onAttendanceSummary(attendancsummrayreportlist?.assignee?.id, attendancsummrayreportlist?.created_on, 'leave')"
+                                                     *ngIf="(attendancsummrayreportlist?.userAbsent)">
+                {{attendancsummrayreportlist?.userAbsent}}</a>
+                <span *ngIf="(!attendancsummrayreportlist?.userAbsent)">0</span>
+                <!--<mat-icon *ngIf="(attendancsummrayreportlist?.userAbsent)" class="orange-color v-align-middle" matTooltip="Leave Adjust"-->
+                          <!--(click)="onLeaveAdjustment(attendancsummrayreportlist)">tune-->
+                <!--</mat-icon>-->
+              </td>
+              <td width="10%">{{attendancsummrayreportlist?.adjustment}}</td>
+              <td width="10%">{{attendancsummrayreportlist?.total_leave}}</td>
+              <td width="10%">{{attendancsummrayreportlist?.reason}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageSizeOptions]="pageSizeOptions"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+  </div>
+</div>

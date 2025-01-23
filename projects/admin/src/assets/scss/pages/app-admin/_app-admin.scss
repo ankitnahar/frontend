@@ -1,0 +1,20 @@
+// Import layout scss files
+@import "admin-login";
+// Import Administration's Component scss files
+@import "administration/manager-users/manage-users";
+@import "admin-dashboard";
+// Import HRMS's Component scss files
+@import "hrms/hrms";
+// Import client Component scss files
+@import "client/client";
+// Import system-setup Component scss files
+@import "system-setup/system-setup";
+// Import workflow module files
+@import "workflow/workflow";
+// Import report module files
+@import "report/report";
+// Import invoices module files
+@import "invoices/invoices";
+// Import Billing module files
+@import "billing/billing";
+@import "new-hrms/new-hrms";

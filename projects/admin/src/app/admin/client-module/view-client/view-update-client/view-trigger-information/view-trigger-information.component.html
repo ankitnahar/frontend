@@ -1,0 +1,110 @@
+<div class="other-information-container">
+  <div class="with-filter-grid-container">
+    <div class="MT-10"></div>
+    <!--start other information grid-->
+    <span class="panel-title orange-color">Frequency Trigger Information Details</span>
+    <span *ngIf="triggerInformationData">
+      <span>Start Date : {{triggerInformationData.start_date | date :'dd-MM-yyyy'}}</span>
+      <span> End Date : {{triggerInformationData.end_date | date :'dd-MM-yyyy'}}</span>
+    </span>
+    <!-- Start grid -->
+    <br>
+    <span class="panel-title orange-color" *ngIf="triggerInformationData?.is_stop === 1"> The frequency of information is marked as stop to trigger the information. </span>
+    <!--Start add Trigger form-->
+    <form [formGroup]="addTriggerInfoForm" class="col-md-9" (submit)="onSavePreview(addTriggerInfoForm)"
+          #triggerInfoFormData="ngForm">
+
+      <div *ngIf="!isPreview">
+        <div class="row">
+          <div class="row col-md-8 MT-20">
+            <div class="col-md-3 MT-10">
+              <mat-label class="fw-500">Frequency</mat-label>
+            </div>
+            <div class="col-md-9 MB-5">
+              <mat-form-field>
+                <mat-select placeholder="Please Select" formControlName="frequency_id" disableControl="true">
+                  <mat-option *ngFor="let frequency of frequencyList" [value]="frequency.id">
+                    {{frequency.frequency_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-label class="fw-500">Trigger Months</mat-label>
+            </div>
+            <div class="col-md-9 MB-5">
+              <mat-form-field>
+                <mat-select placeholder="Please Select" formControlName="month" disableControl="true">
+                  <mat-option *ngFor="let month of monthList" [value]="month.key">{{month.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-label class="fw-500">Trigger Year</mat-label>
+            </div>
+            <div class="col-md-9 MB-5">
+              <mat-form-field>
+                <mat-select placeholder="Please Select" formControlName="year" disableControl="true">
+                  <mat-option *ngFor="let year of yearList" [value]="year.key">{{year.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-label class="fw-500">Trigger Date</mat-label>
+            </div>
+            <div class="col-md-9 MB-5">
+              <mat-form-field>
+                <mat-select placeholder="Please Select" formControlName="trigger_day" disableControl="true">
+                  <mat-option *ngFor="let day of daysList" [value]="day.key">{{day.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!--<div class="col-md-12 text-right PR-0 MTB-20">-->
+              <!--<button type="submit" class="btn-success MR-5" [disabled]="addTriggerInfoForm.invalid"-->
+                      <!--(click)="isConfirmData(0)">Save & Preview-->
+              <!--</button>-->
+              <!--<button  *ngIf="triggerInformationData?.id > 0" type="submit" class="btn-orange MR-5" [disabled]="triggerInformationData?.is_stop === 1"-->
+                      <!--(click)="isConfirmData(2)">Stop Trigger-->
+              <!--</button>-->
+              <!--<button type="button" class="btn-default MR-5" (click)="resetForm()">Cancel</button>-->
+            <!--</div>-->
+          </div>
+        </div>
+      </div>
+      <!--End Trigger details form-->
+
+      <div class="table-container dialog-table-container" *ngIf="isPreview">
+        <div class="table-block">
+          <table class="PT-0">
+            <thead>
+            <tr>
+              <th width="5%">Sr. No</th>
+              <th width="35%">Frequency</th>
+              <th width="30%">Period</th>
+              <th width="%">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let triggerinformationlist of triggerInformationList; let i = index">
+              <td>{{i+1}}</td>
+              <td>{{triggerinformationlist['frequency']}}</td>
+              <td>{{triggerinformationlist['startDate'] | date : 'dd-MM-yyyy'}} To {{triggerinformationlist['endDate'] |
+                date : 'dd-MM-yyyy'}}
+              </td>
+              <td>{{triggerinformationlist['triggerDate'] | date : 'dd-MM-yyyy'}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <button type="submit" class="btn-success MR-5" [disabled]="addTriggerInfoForm.invalid"
+                (click)="isConfirmData(1)">Submit
+        </button>
+        <button type="button" class="btn-primary MR-5" (click)="onClickShowForm()">Back</button>
+      </div>
+    </form>
+  </div>
+</div>

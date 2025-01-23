@@ -1,0 +1,332 @@
+<!-- Admin (Administration) Update user Personal information html view -->
+<div class="admin-user-personal-information-container">
+  <!-- Start form view -->
+  <form [formGroup]="personalUserForm"
+        (submit)="onSubmitPersonalUserForm(personalUserForm.value,personalUserForm.valid)">
+    <div class="row">
+      <div class="col-md-4">
+        <div>
+          <a class="picture-upload" [ngClass]="{'hover-none' : false}">
+            <input id="updateImg" type="file" hidden (change)="onFileChange($event)" accept=".jpg,.jpeg,.png"/>
+            <img src="{{image_url}}" alt=""/>
+            <div (click)="onFileSelect('updateImg')" class="picture-upload__hover">
+              <i class="material-icons">edit</i>
+            </div>
+          </a>
+          <button type="button" (click)="removeImage()" class="btn-default remove-btn">Remove</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput type="text" placeholder="First Name" formControlName="user_fname" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_fname'))"
+                          [errMsg]="validationMsg.FIRST_NAME"></app-validation>
+          <app-validation *ngIf="isValidField(personalUserForm.get('user_fname'))"
+                          [errMsg]="validationMsg.FIRST_NAME_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Last Name" formControlName="user_lname" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_lname'))"
+                          [errMsg]="validationMsg.LAST_NAME"></app-validation>
+          <app-validation *ngIf="isValidField(personalUserForm.get('user_lname'))"
+                          [errMsg]="validationMsg.LAST_NAME_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput [max]="maxDateValue" [matDatepicker]="birthdayRef" placeholder="Birthdate"
+                 formControlName="user_birth" required/>
+          <mat-datepicker-toggle matSuffix [for]="birthdayRef"></mat-datepicker-toggle>
+          <mat-datepicker #birthdayRef disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_birth'))"
+                          [errMsg]="validationMsg.BIRTHDATE"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Login Name" formControlName="user_login_name" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_login_name'))"
+                          [errMsg]="validationMsg.USER_LOGIN_NAME"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Email Address" formControlName="email" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('email'))"
+                          [errMsg]="validationMsg.EMAIL_ADDRESS"></app-validation>
+          <app-validation *ngIf="isValidField(personalUserForm.get('email'))"
+                          [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput type="number" min="0" placeholder="Biotime ID" formControlName="user_bio_id" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_bio_id'))"
+                          [errMsg]="validationMsg.BIO_TIME_ID"></app-validation>
+          <app-validation *ngIf="isValidField(personalUserForm.get('user_bio_id'))"
+                          [errMsg]="validationMsg.BIO_TIME_ID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Login Access" formControlName="is_active" required>
+            <mat-option value="1">Open</mat-option>
+            <mat-option value="0">Block</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('is_active'))"
+                          [errMsg]="validationMsg.LOGIN_ACCESS"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Fill Timesheet from BDMS" formControlName="user_timesheet_fillup_flag" required>
+            <mat-option value="1">Yes</mat-option>
+            <mat-option value="0">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_timesheet_fillup_flag'))"
+                          [errMsg]="validationMsg.FILL_TIMESHEET"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput type="text" placeholder="User Writeoff" formControlName="user_writeoff" required/>
+          <mat-icon matSuffix>%</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_writeoff'))"
+                          [errMsg]="validationMsg.USER_WRITE"></app-validation>
+          <app-validation *ngIf="isValidField(personalUserForm.get('user_writeoff'))"
+                          [errMsg]="validationMsg.USER_WRITE_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Shift Name" formControlName="shift_id" required
+                      (selectionChange)="onShiftChange($event.value)">
+            <mat-option *ngFor="let shift of shiftList" [value]="shift?.id">
+              {{ shift?.shift_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('shift_id'))"
+                          [errMsg]="validationMsg.SHIFT_NAME"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput atp-time-picker placeholder="Shift Time [From]" [value]="selectedShift?.from_time"
+                 disabled="true"/>
+          <mat-icon matSuffix>query_builder</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-2 MT-5">
+        <mat-form-field>
+          <input matInput atp-time-picker placeholder="Shift Time [To]" [value]="selectedShift?.to_time"
+                 disabled="true"/>
+          <mat-icon matSuffix>query_builder</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-2 MT-5">
+        <mat-form-field>
+          <input matInput atp-time-picker placeholder="Grace Period" [value]="selectedShift?.grace_period"
+                 disabled="true"/>
+          <mat-icon matSuffix>query_builder</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-2 MT-5">
+        <mat-form-field>
+          <input matInput atp-time-picker placeholder="Final Cut Of" [value]="getFinalCutOf()" disabled="true"/>
+          <mat-icon matSuffix>query_builder</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-2 MT-5">
+        <mat-form-field>
+          <input matInput atp-time-picker placeholder="Consider Late Period" [value]="selectedShift?.late_period"
+                 disabled="true"/>
+          <mat-icon matSuffix>query_builder</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-2 MT-5">
+        <mat-form-field>
+          <input matInput atp-time-picker placeholder="Late Allowed Time" [value]="getAllowedTime()" disabled="true"/>
+          <mat-icon matSuffix>query_builder</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-2 MT-5">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Late Comming Allowed Count"
+                 [value]="selectedShift?.late_allowed_count" disabled="true"/>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput atp-time-picker placeholder="Break Time" [value]="selectedShift?.break_time" disabled="true"/>
+          <mat-icon matSuffix>query_builder</mat-icon>
+        </mat-form-field>
+        <div class="validation-msg"></div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Leave allow for" formControlName="leave_allow">
+            <mat-option *ngFor="let month of monthList" [value]="month?.key">
+              {{ month?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('leave_allow'))"
+                          [errMsg]="validationMsg.LEAVE_ALLOWED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Location" formControlName="location_id" required (selectionChange)="onChangeUpdateFoodData($event.value)">
+            <mat-option *ngFor="let location of locationList" [value]="location?.id">
+              {{ location?.location_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('location_id'))"
+                          [errMsg]="validationMsg.LOCATION"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5" *ngIf="isFood === 1">
+        <mat-form-field>
+          <mat-select placeholder="Need food on the office location?" formControlName="is_food" required>
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('location_id'))"
+                          [errMsg]="validationMsg.LOCATION"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput [matDatepicker]="joinRef" placeholder="Join Date"
+                 formControlName="user_joining_date" required/>
+          <mat-datepicker-toggle matSuffix [for]="joinRef"></mat-datepicker-toggle>
+          <mat-datepicker #joinRef disabled="false"></mat-datepicker>
+        </mat-form-field>
+
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_joining_date'))"
+                          [errMsg]="validationMsg.JOIN_DATE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+       <mat-form-field>
+          <mat-select placeholder="User Type" formControlName="user_type" required [disabled]="userDetail?.user_type === 0"
+                      (selectionChange)="onUserTypeChange($event.value)" readonly="true">
+            <mat-option *ngFor="let userTypeData of userTypeList.slice(1)" [value]="userTypeData?.key">
+              {{ userTypeData?.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('user_type'))"
+                          [errMsg]="validationMsg.USER_TYPE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5" *ngIf="personalUserForm.get('user_type').value === 0">
+        <mat-form-field>
+          <input matInput [matDatepicker]="prbdate" placeholder="Probation End Date"
+                 formControlName="probation_date"/>
+          <mat-datepicker-toggle matSuffix [for]="prbdate"></mat-datepicker-toggle>
+          <mat-datepicker #prbdate disabled="false"></mat-datepicker>
+        </mat-form-field>
+
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('probation_date'))"
+                          [errMsg]="validationMsg.PROBATION_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <input matInput [matDatepicker]="leftRef" placeholder="User Left Date"
+                 formControlName="user_left_date"/>
+          <mat-datepicker-toggle matSuffix [for]="leftRef"></mat-datepicker-toggle>
+          <mat-datepicker #leftRef disabled="false"></mat-datepicker>
+        </mat-form-field>
+
+        <div class="validation-msg">
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <mat-form-field>
+          <mat-select placeholder="Send Email" formControlName="send_email" required>
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(personalUserForm.get('send_email'))"
+                          [errMsg]="validationMsg.SEND_EMAIL"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-12 save-history-btns">
+        <button type="button" class="btn-default MR-10" (click)="onManageUser()">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="!personalUserForm.valid">Save</button>
+      </div>
+    </div>
+  </form>
+  <!-- End form view -->
+</div>

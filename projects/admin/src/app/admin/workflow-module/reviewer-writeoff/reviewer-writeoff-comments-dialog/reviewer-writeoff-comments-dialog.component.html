@@ -1,0 +1,128 @@
+<!--  Start Sub Client List dialog  -->
+<div class="befree-comment">
+  <div class="modal__header">
+    <div class="modal__header__logo">{{isEditOrView === 0 ? 'VIEW REASON' : 'UPDATE REASON'}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <div class="row">
+      <div class="col-md-12 PLR-0">
+        <!-- Star comments details -->
+        <div class="update-reason-details">
+          <div class="row">
+            <div class="row col-md-6 PLR-0">
+              <div class="col-md-6">
+                <label>Client name</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{reviewWriteOffData?.entity_id?.trading_name}}</span>
+              </div>
+            </div>
+            <div class="row col-md-6 PLR-0">
+              <div class="col-md-6">
+                <label> Timesheet unit</label>
+              </div>
+              <div class="col-md-6">
+                <span class="primary-color">{{reviewWriteOffData?.timesheet_unit}}</span>
+              </div>
+            </div>
+
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Worksheet period</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{(reviewWriteOffData?.worksheet_id?.start_date | date :'dd-MM-yyyy') + ' TO ' +
+                (reviewWriteOffData?.worksheet_id?.end_date | date :'dd-MM-yyyy')}}</span>
+              </div>
+            </div>
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label> Budgeted unit</label>
+              </div>
+              <div class="col-md-6">
+                <span class="primary-color">{{reviewWriteOffData?.budgeted_unit}}</span>
+              </div>
+            </div>
+
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>User Name</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{reviewWriteOffData?.reviewer_id?.userfullname}}</span>
+              </div>
+            </div>
+          </div>
+          <form [formGroup]="reviwerReasoncommentForm" (submit)="onSumbitReason(reviwerReasoncommentForm)"
+                *ngIf="isEditOrView === 1">
+            <div class="row">
+              <div class="row col-md-12 PLR-0 MT-30">
+                <div class="col-md-3">
+                  <label>Add Reason</label>
+                </div>
+                <div class="col-md-9 PLR-0">
+                  <div class="col-md-12" *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+                    <mat-checkbox [checked]="filterGroup.value['selected'] === 1"
+                                  (change)="changeUpdateReviewerWriteOff($event.checked, filterGroup, i, filterGroup.value['id'])">
+                      {{filterGroup.value['reason']}}
+                    </mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-9 MT-10">
+                <mat-form-field>
+                  <textarea matInput placeholder="Additional Comment" rows="3"
+                            formControlName="reviewer_comment"></textarea>
+                </mat-form-field>
+                <div class="validation-msg">
+                  <app-validation *ngIf="isRequiredField(reviwerReasoncommentForm.get('reviewer_comment'))"
+                                  [errMsg]="validationMsg.ADDITIONAL_COMMENT_REQUIRED"></app-validation>
+                </div>
+              </div>
+
+              <div class="col-md-3 MT-30 text-right">
+                <button [disabled]="reviwerReasoncommentForm.invalid" class="btn-primary" type="submit">Send to
+                  Technical Head
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="row" *ngIf="isEditOrView === 0">
+            <div class="row col-md-12 PLR-0 MT-30">
+              <div class="col-md-3">
+                <label>Reason</label>
+              </div>
+              <div class="col-md-9 PLR-0">
+                <p *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+                  <mat-icon *ngIf="filterGroup.value['selected'] === 0" class="gray-color v-align-middle">clear
+                  </mat-icon>
+                  <mat-icon *ngIf="filterGroup.value['selected'] === 1" class="turquoise-color v-align-middle">done
+                  </mat-icon>
+                  {{filterGroup.value['reason']}}
+                </p>
+              </div>
+            </div>
+
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Reviewer Comment </label>
+              </div>
+              <div class="col-md-6">
+                <span>{{reviewWriteOffData?.reviewer_comment}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

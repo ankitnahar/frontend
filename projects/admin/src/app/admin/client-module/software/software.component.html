@@ -1,0 +1,308 @@
+<!-- Admin (Client) Software Container -->
+<div class="software-container client-open-menu-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">SOFTWARE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Add Edit Account Selector -->
+  <app-add-edit-software *ngIf="tabData['add_edit']" [softwareRecord]="selectedSoftwareRecord"
+                         [panelStatus]="isEditSoftware"
+                         [softwareMasterList]="softwareMasterList"
+                         (onAddUpdate)="getClientSoftwareList(page, sortBy, sortOrder)"></app-add-edit-software>
+  <!-- End Add Edit Account Selector -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3>Software</h3>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+          </ul>
+          <!--<div class="grid-search">-->
+          <!--<div class="add-one">-->
+          <!--<input placeholder="Search" type="text">-->
+          <!--<span class="prefix">-->
+          <!--<i class="material-icons">search</i>-->
+          <!--</span>-->
+          <!--</div>-->
+          <!--</div>-->
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Software" formControlName="software_id">
+                  <mat-option *ngFor="let softwareData of softwareMasterList" [value]="softwareData.id">
+                    {{softwareData.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Username" formControlName="username"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="URL Link" formControlName="link"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Note" formControlName="notes"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-9 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="entityIdField.value">
+          <span class="tag__title">Trading Name :</span>
+          <span>
+            <ng-select [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+            </ng-select>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('entity', 'entity_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="softwareIdField.value">
+          <span class="tag__title">Software :</span>
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="Software"
+                          readonly
+                          formControlName="software_id"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                          #selectRef>
+                <mat-option *ngFor="let softwareData of softwareMasterList" [value]="softwareData.id">{{softwareData.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('software_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="usernameField.value">
+          <span class="tag__title">User Name :</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="Username" formControlName="username"/>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('username')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="linkField.value">
+          <span class="tag__title">URL Link :</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="link" formControlName="link"/>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('link')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="noteField.value">
+          <span class="tag__title">Note :</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="notes"/>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('notes')">close</i>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="entityIdField.value || softwareIdField.value || usernameField.value || linkField.value || noteField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container table-no-striped">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+
+            <th width="20%"
+                (click)="getSortData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Trading Name
+              <i *ngIf="sortBy === 'trading_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+                {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%"
+                (click)="getSortData('name', sortBy === 'name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Software
+              <i *ngIf="sortBy === 'name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'name' && sortOrder === 'desc'}">
+                {{sortBy === 'name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%"
+                (click)="getSortData('username', sortBy === 'username' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Username
+              <i *ngIf="sortBy === 'username'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'username' && sortOrder === 'asc', 'icon-down' :  sortBy === 'username' && sortOrder === 'desc'}">
+                {{sortBy === 'username' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%"
+                (click)="getSortData('password', sortBy === 'password' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Password
+              <i *ngIf="sortBy === 'password'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'password' && sortOrder === 'asc', 'icon-down' :  sortBy === 'password' && sortOrder === 'desc'}">
+                {{sortBy === 'password' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="17%"
+                (click)="getSortData('link', sortBy === 'link' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">URL
+              Link
+              <i *ngIf="sortBy === 'link'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'link' && sortOrder === 'asc', 'icon-down' :  sortBy === 'link' && sortOrder === 'desc'}">
+                {{sortBy === 'link' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="20%"
+                (click)="getSortData('notes', sortBy === 'notes' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Note
+              <i *ngIf="sortBy === 'notes'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'notes' && sortOrder === 'asc', 'icon-down' :  sortBy === 'notes' && sortOrder === 'desc'}">
+                {{sortBy === 'notes' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="8%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table *ngIf="softwareList.length">
+            <tbody>
+            <tr *ngFor="let software of softwareList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="20%" class="word-break">{{software?.entity_id?.trading_name | checkEmpty}}</td>
+              <td width="10%">{{software?.software_id.name | checkEmpty}}</td>
+              <td width="10%">{{software?.username | checkEmpty}}</td>
+              <td width="10%">{{software?.password | checkEmpty}}</td>
+              <td width="17%" class="word-break max_word_break">{{software?.link | checkEmpty}}</td>
+              <td width="20%" class="word-break">{{software?.notes | checkEmpty}}</td>
+              <td width="8%">
+                <mat-icon class="orange-color" *ngIf="tabData['add_edit']" (click)="updateSoftware(software)">edit
+                </mat-icon>
+                <mat-icon class="red-color" *ngIf="tabData['delete']" (click)="onOpensoftwareModal(software)">delete
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="softwareList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+  <div *ngIf="softwareList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Data Grid -->
+</div>
+
+
+<!-- Start History modal-->
+<!--<div *ngIf="isOpenHistoryDialog">
+  <app-update-client-history (close)="isOpenHistoryDialog = false"></app-update-client-history>
+</div>-->
+<!-- End History modal-->

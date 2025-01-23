@@ -1,0 +1,5 @@
+<div class="no-data-found">
+  <i *ngIf="!(noDataMsg == loading)" class="fa fa-exclamation-triangle"></i>
+  <i *ngIf="noDataMsg == loading" class="fa fa-refresh"></i>
+  <h4>{{noDataMsg}}</h4>
+</div>

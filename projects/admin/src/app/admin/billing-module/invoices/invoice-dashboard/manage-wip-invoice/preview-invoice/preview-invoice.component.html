@@ -1,0 +1,321 @@
+<div class="admin-wip-preview-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a [routerLink]="invoiceUrl" class="primary-color"> INVOICE </a></span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="isView === 1 ? manageWIPInvoiceView() : manageWIPInvoice()"> MANAGE WIP INVOICE </a></span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>WIP PREVIEW | {{entityName}} {{period}}</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('previousInvoices')">Previous Invoices</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('billingInformation')">Billing Information</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('pendingTickets')">Pending Tickets</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('completedTickets')">Completed Tickets</button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="wip-preview-invoice-body" *ngIf="isView === 0">
+    <h2>Invoice Preview</h2>
+    <!-- Start Grid Section -->
+    <div class="table-section">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="text-right">
+            <button type="button" class="btn-primary" (click)="getDataInRightPreview()">Copy to final Description
+            </button>
+          </div>
+          <div class="table-container">
+            <div class="table-block">
+              <table>
+                <thead>
+                <tr>
+                  <th>
+                    <mat-checkbox [checked]="is_CheckedAll"
+                                  (change)="checkStandardDescriptionToAll($event.checked,'is_checked')"></mat-checkbox>
+                  </th>
+                  <th>Standard Description</th>
+                  <th>Standard Amount</th>
+                  <th>Standard Account</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let leftrow of leftPreview">
+                  <td>
+                    <mat-checkbox [checked]="(leftrow['is_checked']) ? true : false"
+                                  (change)="checkStandardDescription($event.checked, leftrow)"></mat-checkbox>
+                  </td>
+                  <td>{{leftrow['description']}}</td>
+                  <td>{{leftrow['amount'] ? leftrow['amount'] : ''}}</td>
+                  <td>{{leftrow['inv_account_id'] ? getAccountCodeWithName(leftrow['inv_account_id']) : ''}}
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 PL-0">
+          <div class="text-right">
+            <button type="button" class="btn-primary" (click)="addBlankLineToRightPreview()">Add blank line to final
+              description
+            </button>
+          </div>
+          <div class="table-container" *ngIf="rightPreview.length">
+            <div class="table-block">
+              <table>
+                <thead>
+                <tr>
+                  <th>Final Description</th>
+                  <th>Final Amount</th>
+                  <th>Final Account</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody [dragula]='"handle-sort-order"' [dragulaModel]="rightPreview"
+                       (dragulaModelChange)="rightPreview = $event">
+                <tr *ngFor="let rightrow of rightPreview; let i = index">
+                  <td>
+                    <mat-form-field>
+                        <textarea matInput placeholder="Enter Description" [(ngModel)]="rightrow['description_data']"
+                                  value="{{rightrow['description_data']}}" [matTextareaAutosize]
+                                  matAutosizeMinRows="3"></textarea>
+                    </mat-form-field>
+                  </td>
+
+                  <td>
+                    <mat-form-field class="MT-10">
+                      <input matInput type="number" name="amount_data" [(ngModel)]="rightrow['amount_data']"
+                             (change)="calculateAmountOfRightPreview()" placeholder="Enter Amount"
+                             value="{{rightrow['amount_data'] ? rightrow['amount_data'] : ''}}"/>
+                    </mat-form-field>
+                  </td>
+
+                  <td>
+                    <mat-form-field class="MT-10">
+                      <mat-select placeholder="Please Select" [(ngModel)]="+rightrow['inv_account_id_data']"
+                                  [value]="(rightrow['inv_account_id_data']) ? +rightrow['inv_account_id_data'] : ''">
+                        <mat-option>None</mat-option>
+                        <mat-option *ngFor="let accountCode of accountCodeList" [value]="+accountCode?.id">
+                          {{ accountCode?.account_no}} - {{ accountCode?.account_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <span class="handle cursor-pointer"><mat-icon [matTooltip]="'Drag column'">drag_indicator</mat-icon></span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Section -->
+
+    <!-- Start Amount Section -->
+    <div class="amount-section">
+      <div class="row">
+        <div class="col-md-6 totalAmount">
+          <div>
+            <span>Gross Amount</span><label>(As per wip)</label>: <label class="fw-500">${{grossAmountAsWip}}</label>
+          </div>
+
+          <div class="MT-10">
+            <span>Gross Amount</span><label>(As per preview)</label>: <label
+            class="fw-500">${{grossAmountAsPreview}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="totalBilling">
+
+            <div *ngIf="discountAdvanceFee > 0"><label>Advance Fee:</label> <span>${{discountAdvanceFee}}</span></div>
+
+            <div *ngIf="discountAmount > 0"><label>Discount:</label> <span>${{discountAmount}}</span></div>
+
+            <div><label>Net Amount:</label> <span>${{netAmount}}</span></div>
+
+            <div><label>Card Surcharge:</label> <span>${{surchargeAmount}}</span></div>
+
+            <div><label>GST (10%):</label> <span>${{gstAmount}}</span></div>
+
+            <mat-divider></mat-divider>
+
+            <div>
+              <label class="grand-total-label fw-500">Total Inc. GST:</label> <span class="primary-color">${{totalAmount}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Action Buttons -->
+        <div class="col-md-6 MT-15">
+          <div>
+            <button class="btn-success MR-5" (click)="onConfirmDialog(invoiceStatusData.status_id, 0)"
+                    *ngIf="btnSaveGoBack">
+              Save & Go Back
+            </button>
+            <button class="btn-default" (click)="manageWIPInvoice()" *ngIf="btnGoBack">Go Back</button>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-15">
+          <div class="text-right">
+            <button type="button" class="btn-orange btn-bordered" (click)="onConfirmDialog(ATH, 1)" *ngIf="btnSTH">Send
+              for Technical
+              Head
+            </button>
+            <button type="button" class="btn-primary btn-bordered ML-10" (click)="onConfirmDialog(ABA, 1)"
+                    *ngIf="btnSBAT">Send for
+              Billing Team
+              Approval
+            </button>
+            <button type="button" class="btn-orange btn-bordered ML-10" (click)="onConfirmDialog(AMR, 1)"
+                    *ngIf="btnAPI && merge_invoice === 1">Approve Invoice
+            </button>
+            <button type="button" class="btn-orange btn-bordered ML-10" (click)="onConfirmDialog(STC, 1)"
+                    *ngIf="btnAPI && merge_invoice === 0">Approve Invoice
+            </button>
+          </div>
+        </div>
+        <!-- End Action Buttons -->
+      </div>
+    </div>
+  </div>
+
+  <div class="wip-preview-invoice-body" *ngIf="isView === 1">
+    <h2>Invoice Preview</h2>
+    <!-- Start Grid Section -->
+    <div class="table-section">
+      <div class="row">
+        <div class="{{!hideLeftDesc ? 'col-md-6' : ''}}" *ngIf="!hideLeftDesc">
+          <div class="table-container">
+            <div class="table-block">
+              <table>
+                <thead>
+                <tr>
+                  <th>Standard Description</th>
+                  <th>Standard Amount</th>
+                  <th>Standard Account</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let leftrow of leftPreview">
+                  <td>{{leftrow['description']}}</td>
+                  <td>{{leftrow['amount'] ? leftrow['amount'] : ''}}</td>
+                  <td>{{leftrow['inv_account_id'] ? getAccountCodeWithName(leftrow['inv_account_id']) : ''}}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="{{!hideLeftDesc ? 'col-md-6' : 'col-md-12'}}">
+          <div class="table-container" *ngIf="rightPreview.length">
+            <div class="table-block">
+              <table>
+                <thead>
+                <tr>
+                  <th>Final Description</th>
+                  <th>Final Amount</th>
+                  <th>Final Account</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let rightrow of rightPreview; let i = index">
+                  <td>{{rightrow['description_data']}}</td>
+                  <td>{{rightrow['amount_data']}}</td>
+                  <td><span *ngIf="rightrow['inv_account_id_data'] !== ''">{{getAccountCodeWithName(rightrow['inv_account_id_data'])}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Section -->
+
+    <!-- Start Amount Section -->
+    <div class="amount-section">
+      <div class="row">
+        <div class="col-md-6 totalAmount">
+          <div>
+            <span>Gross Amount</span><label>(As per wip)</label>: <label>${{grossAmountAsWip}}</label>
+          </div>
+
+          <div class="MT-10">
+            <span>Gross Amount</span><label>(As per preview)</label>: <label>${{grossAmountAsPreview}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="totalBilling">
+
+            <div *ngIf="discountAdvanceFee > 0"><label>Advance Fee:</label> <span>${{discountAdvanceFee}}</span></div>
+
+            <div *ngIf="discountAmount > 0"><label>Discount:</label> <span>${{discountAmount}}</span></div>
+
+            <div><label>Net Amount:</label> <span>${{netAmount}}</span></div>
+
+            <div><label>Card Surcharge:</label> <span>${{surchargeAmount}}</span></div>
+
+            <div><label>GST (10%):</label> <span>${{gstAmount}}</span></div>
+
+            <mat-divider></mat-divider>
+
+            <div>
+              <label class="grand-total-label">Total Inc. GST:</label> <span>${{totalAmount}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Action Buttons -->
+        <div class="col-md-6 MT-15">
+          <div>
+            <button class="btn-primary" (click)="manageWIPInvoiceView()" *ngIf="btnGoBack">Go Back</button>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-15">
+          <div class="text-right">
+
+          </div>
+        </div>
+        <!-- End Action Buttons -->
+      </div>
+    </div>
+  </div>
+</div>

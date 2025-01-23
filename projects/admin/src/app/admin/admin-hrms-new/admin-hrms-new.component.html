@@ -1,0 +1,626 @@
+<div class="hrms-container">
+  <div class="row col-md-12">
+    <div class="row col-md-12 PLR-0">
+      <div class="col-md-8 PL-0 MT-15">
+        <h3 class="bredcum_title">
+          <mat-icon class="v-align-middle MR-5">dashboard</mat-icon>
+          My Dashboard
+        </h3>
+      </div>
+      <div class="col-md-2 PR-0">
+        <mat-form-field floatLabel="never" *ngIf="masterMenuList.length">
+          <mat-select placeholder="Months" (selectionChange)="onChangeTypeOfView($event.value)"
+                      [value]="masterMenuList[0]['type']">
+            <mat-option *ngFor="let masterMenu of masterMenuList;" [value]="masterMenu.type">{{masterMenu.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 PR-0">
+        <mat-form-field floatLabel="never" *ngIf="yearMonth.length">
+          <mat-select placeholder="Months" (selectionChange)="onChangeGetValue($event.value)"
+                      [value]="yearMonth[0]['key']">
+            <mat-option *ngFor="let year of yearMonth;" [value]="year.key">{{year.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col-md-2 PL-0">
+      <mat-card class="counter">
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MB-10">
+              <a (click)="attendanceSummary('2', selectedYearMonth, 'adminView', 'status')" *ngIf="typeOfView === 1">
+                <label>{{dashboardDetail?.adminView?.pendingRequest}}</label>
+              </a>
+              <a (click)="attendanceSummary('2', selectedYearMonth, 'myView', 'status')" *ngIf="typeOfView === 2">
+                <label>{{dashboardDetail?.myView?.pendingRequest}}</label>
+              </a>
+              <a (click)="attendanceSummary('2', selectedYearMonth, 'teamView', 'status')" *ngIf="typeOfView === 3">
+                <label>{{dashboardDetail?.teamView?.pendingRequest}}</label>
+              </a>
+            </li>
+          </ul>
+        </mat-card-content>
+        <mat-card-footer>Pending Request</mat-card-footer>
+      </mat-card>
+    </div>
+    <div class="col-md-2 PL-0">
+      <mat-card class="counter">
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MB-10">
+              <a (click)="attendanceSummary('3,4', selectedYearMonth, 'adminView', 'status')" *ngIf="typeOfView === 1">
+                <label class="l2">{{dashboardDetail?.adminView?.pendingForApproval}}</label>
+              </a>
+              <a (click)="attendanceSummary('3,4', selectedYearMonth, 'myView', 'status')" *ngIf="typeOfView === 2">
+                <label class="l2">{{dashboardDetail?.myView?.pendingForApproval}}</label>
+              </a>
+              <a (click)="attendanceSummary('3,4', selectedYearMonth, 'teamView', 'status')" *ngIf="typeOfView === 3">
+                <label class="l2">{{dashboardDetail?.teamView?.pendingForApproval}}</label>
+              </a>
+            </li>
+          </ul>
+        </mat-card-content>
+        <mat-card-footer>Pending Approval</mat-card-footer>
+      </mat-card>
+    </div>
+    <div class="col-md-2 PL-0">
+      <mat-card class="counter">
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MB-10">
+              <a (click)="attendanceSummary('6', selectedYearMonth, 'adminView', 'status')" *ngIf="typeOfView === 1">
+                <label class="13">{{dashboardDetail?.adminView?.rejected}}</label>
+              </a>
+              <a (click)="attendanceSummary('6', selectedYearMonth, 'myView', 'status')" *ngIf="typeOfView === 2">
+                <label class="13">{{dashboardDetail?.myView?.rejected}}</label>
+              </a>
+              <a (click)="attendanceSummary('6', selectedYearMonth, 'teamView', 'status')" *ngIf="typeOfView === 3">
+                <label class="13">{{dashboardDetail?.teamView?.rejected}}</label>
+              </a>
+            </li>
+          </ul>
+        </mat-card-content>
+        <mat-card-footer>Rejected</mat-card-footer>
+      </mat-card>
+    </div>
+    <div class="col-md-2 PL-0">
+      <mat-card class="counter">
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MB-10">
+              <a (click)="attendanceSummary('5', selectedYearMonth, 'adminView', 'status')" *ngIf="typeOfView === 1">
+                <label class="14">{{dashboardDetail?.adminView?.approved}}</label>
+              </a>
+              <a (click)="attendanceSummary('5', selectedYearMonth, 'myView', 'status')" *ngIf="typeOfView === 2">
+                <label class="14">{{dashboardDetail?.myView?.approved}}</label>
+              </a>
+              <a (click)="attendanceSummary('5', selectedYearMonth, 'teamView', 'status')" *ngIf="typeOfView === 3">
+                <label class="14">{{dashboardDetail?.teamView?.approved}}</label>
+              </a>
+            </li>
+          </ul>
+        </mat-card-content>
+        <mat-card-footer>Approved</mat-card-footer>
+      </mat-card>
+    </div>
+    <div class="col-md-2 PL-0">
+      <mat-card class="counter">
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MB-10">
+              <a (click)="attendanceSummary('0', selectedYearMonth, 'adminView', 'stage_id')" *ngIf="typeOfView === 1">
+                <label class="15">{{dashboardDetail?.adminView?.pendingTimesheet}}</label>
+              </a>
+              <a (click)="attendanceSummary('0', selectedYearMonth, 'myView', 'stage_id')" *ngIf="typeOfView === 2">
+                <label class="15">{{dashboardDetail?.myView?.pendingTimesheet}}</label>
+              </a>
+              <a (click)="attendanceSummary('0', selectedYearMonth, 'teamView', 'stage_id')" *ngIf="typeOfView === 3">
+                <label class="15">{{dashboardDetail?.teamView?.pendingTimesheet}}</label>
+              </a>
+            </li>
+          </ul>
+        </mat-card-content>
+        <mat-card-footer>Pending Timesheet</mat-card-footer>
+      </mat-card>
+    </div>
+    <div class="col-md-2 PLR-0">
+      <mat-card class="counter">
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MB-10">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'adminView', 'stage_id')" *ngIf="typeOfView === 1">
+                <label class="l6">{{dashboardDetail?.adminView?.approvePendingTimesheet}}</label>
+              </a>
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'myView', 'stage_id')" *ngIf="typeOfView === 2">
+                <label class="l6">{{dashboardDetail?.myView?.approvePendingTimesheet}}</label>
+              </a>
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'teamView', 'stage_id')" *ngIf="typeOfView === 3">
+                <label class="l6">{{dashboardDetail?.teamView?.approvePendingTimesheet}}</label>
+              </a>
+            </li>
+          </ul>
+        </mat-card-content>
+        <mat-card-footer>Approved Timesheet</mat-card-footer>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="row col-md-12 MT-15">
+    <div class="col-md-4 PL-0">
+      <mat-card class="attendance">
+        <mat-card-header>
+          <mat-card-title>AL & HW</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="text-center">
+          <div class="row col-md-12 PLR-0 MT-10">
+            <div class="col-md-7 PL-0">
+              <mat-card class="counter">
+                <mat-card-content class="text-center">
+                  <ul>
+                    <li class="MB-10">
+                      <a (click)="onHolidayRequestcount()"
+                         *ngIf="typeOfView === 1">
+                        <label class="13">{{dashboardDetail?.adminView?.HoildayRequest}}</label>
+                      </a>
+                      <a (click)="onHolidayRequestcount()"
+                         *ngIf="typeOfView === 2">
+                        <label class="13">{{dashboardDetail?.myView?.HoildayRequest}}</label>
+                      </a>
+                      <a (click)="onHolidayRequestcount()"
+                         *ngIf="typeOfView === 3">
+                        <label class="13">{{dashboardDetail?.teamView?.HoildayRequest}}</label>
+                      </a>
+                    </li>
+                  </ul>
+                </mat-card-content>
+                <mat-card-footer>Holiday Request</mat-card-footer>
+              </mat-card>
+            </div>
+            <div class="col-md-5 PLR-0">
+              <mat-card class="counter">
+                <mat-card-content class="text-center">
+                  <ul>
+                    <li class="MB-10">
+                      <a (click)="onLeaveRequestcount()"
+                         *ngIf="typeOfView === 1">
+                        <label class="13">{{dashboardDetail?.adminView?.LeaveRequest}}</label>
+                      </a>
+                      <a (click)="onLeaveRequestcount()"
+                         *ngIf="typeOfView === 2">
+                        <label class="13">{{dashboardDetail?.myView?.LeaveRequest}}</label>
+                      </a>
+                      <a (click)="onLeaveRequestcount()"
+                         *ngIf="typeOfView === 3">
+                        <label class="13">{{dashboardDetail?.teamView?.LeaveRequest}}</label>
+                      </a>
+                    </li>
+                  </ul>
+                </mat-card-content>
+                <mat-card-footer>Leave Request</mat-card-footer>
+              </mat-card>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="leave_details MT-10">
+        <mat-card-header>
+          <mat-card-title><h3>Leave Details</h3>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="text-center">
+          <div class="row">
+            <!--   <div class="col-md-12">
+                 <div class="summary-section">
+                   <canvas baseChart
+                           [datasets]="barChartData"
+                           [labels]="barChartLabels"
+                           [options]="barChartOptions"
+                           [plugins]="barChartPlugins"
+                           [legend]="barChartLegend"
+                           [chartType]="barChartType"
+                           height="250">
+                   </canvas>
+                 </div>
+               </div>-->
+            <div class="col-md-3 request-count MT-15">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'adminView', 'remark')" *ngIf="typeOfView === 1">
+                <h3>{{dashboardDetail?.adminView?.latecoming}}</h3>
+              </a>
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'myView', 'remark')" *ngIf="typeOfView === 2">
+                <h3>{{dashboardDetail?.myView?.latecoming}}</h3>
+              </a>
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'teamView', 'remark')" *ngIf="typeOfView === 3">
+                <h3>{{dashboardDetail?.teamView?.latecoming}}</h3>
+              </a>
+              <label>Late Coming</label>
+            </div>
+
+            <div class="col-md-3 request-count MT-15">
+              <a (click)="attendanceSummary('4', selectedYearMonth, 'adminView', 'remark')" *ngIf="typeOfView === 1">
+                <h3>{{dashboardDetail?.adminView?.earlyleaving}}</h3>
+              </a>
+              <a (click)="attendanceSummary('4', selectedYearMonth, 'myView', 'remark')" *ngIf="typeOfView === 2">
+                <h3>{{dashboardDetail?.myView?.earlyleaving}}</h3>
+              </a>
+              <a (click)="attendanceSummary('4', selectedYearMonth, 'teamView', 'remark')" *ngIf="typeOfView === 3">
+                <h3>{{dashboardDetail?.teamView?.earlyleaving}}</h3>
+              </a>
+              <label>Early Leaving</label>
+            </div>
+
+            <div class="col-md-3 request-count MT-15">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'adminView', 'finalremark')"
+                 *ngIf="typeOfView === 1">
+                <h3>{{dashboardDetail?.adminView?.leave}}</h3>
+              </a>
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'myView', 'finalremark')" *ngIf="typeOfView === 2">
+                <h3>{{dashboardDetail?.myView?.leave}}</h3>
+              </a>
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'teamView', 'finalremark')"
+                 *ngIf="typeOfView === 3">
+                <h3>{{dashboardDetail?.teamView?.leave}}</h3>
+              </a>
+              <label>Leave</label>
+            </div>
+
+            <div class="col-md-3 request-count MT-15">
+              <a (click)="attendanceSummary('1', selectedYearMonth, 'adminView', 'finalremark')"
+                 *ngIf="typeOfView === 1">
+                <h3>{{dashboardDetail?.adminView?.halfday}}</h3>
+              </a>
+              <a (click)="attendanceSummary('1', selectedYearMonth, 'myView', 'finalremark')" *ngIf="typeOfView === 2">
+                <h3>{{dashboardDetail?.myView?.halfday}}</h3>
+              </a>
+              <a (click)="attendanceSummary('1', selectedYearMonth, 'teamView', 'finalremark')"
+                 *ngIf="typeOfView === 3">
+                <h3>{{dashboardDetail?.teamView?.halfday}}</h3>
+              </a>
+              <label>Half Day</label>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="read_policy MT-10">
+        <mat-card-header>
+          <mat-card-title>Quick Links</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="text-center">
+          <div class="list-parent-section">
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onAwardeeOfTheMonths()" class="cursor-pointer">Awardee of the Month</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onReadPolicies()" class="cursor-pointer">Read Policies</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list"
+                *ngIf="isAddTimesheetButtonRights && userData?.user_timesheet_fillup_flag === 1">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3><a (click)="onAddTimeSheet()" class="cursor-pointer">Add Timesheet</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onDailyReport()" class="cursor-pointer">Daily Report</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onTodaysTimesheet()" class="cursor-pointer">Today's Timesheet</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3 *ngIf="isInCompletedWorksheet['view']"><a (click)="onOpenTodaysIncompletedWorksheet()"
+                                                              class="cursor-pointer">Worksheet</a>
+                </h3>
+                <h3 *ngIf="!isInCompletedWorksheet['view']"><a (click)="onWorksheet()"
+                                                               class="cursor-pointer">Worksheet</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list" *ngIf="securityCodeTabData['view']">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onSecurityCode()" class="cursor-pointer">Security Code</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a class="cursor-pointer"
+                       (click)="onHREFURL('https://docs.google.com/spreadsheets/d/10ceidL5LlnUKFlSP7N1Uk957Amq1wM3EkT6Wfus2Dx4/edit?ts=5dbaa7eb#gid=1180721457')">BK
+                  Knowledge Bank</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a class="cursor-pointer"
+                       (click)="onHREFURL('https://docs.google.com/spreadsheets/d/10ceidL5LlnUKFlSP7N1Uk957Amq1wM3EkT6Wfus2Dx4/edit?ts=5dbaa7eb#gid=1180721457')">Knowledge Bank - BS-AU</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a class="cursor-pointer"
+                       (click)="onHREFURL('https://docs.google.com/spreadsheets/d/1MJdBlrAL_-zvsiBRJHlz_qVM5QUGSVMovhA84ZIXYUI/edit#gid=1609323003')">Payroll
+                  Knowledge Bank</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list" *ngIf="userData.designation_id.designation_id === 7" >
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3><a class="cursor-pointer" (click)="onMsaLink()" >MSA Links</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon class="user-avtar">keyboard_arrow_right</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3><a class="cursor-pointer" (click)="onBrandDocs()" >Brand Portal</a></h3>
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-md-4 PL-0">
+      <mat-card class="attendance">
+        <mat-card-header>
+          <mat-card-title>Attendance</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="text-center">
+          <button *ngIf="hrDetail?.punch_in == null" class="btn-primary MR-25 MT-15"
+                  (click)="onPunchIn()">
+            Checked - In
+          </button>
+          <label *ngIf="hrDetail?.punch_in != null" class="btn-success MR-25 MT-15">In:
+            {{hrDetail?.punch_in}}</label>
+          <button *ngIf="hrDetail?.punch_in != null && hrDetail?.punch_out == null"
+                  class="btn-orange MR-25 MT-15" (click)="onPunchOut()">
+            Checked - Out
+          </button>
+          <label *ngIf="hrDetail?.punch_out != null" class="btn-orange MR-25 MT-15">Out:
+            {{hrDetail?.punch_out}}</label>
+          <ul>
+            <li class="MT-25 MB-10">
+              <label>{{hrDetail?.date | date : 'dd-MM-yyyy'}}</label>
+              <h2 class="MT-10">{{currentWorkingHoursTime}} Hrs</h2>
+            </li>
+            <li class="MB-10">
+              <mat-progress-bar mode="determinate" value="{{currentWorkingHours}}"></mat-progress-bar>
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="attendance MT-10">
+        <mat-card-header>
+          <mat-card-title>Daily Motivation</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MT-25 MB-10">
+              <h3 class="MT-10 light-orange-color fw-500">
+                <!--<mat-icon class="quotation_left">format_quote</mat-icon>-->
+                {{motivation}}
+                <!--<mat-icon class="quotation_right">format_quote</mat-icon>-->
+              </h3>
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="read_policy MT-10">
+        <mat-card-header>
+          <mat-card-title>Holidays</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div class="list-parent-section">
+            <ul class="leave-request-list" *ngFor="let policy of readPoliciesHoliday;">
+              <li>
+                <mat-icon class="user-avtar">fiber_manual_record</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3>
+                  <a (click)="onOpenReadPolicies(policy)">{{policy?.name}}
+                  </a>
+                </h3>
+                <!--<h3>Last updated on {{policy?.created_on | date : 'dd-MM-yyy HH:mm:ss'}}</h3>-->
+              </li>
+              <li class="view-link cursor-pointer" (click)="onOpenReadPolicies(policy)">
+                <mat-icon>visibility</mat-icon>
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="read_policy MT-10">
+        <mat-card-header>
+          <mat-card-title>Today's Menu</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div class="list-parent-section" *ngIf="todaysMenu?.menu_name.split(',').length > 0">
+            <ul class="leave-request-list" *ngFor="let menuName of todaysMenu?.menu_name.split(',');">
+              <li>
+                <mat-icon class="user-avtar">fiber_manual_record</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3>
+                  <a >{{menuName}}
+                  </a>
+                </h3>
+              </li>
+              <li class="view-link cursor-pointer" (click)="onFeedbackMenuReviewDialog(todaysMenu, 1)">
+                <mat-icon class="green-color"  [matTooltip]="'Feedback'">assistant</mat-icon>
+              </li>
+            </ul>
+          </div>
+          <div class="" *ngIf="!todaysMenu || todaysMenu?.menu_name.split(',').length === 0">
+            <span class="PL-15 PB-20">There is no menu today.!</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-md-4 PLR-0">
+      <mat-card class="hrms_right_blue">
+        <mat-card-title>Birthday</mat-card-title>
+        <mat-card-content *ngIf="userBirthDayList.length">
+        <span class="user_img" *ngFor="let userList of userBirthDayList; let i = index">
+          <img src="{{url+userList?.user_image}}" [matTooltip]="userList?.userfullname" *ngIf="userList?.user_image"/>
+          <img src="assets/images/user.png" [matTooltip]="userList?.userfullname" *ngIf="!userList?.user_image"/>
+        </span>
+        </mat-card-content>
+        <mat-card-content *ngIf="!userBirthDayList.length">
+          <span class="PL-15 PB-20">No Birthday Today.!</span>
+        </mat-card-content>
+      </mat-card>
+<!--
+      <mat-card class="hrms_right_blue MT-10">
+        <mat-card-title>Awardee of the Month</mat-card-title>
+
+        <mat-card-content> <div class="row col-md-12 PLR-0 MT-10">
+          <div class="col-md-7 PL-0">
+            <mat-card class="counter">
+              <mat-card-content class="text-center">
+                <ul>
+                  <li class="MB-10">
+                    <a (click)="onAwardeeOfTheMonths()">
+                      <label class="13">2</label>
+                    </a>
+                  </li>
+                </ul>
+              </mat-card-content>
+              <mat-card-footer>Awardee In this Month</mat-card-footer>
+            </mat-card>
+          </div>
+          <div class="col-md-5 PLR-0">
+            <mat-card class="counter">
+              <mat-card-content class="text-center">
+                <ul>
+                  <li class="MB-10">
+                    <a (click)="onLeaveRequestcount()"
+                       *ngIf="typeOfView === 1">
+                      <label class="13">{{dashboardDetail?.adminView?.LeaveRequest}}</label>
+                    </a>
+                    <a (click)="onLeaveRequestcount()"
+                       *ngIf="typeOfView === 2">
+                      <label class="13">{{dashboardDetail?.myView?.LeaveRequest}}</label>
+                    </a>
+                    <a (click)="onLeaveRequestcount()"
+                       *ngIf="typeOfView === 3">
+                      <label class="13">{{dashboardDetail?.teamView?.LeaveRequest}}</label>
+                    </a>
+                  </li>
+                </ul>
+              </mat-card-content>
+              <mat-card-footer>Leave Request</mat-card-footer>
+            </mat-card>
+          </div>
+        </div></mat-card-content>
+
+        <mat-card-content *ngIf="nomineeList.length > 0">
+          <span class="user_img" *ngFor="let award of nomineeList; let i = index">
+          <img src="{{url+userList?.user_image}}" matTooltip="{{award?.userfullname}} - {{award?.name}} - {{award?.award_month}}" *ngIf="nomineeList?.user_image"/>
+          <img src="assets/images/user.png" matTooltip="{{award?.userfullname}} - {{award?.name}} - {{award?.award_month}}" *ngIf="!nomineeList?.user_image"/>
+          </span>
+          <span *ngIf="nomineeList.length ===0" class="panel-title">No Awards Found</span>
+        </mat-card-content>
+        <mat-card-content *ngIf="!nomineeList.length">
+          <span class="PL-15 PB-20">No Awardee in this month.!</span>
+        </mat-card-content>
+      </mat-card>
+-->
+      <mat-card class="hrms_right_blue MT-10">
+        <mat-card-title>Upcoming Holiday's</mat-card-title>
+        <mat-card-content>
+          <div class="upcoming_holiday">
+            <ul class="row leave-request-list col-md-12" *ngFor="let holidayList of upcomingHolidayList; let i=index">
+              <li class="col-md-1">
+                <mat-icon class="user-avtar PT-5">fiber_manual_record</mat-icon>
+              </li>
+              <li  class="user-details col-md-4 PL-0 PT-5"><h3 style="padding-top: 0;width: 10rem;white-space:break-spaces;">{{holidayList['description']}}</h3></li>
+              <li class="col-md-6 PL-0 PT-5">
+                <span
+                  class="">{{holidayList['date'] | date : 'dd-MM-yyyy'}}</span><span class="PL-5">{{holidayList['date'] | date : 'EEEE'}}</span>
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="hrms_right_blue MT-10">
+        <mat-card-title>New Hires</mat-card-title>
+        <mat-card-content>
+          <div class="list-parent-section announcementSection" *ngIf="userNewHireList.length">
+            <ul class="leave-request-list" *ngFor="let userList of userNewHireList; let i=index">
+              <li>
+                <img src="{{url+userList?.user_image}}" width="50" height="50" *ngIf="userList?.user_image"/>
+                <img src="assets/images/profile_placeholder.png" width="50" height="50" *ngIf="!userList?.user_image"/>
+              </li>
+              <li class="user-details">
+                <h3> {{userList?.userfullname}} <span>{{userList?.user_bio_id}} - {{userList?.designation_id?.designation_name}}</span>
+                </h3>
+                <label> {{userList?.department_id?.department_name}}, {{userList?.location_id?.location_name}}</label>
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="!userNewHireList.length" class="PL-15 PB-20">No New Hires!</div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </div>
+
+</div>

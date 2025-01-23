@@ -1,0 +1,200 @@
+<div class="additional-payroll-activity-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"> <a (click)="onSubActivity()">SUB ACTIVITY CALCULATOR</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">ADDITIONAL PAYROLL ACTIVITY SCHEDULE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--Start Additional Payroll Activity Schedule form-->
+  <!--<div class="payroll-container">-->
+  <!--<div class="calculator-section">-->
+  <!--<h2>Additional Payroll Activity Schedule</h2>-->
+  <!--<form>-->
+  <!--<div class="row MT-10">-->
+  <!--<div class="col-md-8">-->
+  <!--<label class="MR-20">Sub Activity Calculator Name </label>-->
+  <!--<input/>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</form>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="payroll-container">-->
+  <!--<div class="calculator-section">-->
+  <!--<h2>Hemadri Sub Activity Schedule</h2>-->
+  <!--<form>-->
+  <!--<div class="PLR-10">-->
+  <!--<div class="table-container">-->
+  <!--<div class="table-block">-->
+  <!--<table class="table">-->
+  <!--<thead>-->
+  <!--<tr>-->
+  <!--<th width="5%">S.No</th>-->
+  <!--<th width="35%">Sub Activity</th>-->
+  <!--<th width="12%">Agreement Tearms?</th>-->
+  <!--<th width="5%">Frequency</th>-->
+  <!--<th width="23%">Price</th>-->
+  <!--<th width="10%">No. Of Employees</th>-->
+  <!--</tr>-->
+  <!--</thead>-->
+  <!--<tbody>-->
+  <!--<tr>-->
+  <!--<td width="5%">1</td>-->
+  <!--<td width="35%">425-Annual PAYG Statement Summary/EMPDUPE File Lodged with AT</td>-->
+  <!--<td width="12%">2568652</td>-->
+  <!--<td width="5%">2</td>-->
+  <!--<td width="23%"><input/></td>-->
+  <!--<td width="10%"><input/></td>-->
+  <!--</tr>-->
+  <!--<tr>-->
+  <!--<td width="5%">1</td>-->
+  <!--<td width="35%">425-Annual PAYG Statement Summary/EMPDUPE File Lodged with AT</td>-->
+  <!--<td width="12%">-->
+  <!--<mat-form-field [floatLabel]="'never'">-->
+  <!--<mat-select placeholder="Status" [value]="1">-->
+  <!--<mat-option [value]="1">Inc in FF</mat-option>-->
+  <!--<mat-option [value]="1">Quoted</mat-option>-->
+  <!--</mat-select>-->
+  <!--</mat-form-field>-->
+  <!--</td>-->
+  <!--<td width="5%">-->
+  <!--<mat-form-field [floatLabel]="'never'">-->
+  <!--<mat-select placeholder="Select" [value]="1">-->
+  <!--<mat-option [value]="1">Weekly</mat-option>-->
+  <!--<mat-option [value]="1">Yearly</mat-option>-->
+  <!--</mat-select>-->
+  <!--</mat-form-field>-->
+  <!--</td>-->
+  <!--<td width="23%"><p><label>Min Fee: </label><input/></p>-->
+  <!--<p class="MT-5"><label>Per Employee Charge: </label><input/></p>-->
+  <!--</td>-->
+  <!--<td width="10%">N/A</td>-->
+  <!--</tr>-->
+  <!--</tbody>-->
+  <!--</table>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="text-right row MT-20">-->
+  <!--<div class="col-md-12">-->
+  <!--<button type="button" class="btn-default MR-10">Cancel</button>-->
+  <!--<button type="submit" class="btn-primary">Submit</button>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</form>-->
+  <!--</div>-->
+  <!--</div>-->
+</div>
+
+
+<div class="bookkeeping-basic-container">
+  <form [formGroup]="formSubactvitiy" (submit)="onSumitSubActivity(formSubactvitiy)">
+    <div class="payroll-container">
+      <div class="calculator-section">
+        <span class="panel-title orange-color">Payroll Master Sub Activity Calculator</span>
+
+        <div class="row MT-5">
+          <div class="col-md-2 MT-10">
+            <label class="MR-20">Sub Activity Calculator Name </label>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field appearance="outline">
+              <input matInput type="text" formControlName="name">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+
+      <div class="col-md-12">
+        <div *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+          <span class="panel-title ML-0">{{filterGroup.value['sectionTitle']}}</span>
+          <div class="table-container">
+            <div class="table-block">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th *ngFor="let subactivityColumn of filterGroup.value['sectionColumn']"
+                      width="{{subactivityColumn['width']}}">
+                    {{subactivityColumn['label']}}
+                  </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let subactivityItem of getFilterFieldArrayData(i).controls; let k = index;">
+                  <td>{{k+1}}</td>
+                  <td [attr.colspan]="subactivityItem.value['colSpan'] > 0 ? subactivityItem.value['colSpan'] : null">
+                    {{subactivityItem.value['subactivity']}}
+                  </td>
+                  <td>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="subactivityItem.value['is_inc_in_ff']">
+                      <mat-select placeholder="No" [value]="subactivityItem.value['inc_in_ff']"
+                                  (selectionChange)="UpdateFormControl(i,k,subactivityItem.value['subactivity_code'],$event.value); hideShowFields(i,k,subactivityItem.value['subactivity_code'],$event.value);onChangeUpdateDataValues('inc_in_ff',1,i,k,subactivityItem.value['subactivity_code'],$event.value)">
+                        <mat-option *ngFor="let payrollInc of payrollInCInFF" [value]="payrollInc?.key">
+                          {{ payrollInc?.label}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="subactivityItem.value['is_frequency']">
+                      <mat-select placeholder="Select Frequency" [value]="subactivityItem.value['frequency_id']"
+                                  (selectionChange)="onChangeUpdateDataValues('frequency_id',1,i,k,subactivityItem.value['subactivity_code'],$event.value)">
+                        <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                          {{ frequency?.frequency_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <p
+                      *ngFor="let subactivityItemField of getFilterFieldArrayDataFields(i,k).controls; let l = index;"
+                      style="display: flex;">
+                      <label class="PT-10 MR-5 fw-500">{{subactivityItemField.value['label']}}</label>
+                      <mat-form-field appearance="outline" floatLabel="never">
+                        <input matInput type="number"
+                               value="{{subactivityItem.value[subactivityItemField.value['key']]}}"
+                               (change)="onChangeUpdateDataValues(subactivityItemField.value['key'],2,i,k,subactivityItem.value['subactivity_code'],$event.target.value)">
+                      </mat-form-field>
+                    </p>
+                  </td>
+                  <td>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="subactivityItem.value['is_no_of_employee']"
+                                    appearance="outline">
+                      <input matInput type="number" [value]="subactivityItem.value['no_of_value']"
+                             (change)="onChangeUpdateDataValues('no_of_value',1,i,k,subactivityItem.value['subactivity_code'],$event.target.value)">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 text-right MTB-20">
+        <button type="button" class="btn-default MR-5" (click)="ngOnInit()">Cancel</button>
+        <!--[disabled]="formSubactvitiy.invalid"-->
+        <button type="submit" class="btn-primary">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>

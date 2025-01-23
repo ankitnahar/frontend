@@ -1,0 +1,45 @@
+<!-- Start Table -->
+<form (submit)="changePageRights()">
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr. No.</th>
+          <th width="15%">
+            Page
+          </th>
+          <th width="25%">Other
+          </th>
+          <th width="15%">
+            <mat-checkbox [checked]="is_viewAll"
+                          (change)="assignPrivilegeToAll($event.checked,'view')"></mat-checkbox>
+            View
+          </th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let privilege of privileges; let i = index">
+            <td width="5%">{{i + 1}}</td>
+            <td width="15%">{{privilege?.tab_name}}</td>
+            <td width="25%">{{privilege?.button_label}}</td>
+            <td width="15%">
+              <mat-checkbox (change)="changeIsViewPrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.view) ? true : false"></mat-checkbox>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-12 save-history-btns text-right MTB-10">
+        <button type="button" (click)="ngOnInit()"  class="btn-default MR-10">Cancel</button>
+        <button type="submit" class="btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+</form>
+<!-- End Table -->

@@ -1,0 +1,254 @@
+<div class="admin-daily-report-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">DAILY REPORT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 leave-type-list">
+
+          <ul>
+            <li>
+              <a class="red-color list-alignment">
+                <i class="material-icons">fiber_manual_record</i>Long Break</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+            <li>
+              <a class="download-icon" *ngIf="fetchPunchinReport" (click)="downloadQuestion()">
+                <span>Download Daily PunchIn Question</span> <i class="material-icons">file_download</i></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="dailyReportFilterForm" (submit)="setAdvanceFilter(dailyReportFilterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="User Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="fromdateRef" placeholder="From Date" formControlName="from_date">
+                <mat-datepicker-toggle matSuffix [for]="fromdateRef"></mat-datepicker-toggle>
+                <mat-datepicker #fromdateRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="todateRef" placeholder="To Date" formControlName="to_date">
+                <mat-datepicker-toggle matSuffix [for]="todateRef"></mat-datepicker-toggle>
+                <mat-datepicker #todateRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="filterDailyReportForm">
+        <div class="tag" *ngIf="userId.value">
+          <span class="tag__title">Staff Name :</span>
+          <span>
+               <ng-select [items]="userList"
+                          [closeOnSelect]="true"
+                          bindLabel="userfullname"
+                          placeholder="User Name"
+                          bindValue="id"
+                          [virtualScroll]="true"
+                          [searchable]="true"
+                          [hideSelected]="true"
+                          formControlName="user_id"
+                          (change)="setAdvanceFilterKeyUp($event, filterDailyReportForm, true)">
+              </ng-select>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('user_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="fromDateField.value">
+          <span class="tag__title">From Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="fromdate" placeholder="From Date" formControlName="from_date"
+                     (dateChange)="setAdvanceFilterKeyUp($event, filterDailyReportForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="fromdate"></mat-datepicker-toggle>
+              <mat-datepicker #fromdate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('from_date')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="toDateField.value">
+          <span class="tag__title">To Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="todate" placeholder="To Date" formControlName="to_date"
+                     (dateChange)="setAdvanceFilterKeyUp($event, filterDailyReportForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="todate"></mat-datepicker-toggle>
+              <mat-datepicker #todate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('to_date')">close</i>
+        </div>
+
+        <div class="clearAll-tags" *ngIf="userId.value || fromDateField.value || toDateField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+  </div>
+  <!-- Start Table -->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="4%">Sr. No</th>
+
+          <th width="13%"
+              (click)="getSortData('user_id', sortBy === 'user_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Staff Name
+            <i *ngIf="sortBy === 'user_id'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'user_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'user_id' && sortOrder === 'desc'}">
+              {{sortBy === 'user_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="10%"
+              (click)="getSortData('date', sortBy === 'date' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Date
+            <i *ngIf="sortBy === 'date'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'date' && sortOrder === 'asc', 'icon-down' :  sortBy === 'date' && sortOrder === 'desc'}">
+              {{sortBy === 'date' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="10%">In Time
+          </th>
+
+          <th width="10%">Out Time
+          </th>
+
+          <th width="10%">Working Time
+          </th>
+
+          <th width="10%">Break Time
+          </th>
+
+          <th width="8%">Units
+          </th>
+
+          <th width="10%">Action</th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody *ngFor="let dailyReport of dailyReportList; let i = index"
+                 [ngClass]="dailyReport?.break_time  >= '01:00:00'?'red-tr':''">
+          <tr>
+            <td width="4%">{{+pageSize * (pageIndex) + i + 1}}</td>
+            <td width="13%">{{dailyReport?.assignee?.userfullname}}</td>
+            <td width="10%">{{dailyReport?.date | date:"dd-MM-yyyy"}}</td>
+            <!--<td width="10%">{{dailyReport?.first_in}}</td>-->
+            <!--<td width="10%">{{dailyReport?.last_out}}</td>-->
+            <td width="10%">{{dailyReport?.punch_in}}</td>
+            <td width="10%">{{dailyReport?.punch_out}}</td>
+            <td width="10%">{{dailyReport?.working_time}}</td>
+            <td width="10%" class="orange-color">{{dailyReport?.break_time}}</td>
+            <td width="8%"><a (click)="onUnitTimesheet(dailyReport?.assignee?.id, dailyReport?.date)"
+                              *ngIf="dailyReport?.totalUnit != '' && dailyReport?.totalUnit !== null"
+                              class="label-turquoise-bg-color cursor-pointer">{{dailyReport?.totalUnit}}</a>
+              <a *ngIf="dailyReport?.totalUnit === null" class="label-turquoise-bg-color cursor-pointer">0</a>
+            </td>
+            <td width=" 10%">
+              <a (click)="openViewDialog(dailyReport)" class="wet-asphalt-color">In - Out(s)</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <table *ngIf="dailyReportList.length">
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageSizeOptions]="pageSizeOptions"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <!-- End Table -->
+  <div *ngIf="!dailyReportList.length" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Data Grid -->
+</div>

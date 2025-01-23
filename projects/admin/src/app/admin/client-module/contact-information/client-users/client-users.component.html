@@ -1,0 +1,213 @@
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header">
+    <div class="row">
+      <div class="col-md-6 inner-header-title">
+        <button class="open-dialog-btn" *ngIf="tabData['add_edit']" (click)="onAddContactUser()">
+          <mat-icon class="material-icons">add</mat-icon>
+          Add Client Users
+        </button>
+      </div>
+      <div class="col-md-6">
+        <ul class="download-icon">
+          <li>
+            <a (click)="onToggleFilter()">
+              <span>Filter</span> <i class="material-icons">filter_list</i>
+            </a>
+          </li>
+          <li>
+            <a>
+              <span (click)="downloadExcel();">Excel</span> <i class="material-icons">file_download</i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!-- Start Grid Filter -->
+  <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+    <div class="filter-action-icon">
+      <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+        class="material-icons">close</i></span>
+    </div>
+    <div class="grid-filter-container">
+      <div class="filter-title">
+        <h3>Advance Filter</h3>
+      </div>
+      <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+        <div class="row">
+          <div class="col-md-3 MT-10">
+            <ng-select [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id">
+            </ng-select>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Email" formControlName="email">
+            </mat-form-field>
+          </div>
+          <div class="col-md-2 MT-10">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="User Name" formControlName="userfullname">
+            </mat-form-field>
+          </div>
+          <div class="col-md-2 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Is Active" formControlName="is_active">
+                <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                  {{ yesNo?.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2 MT-10 text-right">
+            <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+            <button type="submit" class="btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Filter -->
+
+  <!-- Start Filter Tags -->
+  <div class="filter-tags">
+    <form [formGroup]="advanceFilterForm">
+      <div class="tag" *ngIf="entityIdTradingField.value">
+        <span class="tag__title">Trading name :</span>
+        <span>
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="entity_id"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('entity_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="emailField.value">
+        <span class="tag__title">Email :</span>
+        <span>
+          <mat-form-field>
+            <input matInput placeholder="Email" formControlName="email"
+                   (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('email')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="userfullnameField.value">
+        <span class="tag__title">User Name :</span>
+        <span>
+          <mat-form-field>
+            <input matInput placeholder="User Name" formControlName="userfullname"
+                   (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+          </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('userfullname')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="isActiveField.value !== null">
+        <span class="tag__title">Is Active :</span>
+        <span>
+          <mat-form-field>
+              <mat-select readonly placeholder="Is Active" formControlName="is_active"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                  {{ yesNo?.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('is_active')">close</i>
+      </div>
+
+      <div class="clearAll-tags" *ngIf=" entityIdTradingField.value || emailField.value || userfullnameField.value">
+        <a (click)="resetFilterForm()">Clear all</a>
+      </div>
+    </form>
+  </div>
+  <!-- End Filter Tags -->
+
+  <!-- Start Table -->
+  <div class="contact-grid-container">
+    <div class="expand-grid scrollable-grid">
+      <div>
+        <div class="expand-grid__thead">
+          <table>
+            <thead>
+            <tr>
+              <th width="3%">Sr.No</th>
+              <th width="20%">Entity Name</th>
+              <th width="20%">Email</th>
+              <th width="12%">User Full Name</th>
+              <th width="10%">Birthdate</th>
+              <th width="10%">Mobile No</th>
+              <th width="12%">Last Login Date</th>
+              <th width="8%">Is Active?</th>
+              <th width="5%">Action</th>
+            </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="expand-grid__tbody expand-grid-scrollable">
+          <table *ngIf="contactList.length">
+            <tbody *ngFor="let contactData of contactList; let i = index">
+            <tr class="hover-icons row-data">
+              <td width="3%">
+                {{+pageSize * (pageIndex) + i + 1}}
+              </td>
+              <td width="20%" class="word-break">{{contactData?.trading_name}}</td>
+              <td width="20%">{{contactData?.email}}</td>
+              <td width="12%">{{contactData?.userfullname}}</td>
+              <td width="10%">{{contactData?.birthdate | date :'dd-MM-yyyy'}}</td>
+              <td width="10%">{{contactData?.mobile_no}}</td>
+              <td width="12%">{{contactData?.user_lastlogin | date :'dd-MM-yyyy HH:mm:ss'}}</td>
+              <td width="8%">{{contactData?.is_active ? 'Yes': 'No'}}</td>
+              <td width="5%">
+                <mat-icon class="orange-color" matTooltip="Edit"
+                          (click)="onEditContact(contactData)">edit
+                </mat-icon>
+                <mat-icon matTooltip="Login" (click)="onLoginContact(contactData)" *ngIf="contactData?.is_active && isLoginAccess ">input
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="expand-grid__tfoot" *ngIf="contactList.length">
+          <table>
+            <tfoot>
+            <tr>
+              <td colspan="10">
+                <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                               [pageSizeOptions]="pageArray" (page)="onPageChange($event)">
+                </mat-paginator>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="contactList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

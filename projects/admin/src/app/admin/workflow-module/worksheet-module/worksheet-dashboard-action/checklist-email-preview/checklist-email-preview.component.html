@@ -1,0 +1,443 @@
+<div class="admin-checklist-email-preview-container">
+  <form [formGroup]="emailForm" (submit)="submitEmailForm(emailForm)">
+    <!-- Start BreadCrumb Top Header -->
+    <div class="breadcrumb-top-header">
+      <div class="row">
+        <div class="col-md-12 PL-0">
+          <div class="breadcrumb-top-header__breadcrumbs">
+            <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+            <i class="material-icons">keyboard_arrow_right</i>
+            <span>WORKFLOW</span>
+
+            <i class="material-icons">keyboard_arrow_right</i>
+            <span class="active"><a (click)="onWorksheet()">WORKSHEET</a></span>
+
+            <i class="material-icons">keyboard_arrow_right</i>
+            <span class="active">EMAIL PREVIEW</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Over BreadCrumb Top Header -->
+
+
+    <!--task checklist data html-->
+    <div class="row">
+      <div class="col-md-6 MT-15">
+        <span class="orange-color">Task checklist |
+          <span class="orange-color" *ngIf="worksheetData?.parent_id > 0">Parent Client : {{worksheetData?.parent_name}} | </span>
+          <span class="dark-primary-color">{{worksheetData?.trading_name}}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="task-checklist-data">
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Master Activity:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.master_activity_id?.name}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Task:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.task_id?.name}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Period:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{worksheetData?.start_date | date : 'dd-MM-yyyy'}} To {{worksheetData?.end_date | date : 'dd-MM-yyyy'}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Category:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{getCategoryName(worksheetData?.category_id)}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Bk Tickets:</span>
+            </div>
+            <div class="col-md-6">
+              <span>
+                <span class="red-tag">{{ticketData?.problemOurSideBk}}</span> out of
+                <span class="blue-tag">{{ticketData?.bkTicket}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Payroll:</span>
+            </div>
+            <div class="col-md-6">
+              <span>
+                <span class="red-tag">{{ticketData?.problemOurSidePayroll}}</span> out of
+                <span class="blue-tag">{{ticketData?.payrollTicket}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Worksheet Status:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{worksheetData?.status_id?.status_name}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Fixed Unit:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.fixed_unit}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Software:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.entity_id?.dynamic_json}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Reviewer Budgeted Unit:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.entity_id?.reviewer_budgeted_unit}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>TAM:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.technical_account_manager}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>TL:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.team_lead}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Process By:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.process_by}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="email-preview-container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="email-parameters__block">
+            <div class="row">
+              <div class="col-md-12 MB-10 PL-0">
+                <span class="primary-color fw-500">Email Parameters</span>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>From</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field>
+                      <mat-select formControlName="from" (selectionChange)="getFromNameFromEmail($event.value)">
+                        <mat-option *ngFor="let item of fromList" [value]="item?.email">
+                          {{item?.name}}<{{item?.email}}>
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(emailForm.get('from'))"
+                                      [errMsg]="validationMsg.FROM_REQUIRED"></app-validation>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>To</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <input matInput formControlName="to" readonly>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(emailForm.get('to'))"
+                                      [errMsg]="validationMsg.TO_REQUIRED"></app-validation>
+                      <app-validation *ngIf="isValidField(emailForm.get('to'))"
+                                      [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>CC</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <input matInput formControlName="cc">
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isValidField(emailForm.get('cc'))"
+                                      [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>BCC</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <input matInput formControlName="bcc">
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isValidField(emailForm.get('bcc'))"
+                                      [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+                    </div>
+                  </div>
+                </div>
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>Subject</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <textarea matInput formControlName="subject"></textarea>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(emailForm.get('subject'))"
+                                      [errMsg]="validationMsg.SUBJECT_REQUIRED"></app-validation>
+                    </div>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isValidField(emailForm.get('subject'))"
+                                      [errMsg]="validationMsg.SUBJECT_INVALID"></app-validation>
+                    </div>
+                  </div>
+                </div>
+                <div class="row MT-20" *ngIf="worksheetData?.status_id?.id === 18">
+                  <div class="col-md-2">
+                    <label>TL/TAM Negligence Comment</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <textarea matInput formControlName="tam_comment"></textarea>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(emailForm.get('tam_comment'))"
+                                      [errMsg]="validationMsg.TAM_COMMENTS_REQUIRED"></app-validation>
+                      <app-validation *ngIf="isValidField(emailForm.get('tam_comment'))"
+                                      [errMsg]="validationMsg.TAM_COMMENTS_REQUIRED"></app-validation>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="email-parameters__block">
+            <div class="row">
+              <div class="col-md-12 MB-10 PLR-0">
+                <span class="primary-color fw-500">Email Content</span>
+                <a (click)="onPreviewDialog()" class="primary-color fw-500 on-right cursor-pointer">Preview</a>
+                <editor [formControl]="emailForm.controls['content']"
+                        [init]="{
+'plugins': 'code image link preview lists',
+'toolbar' : 'formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | charmap | print | preview | anchor | code | removeformat | fontsizeselect fontselect',
+
+'menubar': 'false', 'height': 400,
+'relative_urls': false, 'remove_script_host': false,
+'convert_urls': true,
+'browser_spellcheck': true}"
+                        class="MT-10"></editor>
+                <!--<editor [formControl]="emailForm.controls['content']" [init]="{'menubar': 'false', 'height': 400, 'relative_urls': false, 'remove_script_host': false, 'convert_urls': true}"
+                        class="MT-10"></editor>-->
+              </div>
+            </div>
+            <span>
+              <mat-checkbox formControlName="outcome" (change)="onChangeOutcomeValue($event.checked)">I have verified email content.</mat-checkbox>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Uploaded image section html-->
+    <div class="uploaded-documents">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="orange-color">Uploaded Documents</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="uploaded-documents__block">
+            <div class="row">
+              <div class="col-md-6 MB-10 PL-0">
+                <span class="dark-primary-color">SEND TO CLIENT</span>
+                <span class="blue-tag">{{worksheetClientDocument.length}}</span>
+              </div>
+              <div class="col-md-6 PR-0 text-right">
+                <a (click)="onAddDocumentsDialog(1)" class="primary-color cursor-pointer">
+                  <i class="material-icons alignment-text">add</i> Add Document
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div *ngIf="worksheetClientDocument.length <=0">
+                No Document Found
+              </div>
+              <div *ngFor="let clientDoc of worksheetClientDocument;" class="col-md-12 PLR-0 row">
+                <mat-checkbox [checked]="clientDoc?.is_sent ===1"
+                              (change)="onUpdateDocument(clientDoc?.id, $event.checked)"
+                              class="col-md-1 PLR-0 MT-10 text-center"></mat-checkbox>
+                <div class="uploaded-documents__block__input col-md-11 PLR-0">
+                  <input [readonly]="true" type="text" value="{{clientDoc.document_title}}"
+                         (click)="onFileSelect('uploadDocument')"/>
+                  <input [hidden]="true" id="uploadDocument"/>
+                  <mat-icon class="img_ico_doc">image</mat-icon>
+
+                  <div class="uploaded-documents__block__action">
+                    <a (click)="onOpenDocumentFile(clientDoc)" *ngIf="clientDoc?.is_drive === 1" class="cursor-pointer">
+                      <mat-icon>remove_red_eye</mat-icon>
+                    </a>
+                    <a (click)="downloadDocument(clientDoc)" *ngIf="clientDoc?.is_drive === 0" class="cursor-pointer">
+                      <mat-icon>get_app</mat-icon>
+                    </a>
+                    <a (click)="onConfirmationDialog(clientDoc)" class="red-color cursor-pointer">
+                      <mat-icon>delete</mat-icon>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="uploaded-documents__block">
+            <div class="row">
+              <div class="col-md-6 MB-10 PL-0">
+                <span class="dark-primary-color">INTERNAL WORKING DOCUMENTS</span>
+                <span class="blue-tag">{{worksheetInternalDocument.length}}</span>
+              </div>
+              <div class="col-md-6 text-right PR-0">
+                <a (click)="onAddDocumentsDialog(2)" class="primary-color cursor-pointer">
+                  <i class="material-icons alignment-text">add</i> Add Document
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div *ngIf="worksheetInternalDocument.length <=0">
+                No Document Found
+              </div>
+              <div class="uploaded-documents__block__input" *ngFor="let internalDoc of worksheetInternalDocument;">
+                <input [readonly]="true" type="text" value="{{internalDoc.document_title}}"
+                       (click)="onFileSelect('internalWorkingDocument')"
+                />
+                <input [hidden]="true" id="internalWorkingDocument"/>
+                <mat-icon class="img_ico_doc">image</mat-icon>
+
+                <div class="uploaded-documents__block__action">
+                  <a (click)="onOpenDocumentFile(internalDoc)" *ngIf="internalDoc?.is_drive === 1"
+                     class="cursor-pointer">
+                    <mat-icon>remove_red_eye</mat-icon>
+                  </a>
+                  <a (click)="downloadDocument(internalDoc)" *ngIf="internalDoc?.is_drive === 0" class="cursor-pointer">
+                    <mat-icon>get_app</mat-icon>
+                  </a>
+                  <a (click)="onConfirmationDialog(internalDoc)" class="red-color cursor-pointer">
+                    <mat-icon>delete</mat-icon>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12 PB-20">
+      <div class="row MT-20">
+        <div class="col-md-6 PR-0">
+          <button class="btn-orange btn-bordered" type="button" (click)="goBackToPage()">Go Back</button>
+        </div>
+        <div class="col-md-6 text-right PR-0">
+          <button *ngIf="this.isPendigForTAM === 0" type="submit" [disabled]="emailForm.invalid" class="btn-primary">
+            Save & Ready For Review
+          </button>
+          <button *ngIf="this.isPendigForTAM === 1" type="submit" [disabled]="emailForm.invalid" class="btn-primary">
+            Save & Pending For Tl/TAM Review
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

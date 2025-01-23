@@ -1,0 +1,21 @@
+@import "../../../../assets/scss/main";
+
+.badge {
+  background-color: lighten($wet-asphalt-color, 10%);
+  color: $white-color;
+  border-radius: 2rem;
+  padding: 0.5rem 0.7rem 0.5rem 0.6rem;
+  text-align: center;
+}
+
+.reviewer-writeoff-container {
+  .with-button-container {
+    background-color: $white-color;
+    width: 100%;
+    border-bottom: 0.7rem solid lighten($light-gray-color, 20%);
+    padding: 1rem;
+  }
+  .mat-ico-ff {
+    font-size: 2.2rem !important;
+  }
+}

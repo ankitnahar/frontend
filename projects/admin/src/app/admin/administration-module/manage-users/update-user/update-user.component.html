@@ -1,0 +1,63 @@
+<div class="admin-update-user-management-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onManageUser()"> MANAGE USER</a></span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">UPDATE USER {{" | " +user?.user_fname +" " + user?.user_lname}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a (click)="onShowHistory()">
+                <label>View History</label>
+                <mat-icon>history</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="user-details-view">
+    <mat-tab-group class="demo-tab-group" (selectedTabChange)="tabChanged($event)">
+      <mat-tab label="Personal" *ngIf="tabDataUser['add_edit']">
+        <div class="personal-tab-content" *ngIf="isActiveTabText === 'Personal'">
+          <app-personal></app-personal>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Hierarchy" *ngIf="tabDataHierarchy['add_edit']">
+        <div class="row hierarchy-tab-content" *ngIf="isActiveTabText === 'Hierarchy'">
+          <app-hierarchy></app-hierarchy>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Privileges" *ngIf="tabDataRights['add_edit']">
+        <div *ngIf="isActiveTabText === 'Privileges'">
+          <app-privileges></app-privileges>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Change Password" *ngIf="tabDataPassword['add_edit']">
+        <div class="change-password-tab-content" *ngIf="isActiveTabText === 'Change Password'">
+          <app-change-password></app-change-password>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+<div *ngIf="isOpenHistoryDialog">
+  <app-common-history-dialog [dialogStatus]="isOpenHistoryDialog"
+                             (close)="isOpenHistoryDialog = $event"></app-common-history-dialog>
+</div>

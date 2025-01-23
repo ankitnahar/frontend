@@ -1,0 +1,55 @@
+<!-- Set Email Template Container -->
+<div class="manage-email-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="cursor-pointer">home</mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onManageEmails()">MANAGE EMAILS</a></span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">SET EMAIL TEMPLATE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End BreadCrumb Top Header -->
+
+  <!--Start set template form-->
+  <div>
+    <span class="panel-title">Set Email Template</span>
+    <form [formGroup]="emailTemplateForm" (submit)="onSubmitEmail(emailTemplateForm)">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="fw-500">Subject</label>
+            </div>
+            <div class="col-md-10">
+              <span>{{subject}}</span>
+            </div>
+
+            <div class="col-md-2 MT-20">
+              <label class="fw-500">Content</label>
+            </div>
+            <div class="col-md-10 MT-20">
+              <editor aria-placeholder="Content"
+                      [init]="{'menubar': 'false', 'height': 400, 'relative_urls': false, 'remove_script_host': false, 'convert_urls': true}"
+                      formControlName="content"></editor>
+            </div>
+
+            <div class="col-md-12 text-right MT-20">
+              <button type="submit" class="btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

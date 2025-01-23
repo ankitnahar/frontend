@@ -1,0 +1,533 @@
+<div class="client-view-quote-container">
+  <div class="header">
+    <div class="row">
+      <div class="col-md-6">
+        <img src="assets/images/logo.png" width="100"/>
+      </div>
+
+      <div class="col-md-6 text-right">
+        <ul>
+          <li>
+            <a href="tel:1300873733">1300 U R FREE ( 1300 8 7 3733 )</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="MTB-20 text-center">{{coreData?.quoteMaster?.lead_company_name}}</h2>
+      </div>
+    </div>
+
+    <div *ngIf="showNextSetp !== 4">
+      <div class="preview-quote-container task-checklist-container">
+        <h2 class="PLR-10">FEE SCHEDULE</h2>
+
+        <div class="row MT-30"
+             *ngIf="serviceAgreed.indexOf('1') !== -1  && backlogBookkeeping['Cost'] && backlogBookkeeping['Service']">
+          <div class="col-md-12">
+            <span class="orange-color">SCHEDULE – BACKLOG BOOKKEEPING FEE ({{(coreData?.quoteMaster?.backlog_from_year  | date : "dd-MM-yyyy")}} To {{(coreData?.quoteMaster?.backlog_to_year  | date : "dd-MM-yyyy")}})</span>
+          </div>
+
+          <!-- Start cost summary	table html -->
+          <div class="col-md-12">
+            <div class="table-container MT-15">
+              <!-- <label class="display-block">Cost summary </label> -->
+              <div class="table-block MT-5">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th width="80%">Cost summary</th>
+                    <th width="20%" align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">Fees</th>
+                    <th width="20%" align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">Hours</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr *ngFor="let bklog of backlogRateCard">
+                    <td>{{bklog["master_name"]}}</td>
+                    <td align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">{{bklog["amount"] |
+                      currency}}
+                    </td>
+                    <td align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">{{bklog["hour"]}}</td>
+                  </tr>
+                  <tr *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">
+                    <td><b>Total Bookkeeping Fees [Ex. GST]</b></td>
+                    <td align="right"><b>{{backlogTotal | currency}}</b></td>
+                  </tr>
+                  <tr *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">
+                    <td><b>Total Bookkeeping Hours</b></td>
+                    <td align="right"><b>{{backlogTotalHours}}</b></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div><!-- End html -->
+
+          <div class="col-md-12">
+            <div class="table-container MT-15">
+              <!-- <label class="display-block">Cost summary </label> -->
+              <div class="table-block MT-5">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th width="80%">Service summary</th>
+                    <th width="20%" align="right">Frequency</th>
+                  </tr>
+                  </thead>
+
+                  <tbody *ngFor="let service of this.backlogBookkeeping['Service']">
+                  <tr>
+                    <!--<td [attr.colspan]="service?.data.length"><b><b>{{service?.name}}</b></b></td>-->
+                    <td [attr.colspan]="2"><b><b>{{service?.name}}</b></b></td>
+                  </tr>
+
+                  <tr *ngFor="let temp of service?.data">
+                    <td><span [innerHTML]="temp?.quote_description  | safeHtml"></span></td>
+                    <td align="right">{{temp?.frequency_name}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row MT-30"
+             *ngIf="serviceAgreed.indexOf('1') !== -1  && ongoingBookkeeping['Cost'] && ongoingBookkeeping['Service']">
+          <div class="col-md-12">
+            <span class="orange-color">SCHEDULE – BOOKKEEPING FEE</span>
+          </div>
+
+          <!-- Start cost summary	table html -->
+          <div class="col-md-12">
+            <div class="table-container MT-15">
+              <!-- <label class="display-block">Cost summary </label> -->
+              <div class="table-block MT-5">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th width="80%">Cost summary</th>
+                    <th width="20%" align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">
+                      {{coreData?.frequency["1"]}} hours
+                    </th>
+                    <th width="20%" align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">
+                      {{coreData?.frequency["1"]}} fees
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let bkongoing of ongoingRateCard">
+                    <td>{{bkongoing["master_name"]}}</td>
+                    <td align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">{{bkongoing["amount"] |
+                      currency}}
+                    </td>
+                    <td align="right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">{{bkongoing["hour"]}}
+                    </td>
+                  </tr>
+                  <tr *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">
+                    <td><b>Total Bookkeeping Fees [Ex. GST]</b></td>
+                    <td align="right"><b>{{ongoingTotal | currency}}</b></td>
+                  </tr>
+                  <tr *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">
+                    <td><b>Total Bookkeeping Hours</b></td>
+                    <td align="right"><b>{{ongoingTotalHours}}</b></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div><!-- End html -->
+
+          <div class="col-md-12">
+            <div class="table-container MT-15">
+              <!-- <label class="display-block">Cost summary </label> -->
+              <div class="table-block MT-5">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th width="90%">Service summary</th>
+                    <th width="10%">Frequency</th>
+                  </tr>
+                  </thead>
+
+                  <tbody *ngFor="let service of this.ongoingBookkeeping['Service']">
+                  <tr>
+                    <!--<td [attr.colspan]="service?.data.length"><b>{{service?.name}}</b></td>-->
+                    <td [attr.colspan]="2"><b>{{service?.name}}</b></td>
+                  </tr>
+                  <tr *ngFor="let temp of service?.data">
+                    <td><span [innerHTML]="temp?.quote_description  | safeHtml"></span></td>
+                    <td>{{temp?.frequency_name}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row MT-30"
+             *ngIf="serviceAgreed.indexOf('1') !== -1  && coreData?.quoteMaster['bookkeeping_advance_fee'] !== 0">
+          <div class="col-md-12">
+            <span class="orange-color">BOOKKEEPING - ADVANCE FEE</span>
+          </div>
+
+          <!-- Start cost summary	table html -->
+          <div class="col-md-12">
+            <div class="table-container MT-15">
+              <div class="table-block MT-5">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th width="80%">Advance Fee [Ex.GST]</th>
+                    <th width="20%" align="right">{{coreData['quoteMaster']['bookkeeping_advance_fee'] | currency}}</th>
+                  </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row MT-30" *ngIf="coreData?.quoteMaster['bookkeeping_setup_fee'] && coreData?.quoteMaster['bookkeeping_setup_fee'] !== 0">
+          <div class="col-md-12">
+            <span class="orange-color">SETUP FEE</span>
+          </div>
+
+          <!-- Start cost summary	table html -->
+          <div class="col-md-12">
+            <div class="table-container MT-15">
+              <div class="table-block MT-5">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th width="80%">Setup Fee [Ex.GST]</th>
+                    <th width="20%" align="right">{{coreData['quoteMaster']['bookkeeping_setup_fee'] | currency}}</th>
+                  </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div><!-- End html -->
+
+        </div><!-- End html -->
+
+        <div *ngIf="serviceAgreed.indexOf('2') !== -1  && showNextSetp !== 4">
+          <div class="row MT-30">
+            <div class="col-md-12">
+              <span class="orange-color">SCHEDULE - PAYROLL FEE {{coreData && coreData.inc_in_ff && coreData.inc_in_ff[2] === 0 && ' - VARIABLE'}}</span>
+            </div>
+
+            <!-- Start cost summary	table html -->
+            <div class="col-md-12" *ngIf="coreData && coreData.inc_in_ff && coreData.inc_in_ff[2] === 1">
+              <div class="table-container MT-15">
+                <!-- <label class="display-block">Cost summary </label> -->
+                <div class="table-block MT-5">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th width="80%">Cost summary</th>
+                      <th width="20%" class="text-right">{{coreData?.frequency["2"]}}
+                        Fees
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{(payrollRateCard && payrollRateCard[1] && payrollRateCard[1][1]) ? payrollRateCard[1][1] : ''}}
+                      </td>
+                      <td class="text-right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">{{ (payrollRateCard && payrollRateCard[0] && payrollRateCard[0][1]) ?
+                        (payrollRateCard[0][1] |
+                        currency) : 0}}
+                      </td>
+                      <td class="text-right" *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">{{ (payrollRateCard && payrollRateCard[3] && payrollRateCard[3][1]) ?
+                        (payrollRateCard[3][1]) : 0}}
+                      </td>
+                    </tr>
+                    <tr *ngIf="coreData?.quoteMaster['is_resourceclient'] === 0">
+                      <td><b>Total Payroll Fees [Ex. GST]</b></td>
+                      <td class="text-right"><b>{{payrollTotal | currency}}</b></td>
+                    </tr>
+                    <tr *ngIf="coreData?.quoteMaster['is_resourceclient'] === 1">
+                      <td><b>Total Payroll Hours</b></td>
+                      <td class="text-right"><b>{{payrollHour}}</b></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div><!-- End html -->
+
+            <div class="col-md-12">
+              <div class="table-container MT-15">
+                <!-- <label class="display-block">Cost summary </label> -->
+                <div class="table-block MT-5">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th width="92%">Service summary</th>
+                      <th width="8%" class="text-right" *ngIf="coreData && coreData.inc_in_ff && coreData.inc_in_ff[2] === 1">Frequency</th>
+                      <th width="8%" class="text-right" *ngIf="coreData && coreData.inc_in_ff && coreData.inc_in_ff[2] === 0">Price</th>
+                    </tr>
+                    </thead>
+
+                    <tbody *ngFor="let service of payrollService['Service']; let i = index">
+                    <tr>
+                      <!--<td [attr.colspan]="service?.data.length"><b>{{service?.name}}</b></td>-->
+                      <td [attr.colspan]="2"><b>{{service?.name}}</b></td>
+                    </tr>
+                    <tr *ngFor="let temp of service?.data; let j = index">
+                      <!-- <td [attr.rowspan]="service?.data.length" *ngIf="j === 0"><b>{{service?.name}}</b></!-->
+                      <td><span [innerHTML]="temp?.quote_description  | safeHtml"></span></td>
+                      <td class="text-right" *ngIf="coreData && coreData.inc_in_ff && coreData.inc_in_ff[2] === 1">{{temp?.frequency_name}}</td>
+                      <td class="text-right" *ngIf="coreData && coreData.inc_in_ff && coreData.inc_in_ff[2] === 0">{{temp?.price| currency}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div><!-- End html -->
+          <!--Start schedule book keeping fee html-->
+        </div>
+        <div
+          *ngIf="serviceAgreed.indexOf('6') !== -1 && showNextSetp !== 4 && coreData?.quoteMaster['is_future_quote'] === 0">
+          <div class="row MT-30">
+            <div class="col-md-12">
+              <span class="orange-color">SCHEDULE – TAX FEE</span>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="table-container MT-15">
+              <div class="table-block MT-5">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th width="40%">Service Summary</th>
+                    <th align="right" *ngFor="let header of taxation['header']" width="{{taxation?.colWidth}}">FY
+                      -
+                      {{header}}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let body of taxation['body']">
+                    <td>{{body?.name}}</td>
+                    <td align="right" *ngFor="let colValue of body?.data">{{colValue?.amount | currency}}</td>
+                  </tr>
+                  </tbody>
+                  <tbody>
+                  <tr>
+                    <td><b>Total Tax Fees [Ex. GST]</b></td>
+                    <td align="right" *ngFor="let footerVal of taxation['footer']">{{footerVal?.tax_amount |
+                      currency}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="row MT-30" *ngIf="coreData?.quoteMaster['taxation_advance_fee'] !== 0">
+            <div class="col-md-12">
+              <span class="orange-color">TAX - ADVANCE FEE </span>
+            </div>
+
+            <!-- Start cost summary	table html -->
+            <div class="col-md-12">
+              <div class="table-container MT-15">
+                <div class="table-block MT-5">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th width="80%">Advance Fee [Ex.GST]</th>
+                      <th align="right" width="20%">{{coreData?.quoteMaster['taxation_advance_fee'] | currency}}
+                      </th>
+                    </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+            </div><!-- End html -->
+          </div>
+        </div>
+        <form [formGroup]="agreeForm">
+          <!--<div class="row MT-30">-->
+            <!--<div class="col-md-12">-->
+              <!--<mat-checkbox formGroupName="terms" (change)="chooseTerm($event.checked)">I have read and agree to-->
+                <!--the <a href="terms-condition" target="_blank">Terms and Conditions</a>-->
+              <!--</mat-checkbox>-->
+            <!--</div>-->
+          <!--</div>-->
+          <div class="row MT-25 PB-20 PT-10 border_top-gray">
+            <div class="col-md-6">
+              <button class="btn-primary MR-10" type="button" [disabled]="isTermAgree === 0"
+                      (click)="submitForm(agreeForm, 1)">
+                Agree
+              </button>
+              <button class="btn-default MR-10" type="button" (click)="disagree(4)">Disagree</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!--<div *ngIf="serviceAgreed.indexOf('1') === -1 && serviceAgreed.indexOf('6') !== -1 && showNextSetp !== 4">-->
+    <!--<mat-horizontal-stepper linear labelPosition="bottom" #stepper *ngIf="showNextSetp !== 4">-->
+    <!--<mat-step (click)="$event.stopPropagation()" [editable]="false">-->
+    <!--<ng-template matStepLabel>Review Quote</ng-template>-->
+    <!--<div class="preview-quote-container task-checklist-container">-->
+    <!--<h2 class="PLR-10">FEE SCHEDULE</h2>-->
+    <!--<div class="row MT-30">-->
+    <!--<div class="col-md-12">-->
+    <!--<span class="orange-color">SCHEDULE – TAX FEE</span>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="col-md-12" *ngIf="coreData?.quoteMaster['is_future_quote'] === 0">-->
+    <!--<div class="table-container MT-15">-->
+    <!--<div class="table-block MT-5">-->
+    <!--<table class="table">-->
+    <!--<thead>-->
+    <!--<tr>-->
+    <!--<th width="40%">Service Summary</th>-->
+    <!--<th align="right" *ngFor="let header of taxation['header']" width="{{taxation?.colWidth}}">FY - -->
+    <!--{{header}}-->
+    <!--</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr *ngFor="let body of taxation['body']">-->
+    <!--<td>{{body?.name}}</td>-->
+    <!--<td align="right" *ngFor="let colValue of body?.data">{{colValue?.amount | currency}}</td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
+    <!--<tbody>-->
+    <!--<tr>-->
+    <!--<td><b>Total Tax Fees [Ex. GST]</b></td>-->
+    <!--<td align="right" *ngFor="let footerVal of taxation['footer']">{{footerVal?.tax_amount |-->
+    <!--currency}}-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="row MT-30" *ngIf="coreData?.quoteMaster['taxation_advance_fee'] !== 0">-->
+    <!--<div class="col-md-12">-->
+    <!--<span class="orange-color">TAX - ADVANCE FEE </span>-->
+    <!--</div>-->
+
+    <!--&lt;!&ndash; Start cost summary	table html &ndash;&gt;-->
+    <!--<div class="col-md-12">-->
+    <!--<div class="table-container MT-15">-->
+    <!--<div class="table-block MT-5">-->
+    <!--<table class="table">-->
+    <!--<thead>-->
+    <!--<tr>-->
+    <!--<th width="80%">Advance Fee [Ex.GST]</th>-->
+    <!--<th align="right" width="20%">{{coreData?.quoteMaster['taxation_advance_fee'] | currency}}</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+    <!--</table>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>&lt;!&ndash; End html &ndash;&gt;-->
+    <!--</div>-->
+    <!--<form [formGroup]="agreeForm">-->
+    <!--<div class="row MT-30">-->
+    <!--<div class="col-md-12">-->
+    <!--<mat-checkbox formGroupName="terms" (change)="chooseTerm($event.checked)">I have read and agree to-->
+    <!--the <a href="terms-condition" target="_blank">Terms and Conditions</a>-->
+    <!--</mat-checkbox>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row MT-25 PB-20 PT-10 border_top-gray">-->
+    <!--<div class="col-md-6">-->
+    <!--<button class="btn-primary MR-10" matStepperNext type="button" [disabled]="isTermAgree === 0"-->
+    <!--(click)="submitForm(agreeForm, 1)">-->
+    <!--Agree-->
+    <!--</button>-->
+    <!--<button class="btn-default MR-10" type="button" (click)="disagree(4)">Disagree</button>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</form>-->
+    <!--</div>-->
+    <!--</mat-step>-->
+    <!--<mat-step (click)="$event.stopPropagation()" [editable]="false">-->
+    <!--<ng-template matStepLabel>Sign Your Document</ng-template>-->
+    <!--<div class="sign-your-document-container">-->
+    <!--<p>Please wait...we are connecting to Docusign...</p>-->
+    <!--<p>if docusign window will not open <a href="{{url}}" target="_blank">Click here</a> to open signature form-->
+    <!--</p>-->
+    <!--<div class="MT-10">-->
+    <!--<button class="btn-default MR-10" type="button" matStepperNext (click)="skip(quoteLeadAllStep.lenght)">-->
+    <!--SKIP-->
+    <!--</button>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</mat-step>-->
+    <!--<mat-step (click)="$event.stopPropagation()" [editable]="false"-->
+    <!--*ngIf="quoteLeadAllStep && quoteLeadAllStep[2] && quoteLeadAllStep[2]['step_id'] === 3">-->
+    <!--<ng-template matStepLabel>Ezi debit</ng-template>-->
+    <!--Edidebit screen-->
+    <!--</mat-step>-->
+    <!--</mat-horizontal-stepper>-->
+    <!--</div>-->
+    <div class="preview-quote-container task-checklist-container" *ngIf="showNextSetp === 4">
+      <div class="row">
+        <div class="col-md-12 MT-10">
+          <p><strong>Dear {{coreData?.quoteMaster?.lead_name}},</strong></p>
+          <p>Further to our earlier discussion we are keen to provide our services to you,
+            We would like to know the reason why this quote doesn’t work for you. Please input your comments in the box
+            below.
+            We will be happy to work out an agreement on this. Your Befree representative will be in touch with you
+            within 24hours to discuss further.</p>
+        </div>
+      </div>
+      <form [formGroup]="disagreeForm">
+        <div class="row MT-12 PB-20 PT-10 border_top-gray">
+          <div class="col-md-12">
+            <mat-form-field>
+              <textarea formControlName="decline_reason" matInput required placeholder="Decline reason"
+                        rows="3"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-12">
+            <button class="btn-primary MR-10" type="button" (click)="submitForm(disagreeForm, 0)"
+                    [disabled]="disagreeForm.invalid">Confirm
+            </button>
+            <button class="btn-default MR-10" type="button" (click)="disagree(0)">Back</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="MT-25">
+          Copyright 2021 | <a href="http://befree.com.au/" target="_blank">Befree</a> | <a
+          href="https://www.befree.com.au/sitemap_index.xml" target="_blank">Sitemap</a>
+        </div>
+      </div>
+      <div class="col-md-6 text-right">
+        <img src="assets/images/xero-gold.png" width="100">
+        <img src="assets/images/cpa-icon.jpg" width="100">
+        <img src="assets/images/fast-icon.jpg" width="100">
+        <img src="assets/images/accounting-awards.png" height="50">
+      </div>
+    </div>
+  </div>
+</div>

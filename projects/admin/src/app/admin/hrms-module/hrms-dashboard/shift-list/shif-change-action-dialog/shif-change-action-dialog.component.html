@@ -1,0 +1,165 @@
+<!--  Start Add Shift list dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{this.shiftData.shift_name}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+  <form [formGroup]="addShiftChangeForm" (submit)="onSumbit(addShiftChangeForm)">
+    <div class="modal__body" *ngIf="!userList.length">
+      <div class="row">
+        <span class="panel-title MT-0" *ngIf="this.isUpdate === 1">Are you sure, You want to delete shift {{this.shiftData.shift_name}}?</span>
+        <span class="panel-title MT-0" *ngIf="this.isUpdate === 0">Are you sure, You want to update shift {{this.shiftData.shift_name}}?</span>
+      </div>
+    </div>
+    <div class="modal__body" *ngIf="userList.length">
+      <div class="row">
+        <span class="panel-title MT-0">SHIFT CHANGE - {{this.shiftData.shift_name}}</span>
+        <div class="col-md-12">
+          <mat-radio-group (change)="onChangeType($event.value)">
+            <mat-radio-button value="1" class="MR-15" [checked]="isMultipleSingleShift">Move All User To Single Shift
+            </mat-radio-button>
+            <mat-radio-button value="2" [checked]="!isMultipleSingleShift">Move Individual User To Individual Shift
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="col-md-12 PLR-0" *ngIf="isMultipleSingleShift">
+
+        <div class="col-md-5 MT-10 custom-ng-select-dropdown">
+          <ng-select
+            [items]="shiftList"
+            [closeOnSelect]="true"
+            bindLabel="shift_name"
+            [closeOnSelect]="false"
+            bindValue="id"
+            placeholder="Shift Name"
+            formControlName="shift_id"
+            (change)="getShiftDetail(addShiftChangeForm)">
+          </ng-select>
+        </div>
+        <div class="shift-change-dialog-list" *ngIf="shiftDataChange">
+          <div class="row">
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Shift Time From</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{shiftDataChange?.from_time}}</span>
+              </div>
+            </div>
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Shift Time To</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{shiftDataChange?.to_time}}</span>
+              </div>
+            </div>
+
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Grace Period</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{shiftDataChange?.grace_period}}</span>
+              </div>
+            </div>
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label> Final Cut Off</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{shiftDataChange?.grace_period}}</span>
+              </div>
+            </div>
+
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Consider Late Period</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{shiftDataChange?.late_period}}</span>
+              </div>
+            </div>
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Late allowed Time</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{shiftDataChange?.late_allowed_count}}</span>
+              </div>
+            </div>
+            <div class="row col-md-6 PLR-0 MT-20">
+              <div class="col-md-6">
+                <label>Break Time</label>
+              </div>
+              <div class="col-md-6">
+                <span>{{shiftDataChange?.break_time}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="row col-md-12 PLR-0 MT-35">
+              <div class="col-md-3">
+                <label>UserName</label>
+              </div>
+              <div class="col-md-9">
+                <span *ngFor="let username of userList; let i = index" class="wet-asphalt-color">{{username?.userfullname+' | '}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 PLR-0 MT-10" *ngIf="!isMultipleSingleShift">
+        <div class="col-md-12">
+          <div class="table-container dialog-table-container">
+            <div class="table-block">
+              <table class="P-0">
+                <thead>
+                <tr>
+                  <th width="60%">UserName</th>
+                  <th width="40%">Shift</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let filterGroup of getFilterFieldArray().controls; let i= index">
+                  <td class="PT-0 PB-0">{{filterGroup.value['userfullname']}}</td>
+                  <td class="PT-0 PB-0">
+                    <mat-form-field floatLabel="never">
+                      <mat-select placeholder="Please Select"
+                                  (selectionChange)="updateValues(i, 'new_shift_id', $event.value)">
+                        <mat-option *ngFor="let shiftdetail of shiftList" [value]="shiftdetail?.id">
+                          {{shiftdetail?.shift_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- End Request Table -->
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addShiftChangeForm.invalid" *ngIf="userList.length"
+                  (click)="setValue(0)">Confirm
+          </button>
+          <button class="btn-primary" *ngIf="!userList.length" (click)="setValue(isUpdate)">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

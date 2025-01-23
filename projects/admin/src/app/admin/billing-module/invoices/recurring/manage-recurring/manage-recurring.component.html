@@ -1,0 +1,446 @@
+<div class="add-on-off-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onInvoice()">INVOICE</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">MANAGE RECURRING</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button (click)="onAddRecurring()" *ngIf="tabData['add_edit']" type="button" class="open-dialog-btn">
+            <mat-icon>add</mat-icon>
+            Add Recurring
+          </button>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+          <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <mat-icon
+            class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3">
+              <mat-form-field>
+                <input matInput placeholder="Name" formControlName="recurring_name"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <ng-select [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="billing_name"
+                         placeholder="Billing Name"
+                         bindValue="entity_id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3">
+              <mat-form-field>
+                <mat-select placeholder="Service" formControlName="service_id">
+                  <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                    {{ service?.service_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+              <mat-form-field>
+                <mat-select placeholder="Fixed Fee" formControlName="fixed_fee">
+                  <mat-option value="1">Yes</mat-option>
+                  <mat-option value="0">No</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Select Frequency" formControlName="frequency_id">
+                  <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                    {{ frequency?.frequency_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Repetition" formControlName="repetition_type">
+                  <mat-option *ngFor="let recurringType of recurringRepetitionData" [value]="recurringType?.key">
+                    {{ recurringType?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="invoicedate" placeholder="Invoice creation date"
+                       formControlName="invoice_date">
+                <mat-datepicker-toggle matSuffix [for]="invoicedate"></mat-datepicker-toggle>
+                <mat-datepicker #invoicedate></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Status" formControlName="is_active">
+                  <mat-option value="1">Active</mat-option>
+                  <mat-option value="0">Inactive</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="recurringName.value">
+          <span class="tag__title">Name :</span>
+          <span>
+             <mat-form-field>
+             <input matInput placeholder="Name" formControlName="recurring_name"
+                    (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('recurring_name','recurring_name')">close
+          </mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="entityId.value">
+          <span class="tag__title">Billing Name :</span>
+          <span>
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="billing_name"
+                     placeholder="Billing Name"
+                     bindValue="entity_id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="entity_id"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('entity_id', 'entity_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="serviceId.value">
+          <span class="tag__title">Service :</span>
+          <span>
+             <mat-form-field>
+              <mat-select placeholder="Select Service" formControlName="service_id"
+                          (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                 <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                    {{ service?.service_name }}
+                  </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('service_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="fixedFee.value">
+          <span class="tag__title">Fixed Fee :</span>
+          <span>
+             <mat-form-field>
+              <mat-select placeholder="Yes" formControlName="fixed_fee"
+                          (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                 <mat-option value="1">Yes</mat-option>
+                  <mat-option value="0">No</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('fixed_fee')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="frequencyId.value">
+          <span class="tag__title">Frequency :</span>
+          <span>
+             <mat-form-field>
+              <mat-select placeholder="Select Frequency" formControlName="frequency_id"
+                          (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                 <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                    {{ frequency?.frequency_name }}
+                  </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('frequency_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="repetitionType.value">
+          <span class="tag__title">Repetition :</span>
+          <span>
+             <mat-form-field>
+              <mat-select placeholder="indentified" formControlName="repetition_type"
+                          (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                 <mat-option *ngFor="let recurringType of recurringRepetitionData" [value]="recurringType?.key">
+                    {{ recurringType?.label }}
+                  </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('repetition_type')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="invoiceDate.value">
+          <span class="tag__title">Invoice creation date :</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="invoicedate1" placeholder="Select Date" #dateRef
+                     formControlName="invoice_date"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="invoicedate1"></mat-datepicker-toggle>
+              <mat-datepicker #invoicedate1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('invoice_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="isActive.value">
+          <span class="tag__title">Status :</span>
+          <span>
+             <mat-form-field>
+              <mat-select placeholder="Status" formControlName="is_active"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-option value="1">Active</mat-option>
+                <mat-option value="0">Inactive</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('is_active')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf=" entityId.value || serviceId.value || fixedFee.value || frequencyId.value || repetitionType.value || invoiceDate.value || isActive.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr.No</th>
+
+            <th width="12%"
+                (click)="getSortData('recurring_name', sortBy === 'recurring_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Name
+              <i *ngIf="sortBy === 'recurring_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'recurring_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'recurring_name' && sortOrder === 'desc'}">
+                {{sortBy === 'recurring_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="12%"
+                (click)="getSortData('billing_name', sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Billing Name
+              <i *ngIf="sortBy === 'billing_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'billing_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'billing_name' && sortOrder === 'desc'}">
+                {{sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="8%"
+                (click)="getSortData('service_id', sortBy === 'service_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Service
+              <i *ngIf="sortBy === 'service_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'service_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'service_id' && sortOrder === 'desc'}">
+                {{sortBy === 'service_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="6%"
+                (click)="getSortData('fixed_fee', sortBy === 'fixed_fee' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Fixed Fee
+              <i *ngIf="sortBy === 'fixed_fee'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'fixed_fee' && sortOrder === 'asc', 'icon-down' :  sortBy === 'fixed_fee' && sortOrder === 'desc'}">
+                {{sortBy === 'fixed_fee' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="8%"
+                (click)="getSortData('frequency_id', sortBy === 'frequency_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Frequency
+              <i *ngIf="sortBy === 'frequency_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'frequency_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'frequency_id' && sortOrder === 'desc'}">
+                {{sortBy === 'frequency_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="7%">Start Date</th>
+
+            <th width="7%">Last Date</th>
+
+            <th width="8%"
+                (click)="getSortData('repetition_type', sortBy === 'repetition_type' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Repetition
+              <i *ngIf="sortBy === 'repetition_type'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'repetition_type' && sortOrder === 'asc', 'icon-down' :  sortBy === 'repetition_type' && sortOrder === 'desc'}">
+                {{sortBy === 'repetition_type' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%">Notes</th>
+
+            <th width="8%"
+                (click)="getSortData('modified_by', sortBy === 'modified_by' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Last Modified By
+              <i *ngIf="sortBy === 'modified_by'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'modified_by' && sortOrder === 'asc', 'icon-down' :  sortBy === 'modified_by' && sortOrder === 'desc'}">
+                {{sortBy === 'modified_by' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="recurringList.length">
+            <tr *ngFor="let recurring of recurringList; let i = index;">
+              <td width="4%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="12%">{{recurring?.recurring_name}}</td>
+              <td width="12%">
+                <div *ngIf="recurring?.entity_name">
+                  <div class="client-name-list" *ngIf="recurring?.entity_name.split(',').length > 1"
+                       (click)="onOpenClientList(recurring)">
+                    <span *ngFor="let j of recurring?.entity_name.split(',') | slice:0:3">{{j.charAt(0)}}</span>
+                    <span *ngIf="recurring?.entity_name.split(',').length - 3 > 0" class="reset-count">+{{recurring?.entity_name.split(',').length - 3}}</span>
+                  </div>
+                  <div class="client-name-list" *ngIf="recurring?.entity_name.split(',').length <= 1">
+                    <div>{{recurring?.entity_name}}</div>
+                  </div>
+                </div>
+              </td>
+              <td width="8%">{{recurring?.service_name}}</td>
+              <td width="6%">
+                <span class="turquoise-color fw-500" *ngIf="recurring?.fixed_fee == 1"><mat-icon
+                  class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>Yes</span>
+                <span class="red-color fw-500" *ngIf="recurring?.fixed_fee !== 1"><mat-icon
+                  class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>No</span>
+              </td>
+              <td width="8%">{{recurring?.frequency_name}}</td>
+              <td width="7%">{{recurring?.next_due | date : 'dd-MM-yyyy'}}</td>
+              <td width="7%">{{recurring?.last_due | date : 'dd-MM-yyyy'}}</td>
+              <td width="8%" *ngIf="recurring?.repetition_type === 3">{{recurring?.times + ' times'}}</td>
+              <td width="8%" *ngIf="recurring?.repetition_type === 2">Till {{recurring?.repeat_date | date: 'dd-MM-yyyy'
+                }}
+              </td>
+              <td width="8%" *ngIf="recurring?.repetition_type === 1">{{recurring?.repeat_indefinitely | date:
+                'dd-MM-yyyy' }}
+              </td>
+              <td width="8%" *ngIf="recurring?.repetition_type === 0"></td>
+              <td width="10%">{{recurring?.notes}}</td>
+              <td width="8%">{{recurring?.modified_by?.userfullname}} {{recurring?.modified_on | date : 'dd-MM-yyyy'}}
+              </td>
+              <td width="10%">
+                <mat-icon class="wet-asphalt-color" *ngIf="tabData['view']" [matTooltip]="'View'"
+                          (click)="openRecurringView(recurring)">remove_red_eye
+                </mat-icon>
+                <mat-icon class="orange-color" *ngIf="tabData['add_edit']" [matTooltip]="'Edit'"
+                          (click)="openAddRecurring(recurring)">edit
+                </mat-icon>
+                <mat-icon class="wet-asphalt-color" [matTooltip]="'History'"
+                          (click)="viewRecurringInfoHistory(recurring)">history
+                </mat-icon>
+                <mat-slide-toggle *ngIf="slideActiveInactive[i] && tabData['add_edit']"
+                                  [(ngModel)]="slideActiveInactive[i]"
+                                  (change)="openToggleConfirmationDialog($event, recurring, i)"></mat-slide-toggle>
+                <mat-slide-toggle *ngIf="!slideActiveInactive[i] && tabData['add_edit']"
+                                  [checked]="(recurring?.is_active) ? true : false"
+                                  (change)="openToggleConfirmationDialog($event, recurring, i)"></mat-slide-toggle>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="recurringList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    <div *ngIf="recurringList.length === 0" class="panel-title red-color">
+      No Records Found!
+    </div>
+  </div>
+  <!-- End Data Grid -->
+
+</div>
+<!-- Start History modal-->
+<div *ngIf="isOpenHistoryDialog">
+  <app-history-dialog (close)="isOpenHistoryDialog = false"></app-history-dialog>
+</div>
+<!-- End History modal-->

@@ -1,0 +1,115 @@
+<!-- Admin (Administration) manager users html view -->
+<div class="admin-manage-users-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">ADD BANK INFORMATION</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <form [formGroup]="addBankForm" #addMoreBankForm="ngForm"
+                (submit)="onBankSubmit(addBankForm.value, addBankForm.valid,bankObject)"
+                *ngIf="tabDataBank['add_edit']">
+            <div class="row">
+              <div class="col-md-6 PL-0">
+                <mat-form-field>
+                  <input formControlName="bank_name" matInput type="text" autocomplete="off" placeholder="Add Bank"
+                         required/>
+                </mat-form-field>
+                <div class="validation-msg">
+                  <app-validation *ngIf="isRequiredField(addBankForm.get('bank_name'))"
+                                  [errMsg]="validationMsg.BANK_NAME_REQUIRED"></app-validation>
+                </div>
+              </div>
+              <div class="col-md-4 MT-5">
+                <button [disabled]="addBankForm.invalid" class="btn-primary" type="submit">Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <div class="grid-search">
+            <form [formGroup]="filterForm">
+              <mat-form-field [floatLabel]="'never'">
+                <input matInput placeholder="Search" formControlName="bank_name"
+                       (keyup)="setAdvanceFilter(filterForm)">
+              </mat-form-field>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. no.</th>
+            <th width="55%">Bank</th>
+            <th width="15%">Last Modified on</th>
+            <th width="15%">Last Modified by</th>
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let bankData of bankList; let i = index">
+              <td width="5%">{{i+1}}</td>
+              <td width="55%">
+                <a *ngIf="!isBankUpdate" (click)="isBankUpdate = true">{{bankData?.bank_name}}</a>
+                <input *ngIf="isBankUpdate" type="text" value={{bankData?.bank_name}}
+                       (blur)="onBankNameUpdate($event.target.value,bankData);isBankUpdate = false"/>
+              </td>
+              <td width="15%">{{bankData?.modified_on | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+              <td width="15%">{{bankData?.modified_by?.modified_by}}</td>
+              <td width="10%">
+                <mat-slide-toggle [checked]="(bankData?.is_active) ? true : false" *ngIf="tabDataBank['add_edit']"
+                                  (change)="activeInactiveBank($event.checked,bankData)"></mat-slide-toggle>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>  <!-- End Table -->
+  <div *ngIf="bankList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Grid Inner Header -->
+</div>

@@ -1,0 +1,114 @@
+@import "../assets/scss/main";
+
+.loader {
+  position: relative;
+  z-index: 199
+}
+
+//mixins
+
+//position absolute mixin
+@mixin position-absolute($top: null, $left: null, $right: null, $bottom: null) {
+  position: absolute;
+  top: $top;
+  left: $left;
+  right: $right;
+  bottom: $bottom;
+}
+
+.loader-spinner {
+  background-color: rgba(96, 96, 96, 0.3);
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+}
+
+.spinners-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 70px;
+}
+
+/* YOU NEED THESE STYLES */
+
+/* spinner style */
+.spinner-eff {
+  position: relative;
+  width: $spinner-dimensions;
+  height: $spinner-dimensions;
+
+  &:before,
+  &:after {
+    content: "";
+    display: block;
+  }
+
+  .spinner-bar {
+
+    &:before,
+    &:after {
+      content: "";
+      display: block;
+    }
+  }
+}
+
+/* spinner-2 styles */
+.spinner-eff.spinner-eff-2 {
+
+  @keyframes scale-rotate {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+
+    12.5% {
+      transform: scale(0.5) rotate(45deg);
+    }
+
+    25% {
+      transform: scale(1) rotate(90deg);
+    }
+
+    37.5% {
+      transform: scale(0.5) rotate(135deg);
+    }
+
+    50% {
+      transform: scale(1) rotate(180deg);
+    }
+
+    62.5% {
+      transform: scale(0.5) rotate(225deg);
+    }
+
+    75% {
+      transform: scale(1) rotate(270deg);
+    }
+
+    87.5% {
+      transform: scale(0.5) rotate(315deg);
+    }
+
+    100% {
+      transform: scale(1) rotate(360deg);
+    }
+
+  }
+
+  .square {
+    width: 100%;
+    height: 100%;
+    background-color: $dark-primary-color;
+    transform: scale(1) rotate(0deg);
+    transform-origin: center center;
+    animation: scale-rotate 3s linear 0s infinite;
+  }
+}
+

@@ -1,0 +1,72 @@
+<div class="add-on-off-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onInvoice()">INVOICE</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onManageRecurring()">RECURRING</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">RECURRING VIEW</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-12 inner-header-title">
+          <span class="panel-title ML-0">Client :</span>
+          <span *ngFor="let client of clientList; let i = index" class="MB-10">
+            <span class="fw-500 MR-5 primary-color">{{i+1}}.</span> <span class="back-color MR-10">{{client}}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="30%">Invoice Frequency</th>
+            <th width="35%">Invoice Period</th>
+            <th width="30%">Invoice Date</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body table-body-without-filter">
+          <table>
+            <tbody>
+            <tr *ngFor="let previewreview of previewreviewList; let j = index">
+              <td width="5%">{{j + 1}}</td>
+              <td width="30%">{{previewreview?.frequency_name}}</td>
+              <td width="35%">{{previewreview?.start_date | date : 'dd-MM-yyyy'}} - {{previewreview?.end_date | date :
+                'dd-MM-yyyy'}}
+              </td>
+              <td width="30%">{{previewreview?.invoice_date | date : 'dd-MM-yyyy'}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+</div>

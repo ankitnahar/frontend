@@ -1,0 +1,39 @@
+<!--  Start Change InOut Time dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">MORE DETAILS</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <div class="panel-title" *ngIf="subActivityFields.length <= 0">
+      <p>No Extra Items Found!!</p>
+    </div>
+    <div class="row MB-25" *ngIf="subActivityFields.length > 0">
+      <div class="row col-md-12 PLR-0 MT-20" *ngFor="let data of subActivityFields">
+        <div class="col-md-6"><label class="fw-500">{{data['label']}}</label></div>
+        <div class="col-md-6">
+          <span>{{data['value']}}</span>
+        </div>
+      </div>
+      <div *ngIf="nameOfEmp.length">
+        <div *ngFor="let item of nameOfEmp;" class="row col-md-12 PLR-0 MT-20">
+          <div class="col-md-6"><label class="fw-500">First Name</label></div>
+          <div class="col-md-6">
+            <span>{{item['first_name']}}</span>
+          </div>
+          <div class="col-md-6"><label class="fw-500">Last Name</label></div>
+          <div class="col-md-6">
+            <span>{{item['last_name']}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  End Change InOut Time dialog  -->

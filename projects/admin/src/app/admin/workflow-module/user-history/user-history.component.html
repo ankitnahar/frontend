@@ -1,0 +1,324 @@
+<!-- USER HISTORY Container -->
+<div class="newsletter-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="cursor-pointer">home</mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>USER HISTORY</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+            <li>
+              <a (click)="onDownloadExcel()">
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="User Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Designation" [multiple]="false" formControlName="designation_id">
+                  <mat-option *ngFor="let designation of designationList" [value]="designation?.id">
+                    {{ designation?.designation_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Department" [multiple]="false" formControlName="department_id">
+                  <mat-option *ngFor="let department of departmentList" [value]="department?.id">
+                    {{ department?.department_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="tamList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TAM"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="assign_manager">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="tlList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TL"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="tl">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Location" [multiple]="false" formControlName="location_id">
+                  <mat-option *ngFor="let location of locationList" [value]="location?.id">
+                    {{ location?.location_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Month" [multiple]="true" formControlName="month">
+                  <mat-option *ngFor="let dateRange of dateRangeList" [value]="dateRange">
+                    {{ dateRange }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="userIDField.value">
+          <span class="tag__title">User Name:</span>
+          <span>
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="User Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="user_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('user_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="designationField.value">
+          <span class="tag__title">Designation: </span>
+          <span>
+              <mat-form-field>
+                <mat-select placeholder="Designation" [multiple]="false" formControlName="designation_id"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let designation of designationList" [value]="designation?.id">
+                    {{ designation?.designation_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+          <i class="material-icons tag__close" (click)="onClearTag('designation_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="departmentField.value">
+          <span class="tag__title">Department: </span>
+          <span>
+              <mat-form-field>
+                <mat-select placeholder="Department" [multiple]="false" formControlName="department_id" (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let department of departmentList" [value]="department?.id">
+                    {{ department?.department_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+          <i class="material-icons tag__close" (click)="onClearTag('department_id')">close</i>
+        </div>
+
+
+        <div class="tag" *ngIf="assignManagerField.value">
+          <span class="tag__title">TAM:</span>
+          <span>
+            <ng-select [items]="tamList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="TAM"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="assign_manager"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('assign_manager')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="tlField.value">
+          <span class="tag__title">TL:</span>
+          <span>
+            <ng-select [items]="tlList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="TL"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="tl"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('tl')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="locationField.value">
+          <span class="tag__title">Location: </span>
+          <span>
+             <mat-form-field>
+                <mat-select placeholder="Location" [multiple]="false" formControlName="location_id" (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let location of locationList" [value]="location?.id">
+                    {{ location?.location_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+          <i class="material-icons tag__close" (click)="onClearTag('location_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="awardMonth.value != null && awardMonth.value !== '' && awardMonth.value.length">
+          <span class="tag__title">Month: </span>
+          <span>
+              <mat-form-field>
+                <mat-select placeholder="Month" [multiple]="true" formControlName="month"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                 <mat-option *ngFor="let dateRange of dateRangeList" [value]="dateRange">
+                    {{ dateRange }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+          <i class="material-icons tag__close" (click)="onClearTag('month')">close</i>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="userIDField.value || departmentField.value || designationField.value || awardField.value || awardStatusField.value || assignManagerField.value || tlField.value || locationField.value || (awardMonth.value != null && awardMonth.value !== '' && awardMonth.value.length)">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="5%">Bio ID</th>
+            <th width="10%">User Name</th>
+            <th width="8%">DOJ</th>
+            <th width="8%">Month</th>
+            <th width="8%">Designation</th>
+            <th width="8%">Department</th>
+            <th width="10%">TAM</th>
+            <th width="10%">Location</th>
+            <th width="10%">Present/Absent</th>
+            <th width="13%">Issue/Apprisal Ticket</th>
+            <th width="5%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let userhistory of userHistoryList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="5%" class="word-break">{{userhistory?.user_bio_id}}</td>
+              <td width="10%" class="word-break">{{userhistory?.userfullname}}</td>
+              <td width="8%" class="word-break">{{userhistory?.user_joining_date | date : 'dd-MM-yyyy'}}</td>
+              <td width="8%" class="word-break"><span class="turquoise-color fw-500">
+                <mat-icon class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>{{userhistory?.month}}</span>
+              </td>
+              <td width="8%" class="word-break">{{userhistory?.designation_name}}</td>
+              <td width="8%" class="word-break">{{userhistory?.department_name}}</td>
+              <td width="10%" class="wordgit-break">{{userhistory.manager_name }}</td>
+              <td width="10%" class="wordgit-break">{{userhistory.location_name }}</td>
+              <td width="10%" class="text-center"><span class="label-gray-bg-color">{{userhistory?.present_day}}</span> <span class="label-orange-bg-color ML-5">{{userhistory?.absent}}</span></td>
+              <td width="13%" class="text-center"><span class="label-gray-bg-color">{{userhistory?.issue_ticket}}</span> <span class="label-orange-bg-color ML-5">{{userhistory?.apprisal_ticket}}</span></td>
+              <td width="5%">
+                <mat-icon class="light-orange-color" matTooltip="Add User Award" (click)="onAddAward(userhistory)">add</mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>  <!-- End Table -->
+  <!-- End Grid Inner Header -->
+</div>

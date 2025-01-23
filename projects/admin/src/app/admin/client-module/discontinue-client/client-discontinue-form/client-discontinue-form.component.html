@@ -1,0 +1,115 @@
+<div class="edit-discontinue-client-container">
+
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onDicontinueClient()">DISCONTINUE CLIENT</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">CLIENT DISCONTINUE FORM | {{clientDiscontinue.trading_name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="">
+    <form [formGroup]="addDiscontinueQuestionForm" (submit)="onSumbitDiscontinueQuestion(addDiscontinueQuestionForm)">
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <div class="panel-title">
+            <span class="back-color">Stage:</span> {{clientDiscontinue.clickedStage['name']}}
+            <span class="back-color ML-15">Discontinued by:</span> {{clientDiscontinue?.discontinue_by?.userfullname}} |
+            {{clientDiscontinue?.discontinue_on | date:'dd-MM-yyyy'}}<span
+            class="back-color ML-15"
+            *ngIf="clientDiscontinue?.modified_by?.userfullname !== null && clientDiscontinue?.modified_on !== null">Modified by:</span>
+            {{clientDiscontinue?.modified_by?.userfullname}} | {{clientDiscontinue?.modified_on | date:'dd-MM-yyyy'}}
+          </div>
+        </div>
+
+        <div class="col-md-12" *ngIf="getFilterFieldArray().controls.length">
+          <!-- table start-->
+          <div class="table-container">
+            <div class="table-block scrollable-grid">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th width="3%">S.No</th>
+                  <th width="47%">Step.</th>
+                  <th width="20%">is it done?</th>
+                  <th width="20%">Notes</th>
+                  <th width="10%">Question Type</th>
+                </tr>
+                </thead>
+                <tbody *ngFor="let groups of newDiscontinueQuestions; let i = index">
+                <tr>
+                  <td colspan="5" width="100%"><span class="orange-color fw-500">{{whoFillup[i]}}</span></td>
+                </tr>
+                <tr *ngFor="let filterGroup of getFilterFieldArray().controls; let j= index">
+                  <td width="3%" *ngIf="getFilterFieldArray().value[j]['who_fillup_name'] === whoFillup[i]">
+                    {{getFilterFieldArray().value[j]['sr_no']}}
+                  </td>
+                  <td width="47%" *ngIf="getFilterFieldArray().value[j]['who_fillup_name'] === whoFillup[i]"><span
+                    class="MR-15">{{getFilterFieldArray().value[j]['name']}}</span></td>
+                  <td width="20%" *ngIf="getFilterFieldArray().value[j]['who_fillup_name'] === whoFillup[i]">
+                    <mat-checkbox [checked]="getFilterFieldArray().value[j]['is_checked'] === 1"
+                                  (change)="updateValues(j, 'is_checked', $event.checked)"
+                                  [disabled]="getFilterFieldArray().value[j]['is_checked'] === 1"></mat-checkbox>
+                    <span class="primary-color fw-500 ML-5"
+                          *ngIf="getFilterFieldArray().value[j]['is_checked'] === 1">{{getFilterFieldArray().value[j]['created_by']['userfullname']}}  |  {{getFilterFieldArray().value[i]['created_on'] | date: 'd-MM-yyyy'}}</span>
+                  </td>
+                  <td width="20%" *ngIf="getFilterFieldArray().value[j]['who_fillup_name'] === whoFillup[i]">
+                    <mat-form-field [floatLabel]="'never'">
+                          <textarea matInput placeholder="Notes" rows="2"
+                                    (keyup)="updateValues(j, 'notes', $event.target.value)">{{getFilterFieldArray().value[j]['notes']}}</textarea>
+                    </mat-form-field>
+                  </td>
+                  <td width="10%" class="text-center"
+                      *ngIf="getFilterFieldArray().value[j]['who_fillup_name'] === whoFillup[i]"><span
+                    class="label-orange-bg-color">{{getFilterFieldArray().value[j]['type'] === 0?'Individual':'Common'}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- table end-->
+        </div>
+        <div class="col-md-12" *ngIf="this.clientDiscontinueStage == 5">
+          <mat-form-field>
+            <textarea matInput placeholder="QC Comment" row="2" formControlName="discontinue_comment_by_qc"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addDiscontinueQuestionForm.get('discontinue_comment_by_qc'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12" *ngIf="this.clientDiscontinueStage == 6">
+          <mat-form-field>
+            <textarea matInput placeholder="Sales comment" row="2"
+                      formControlName="discontinue_comment_by_sales"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addDiscontinueQuestionForm.get('discontinue_comment_by_sales'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 text-right MTB-20">
+          <button type="button" class="btn-default MR-5" (click)="onDicontinueClient()">Cancel</button>
+          <button type="submit" class="btn-primary MR-5" (click)="updateSaveButton(0)">Save</button>
+          <button type="submit" class="btn-success" [disabled]="addDiscontinueQuestionForm.invalid"
+                  (click)="updateSaveButton(1)">Submit
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

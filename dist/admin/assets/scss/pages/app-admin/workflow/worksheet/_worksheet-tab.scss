@@ -1,0 +1,52 @@
+/*worksheet main page scss start*/
+.worksheet-main-tab-container {
+  .mat-tab-body-content {
+    overflow: hidden !important;
+  }
+}
+
+/*worksheet tab scss start*/
+.view-worksheet-tab-container {
+  tbody {
+    tr {
+      align-items: baseline;
+    }
+  }
+
+  .no-float-label {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    .mat-input-container {
+      max-width: 12rem;
+    }
+  }
+
+  .worksheet-bold-grid-data {
+    b {
+      font-weight: 500;
+      color: $black-color;
+    }
+  }
+
+  .mat-checkbox-inner-container {
+    height: 1.5rem;
+    width: 1.5rem;
+    .mat-checkbox-frame {
+      border-color: rgba(142, 142, 142, 0.54);
+    }
+  }
+
+  .timer-section {
+    position: relative;
+    top: .4rem;
+  }
+}
+
+.prepare_query_panel {
+  .mat-expansion-panel-header {
+    .mat-content {
+      overflow: inherit;
+    }
+    height: 40px !important;
+  }
+}

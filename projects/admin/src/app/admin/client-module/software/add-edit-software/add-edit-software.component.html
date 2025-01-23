@@ -1,0 +1,77 @@
+<!-- Admin (Client) Add Edit Software html view  -->
+<div class="add-edit-container">
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isPanelOpen" (opened)="createSoftwareForm()" (closed)="onClosePanel()">
+      <mat-expansion-panel-header (click)="changeOpenPanelState()">
+        <mat-panel-title> {{software ? 'Update' : 'Add'}} Software</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <form [formGroup]="addEditSoftwareForm" #addEditSoftForm="ngForm"
+            (submit)="onSubmitSoftwareForm(addEditSoftwareForm)">
+        <div class="row">
+          <div class="col-md-4">
+            <ng-select class="custom" [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id">
+            </ng-select>
+            <!--<div class="validation-msg">-->
+            <!--<app-validation *ngIf="isRequiredField()" errMsg="'Client name is required'"></app-validation>-->
+            <!--</div>-->
+          </div>
+
+          <div class="col-md-4">
+            <mat-form-field>
+              <mat-select placeholder="Software" formControlName="software_id">
+                <mat-option *ngFor="let softwareData of softwareMasterList" [value]="softwareData.id">
+                  {{softwareData.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!--<div class="validation-msg">-->
+            <!--<app-validation *ngIf="isRequiredField()" errMsg="'Client name is required'"></app-validation>-->
+            <!--</div>-->
+          </div>
+
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput placeholder="User Name" formControlName="username"/>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Password" formControlName="password"/>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-8 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="URL Link" formControlName="link"/>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-8 MT-10">
+            <mat-form-field>
+              <textarea matInput placeholder="Note" formControlName="notes"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 MT-20">
+            <div class="text-right">
+              <button type="button" class="btn-default MR-5" (click)="onClickClear()">Clear</button>
+              <button type="submit" class="btn-primary" [disabled]="addEditSoftwareForm.invalid">
+                {{software ? 'Update' : 'Add'}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -1,0 +1,422 @@
+<!-- Reviewer Writeoff Container -->
+<div class="befree-writeoff-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>WORKFLOW</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onReviewerWriteoff()">REVIEWER WRITEOFF</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">REVIEWER WRITEOFF ARCHIVED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3>Archived Reviewer Writeoff</h3>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li>
+              <a>
+                <span (click)="downloadExcel()">Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+          <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <mat-icon
+            class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientListParent"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Parent Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         (change)="onChangeParentEntity($event);"
+                         formControlName="parent_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="reviewerList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Staff Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="reviewer_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="periodFromRef" placeholder="Period From" formControlName="from_period">
+                <mat-datepicker-toggle matSuffix [for]="periodFromRef"></mat-datepicker-toggle>
+                <mat-datepicker #periodFromRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="periodToRef" placeholder="Period To" formControlName="to_period">
+                <mat-datepicker-toggle matSuffix [for]="periodToRef"></mat-datepicker-toggle>
+                <mat-datepicker #periodToRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="approvedFromRef" placeholder="Approved From"
+                       formControlName="approved_from">
+                <mat-datepicker-toggle matSuffix [for]="approvedFromRef"></mat-datepicker-toggle>
+                <mat-datepicker #approvedFromRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="approvedToRef" placeholder="Approved To" formControlName="approved_to">
+                <mat-datepicker-toggle matSuffix [for]="approvedToRef"></mat-datepicker-toggle>
+                <mat-datepicker #approvedToRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="createdFromRef" placeholder="Created From"
+                       formControlName="created_on_from">
+                <mat-datepicker-toggle matSuffix [for]="createdFromRef"></mat-datepicker-toggle>
+                <mat-datepicker #createdFromRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="createdToRef" placeholder="Created To" formControlName="created_on_to">
+                <mat-datepicker-toggle matSuffix [for]="createdToRef"></mat-datepicker-toggle>
+                <mat-datepicker #createdToRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-12 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="parent_id.value">
+          <span class="tag__title">Parent Trading Name :</span>
+          <span>
+             <ng-select [items]="clientListParent"
+                        [closeOnSelect]="true"
+                        bindLabel="trading_name"
+                        placeholder="Trading Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="parent_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="entityIdField.value">
+          <span class="tag__title">Client:</span>
+          <span>
+            <ng-select class="custom" [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('entity_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="reviewerField.value">
+          <span class="tag__title">Staff Name :</span>
+          <span>
+            <ng-select class="custom" [items]="reviewerList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Staff Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="reviewer_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('reviewer_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="fromPeriodField.value">
+          <span class="tag__title">Wroksheet Period From:</span>
+          <span>
+            <mat-form-field>
+                <input matInput [matDatepicker]="periodFromRef1" placeholder="Period From" formControlName="from_period"
+                       (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-datepicker-toggle matSuffix [for]="periodFromRef1"></mat-datepicker-toggle>
+                <mat-datepicker #periodFromRef1></mat-datepicker>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('from_period')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="toPeriodField.value">
+          <span class="tag__title">Worksheet Period To:</span>
+          <span>
+            <mat-form-field>
+                <input matInput [matDatepicker]="periodToRef1" placeholder="Period To" formControlName="to_period"
+                       (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-datepicker-toggle matSuffix [for]="periodToRef1"></mat-datepicker-toggle>
+                <mat-datepicker #periodToRef1></mat-datepicker>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('to_period')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="approvedFromField.value">
+          <span class="tag__title">Approved From:</span>
+          <span>
+              <mat-form-field>
+                <input matInput [matDatepicker]="approvedFromRef" placeholder="Approved From"
+                       formControlName="approved_from">
+                <mat-datepicker-toggle (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" matSuffix
+                                       [for]="approvedFromRef"></mat-datepicker-toggle>
+                <mat-datepicker #approvedFromRef></mat-datepicker>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('approved_from')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="approvedToField.value">
+          <span class="tag__title">Approved To:</span>
+          <span>
+            <mat-form-field>
+                <input matInput [matDatepicker]="approvedToRef" placeholder="Approved To" formControlName="approved_to">
+                <mat-datepicker-toggle (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" matSuffix
+                                       [for]="approvedToRef"></mat-datepicker-toggle>
+                <mat-datepicker #approvedToRef></mat-datepicker>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('approved_to')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="createdOnFromField.value">
+          <span class="tag__title">Created From:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="createdFromRef1" placeholder="Created From"
+                     formControlName="created_on_from"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="createdFromRef1"></mat-datepicker-toggle>
+              <mat-datepicker #createdFromRef1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('created_on_from')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="createdOnToField.value">
+          <span class="tag__title">Created To:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="createdToRef1" placeholder="Created To" formControlName="created_on_to"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="createdToRef1"></mat-datepicker-toggle>
+              <mat-datepicker #createdToRef1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('created_on_to')">close</mat-icon>
+        </div>
+
+
+        <div class="clearAll-tags"
+             *ngIf="parent_id.value || entityIdField.value || fromPeriodField.value || toPeriodField.value || reviewerField.value ||
+              createdOnFromField.value || createdOnToField.value || approvedFromField.value || approvedToField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block scrollable-grid">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="15%">Parent Trading Name</th>
+            <th width="15%"
+                (click)="getSortData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Trading Name
+              <i *ngIf="sortBy === 'trading_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+                {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="15%">Worksheet Period
+            </th>
+            <th width="10%"
+                (click)="getSortData('reviewer_id', sortBy === 'reviewer_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Reviewer Name
+              <i *ngIf="sortBy === 'reviewer_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'reviewer_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'reviewer_id' && sortOrder === 'desc'}">
+                {{sortBy === 'reviewer_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="8%"
+                (click)="getSortData('timesheet_unit', sortBy === 'timesheet_unit' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Timesheet Unit
+              <i *ngIf="sortBy === 'timesheet_unit'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'timesheet_unit' && sortOrder === 'asc', 'icon-down' :  sortBy === 'timesheet_unit' && sortOrder === 'desc'}">
+                {{sortBy === 'timesheet_unit' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="8%"
+                (click)="getSortData('budgeted_unit', sortBy === 'budgeted_unit' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Budgeted Unit
+              <i *ngIf="sortBy === 'budgeted_unit'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'budgeted_unit' && sortOrder === 'asc', 'icon-down' :  sortBy === 'budgeted_unit' && sortOrder === 'desc'}">
+                {{sortBy === 'budgeted_unit' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="9%"
+                (click)="getSortData('created_on', sortBy === 'created_on' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Created On
+              <i *ngIf="sortBy === 'created_on'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_on' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_on' && sortOrder === 'desc'}">
+                {{sortBy === 'created_on' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%">Reviewer Comment
+            </th>
+            <th width="5%">Action
+            </th>
+          </tr>
+          </thead>
+        </table>
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let reviewdata of reviewWriteoff; let i = index">
+              <td width="5%">
+                <mat-icon *ngIf="reviewdata?.entity_id?.discontinue_stage === 1" class="red-color v-align-middle"
+                          [matTooltip]="'Discontinue Process Initialized'"> block
+                </mat-icon>
+                {{+pageSize * (pageIndex) + i + 1}}
+              </td>
+              <td width="15%">{{reviewdata?.parent_name}}</td>
+              <td width="15%">{{reviewdata?.entity_id?.trading_name}}</td>
+              <td width="15%">{{(reviewdata?.worksheet_id?.start_date | date :'dd-MM-yyyy') + ' TO ' +
+                (reviewdata?.worksheet_id?.end_date | date :'dd-MM-yyyy')}}
+              </td>
+              <td width="10%">{{reviewdata?.reviewer_id?.userfullname}}</td>
+              <td width="8%" class="text-center"><span class="label-light-dark-blue-bg-color">{{reviewdata?.timesheet_unit}}</span>
+              </td>
+              <td width="8%" class="text-center"><span
+                class="label-orange-bg-color">{{reviewdata?.budgeted_unit}}</span></td>
+              <td width="9%">{{(reviewdata?.created_on !== '0000-00-00' && reviewdata?.created_on !== '') ?
+                (reviewdata?.created_on | date :'dd-MM-yyyy HH:mm:ss') : ''}}
+              </td>
+              <td width="10%" class="text-center">
+                <mat-icon (click)="onReviewerCommentsDialog(reviewdata,0)" class="cursor-pointer wet-asphalt-color">
+                  comment
+                </mat-icon>
+              </td>
+              <td width="5%">
+                <mat-icon (click)="onReviewerWriteOffApproveDialog(reviewdata,0)"
+                          class="cursor-pointer wet-asphalt-color">
+                  comment
+                </mat-icon>
+                <!--<mat-icon class="cursor-pointer wet-asphalt-color" [matTooltip]="'History'"-->
+                <!--(click)="viewReviewerWriteOffHistory(reviewdata)">history-->
+                <!--</mat-icon>-->
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="expand-grid__tfoot" *ngIf="reviewWriteoff.length">
+          <table>
+            <tfoot>
+            <tr>
+              <td colspan="10">
+                <mat-paginator [length]="totalRecords"
+                               [pageSize]="pageSize"
+                               [pageIndex]="pageIndex"
+                               [pageSizeOptions]="pageArray"
+                               (page)="onPageChange($event)">
+                </mat-paginator>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- End Table -->
+    <div *ngIf="!reviewWriteoff.length" class="panel-title red-color">
+      No Records Found!
+    </div>
+  </div>
+</div>

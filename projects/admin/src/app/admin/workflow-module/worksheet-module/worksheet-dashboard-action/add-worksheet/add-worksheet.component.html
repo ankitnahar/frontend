@@ -1,0 +1,385 @@
+<div class="add-worksheet-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">
+            <a (click)="onWorksheet()">WORKSHEET</a>
+          </span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">ADD WORKSHEET</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                          *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                          *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                          *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                          *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                          *ngIf="tabDataWorksheetTraining['view']">Training List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                          *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                    Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                          *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                    Listing
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add worksheet form-->
+  <div>
+    <span class="panel-title orange-color">Add New Worksheet</span>
+    <div class="row">
+      <mat-hint class="red-color col-md-9">Note:- If client discontinue process initiated, Worksheet rule will not be create for those clients</mat-hint>
+      <!--<a href="" target="_blank" class="col-md-3">SOP</a>-->
+      <div class="col-md-3 leave-type-list text-right">
+        <ul>
+          <li class="blue-drop-button">
+            <button (click)="openSOP()" type="button" class="btn-primary btn-add">SOP</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <form [formGroup]="addWorksheetForm" (submit)="onAddWorksheet(addWorksheetForm.value,addWorksheetForm.valid)">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-radio-group (change)="onChangeType($event.value)">
+            <mat-radio-button [checked]="isMultipleClientName ? false : true" value="2">Single Client</mat-radio-button>
+            <mat-radio-button [checked]="isMultipleClientName ? true : false" class="ML-15" value="1">Multiple Client
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="row MT-20">
+        <div class="col-md-4">
+          <ng-select [items]="clientListParent"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Parent Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="onChangeParentEntity($event)"
+                     formControlName="parent_id">
+          </ng-select>
+
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('parent_id'))"
+                            [errMsg]="validationMsg.CLIENT_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div *ngIf="!isMultipleClientName" class="col-md-4">
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="onEntityChange($event,0)"
+                     formControlName="entity_id">
+          </ng-select>
+
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('entity_id'))"
+                            [errMsg]="validationMsg.CLIENT_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div *ngIf="isMultipleClientName" class="col-md-12">
+          <span class="text-right on-right back-color">You have selected
+            <span
+              class="primary-color">{{(selectedFilterEntity) ? selectedFilterEntity.length : 0}}</span> clients.</span>
+          <span (click)="selectAll()" class="cursor-pointer">Select All |</span>
+          <span (click)="unselectAll()" class="cursor-pointer"> DeSelect All</span>
+          <ng-select [items]="clientList" [multiple]="true"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="entity_id">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('entity_id'))"
+                            [errMsg]="validationMsg.CLIENT_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ng-select [items]="masterActivityList"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Master Activity"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="getTaskFilterList($event)"
+                     formControlName="master_activity_id">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('master_activity_id'))"
+                            [errMsg]="validationMsg.MASTER_ACTIVITY_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ng-select [items]="taskList"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Task"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="getTaskList($event)"
+                     formControlName="task_id">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('task_id'))"
+                            [errMsg]="validationMsg.TASK_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <ng-select [items]="yesNoList"
+                     [closeOnSelect]="true"
+                     bindLabel="label"
+                     placeholder="Critical Task?"
+                     bindValue="key"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="critical_task">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('critical_task'))"
+                            [errMsg]="validationMsg.TASK_CRITICAL_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <ng-select [items]="addiotionalAssignee"
+                     bindLabel="userfullname"
+                     bindValue="id"
+                     groupBy="name"
+                     placeholder="Additional Assignee"
+                     formControlName="worksheet_additional_assignee"
+                     [selectableGroup]="false">
+            <ng-template ng-optgroup-tmp let-item="item">
+              {{item.name}}
+            </ng-template>
+          </ng-select>
+          <mat-hint class="red-color">Note:- Worksheet not visible, If client not allocated to user
+          </mat-hint>
+        </div>
+
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <input formControlName="start_date" matInput [matDatepicker]="startDate" placeholder="Start Date" required>
+            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+            <mat-datepicker #startDate></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('start_date'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input formControlName="end_date" matInput [matDatepicker]="endDate" placeholder="End Date" required>
+            <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+            <mat-datepicker #endDate></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('end_date'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="frequency_id" placeholder="Frequency" required
+                        (selectionChange)="getFreqValue($event.value)">
+              <mat-option *ngFor="let data of frequencyList; let i = index" [value]="data.id">{{data.frequency_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addWorksheetForm.get('frequency_id'))"
+                            [errMsg]="validationMsg.FREQUENCY_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field *ngIf="freqValue === 1 || freqValue === 2 || freqValue === 6 || freqValue === 9">
+            <!-- formControlName="frequency_id" placeholder="Frequency" required (change)="getFreqValue($event)" -->
+            <mat-select formControlName="expert_day" placeholder="Day" [multiple]="false">
+              <mat-option *ngFor="let data of dayData; let i = index" [value]="data">{{data}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="freqValue === 4 || freqValue === 5">
+            <!-- formControlName="frequency_id" placeholder="Frequency" required (change)="getFreqValue($event)" -->
+            <mat-select formControlName="expert_month" placeholder="Month" [multiple]="false">
+              <mat-option *ngFor="let data of monthData; let i = index" [value]="data">{{data}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="freqValue === 10">
+            <!-- formControlName="frequency_id" placeholder="Frequency" required (change)="getFreqValue($event)" -->
+            <mat-select formControlName="expert_day" placeholder="Day" [multiple]="true">
+              <mat-option *ngFor="let data of dayData; let i = index" [value]="data">{{data}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="freqValue === 3">
+            <!-- formControlName="frequency_id" placeholder="Frequency" required (change)="getFreqValue($event)" -->
+            <mat-select formControlName="expert_month" placeholder="Month" [multiple]="true">
+              <mat-option *ngFor="let data of monthData; let i = index" [value]="data">{{data}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-radio-group (change)="onChangeDueDate($event.value)" formControlName="due_date_period">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="row">
+              <div class="col-md-6 PL-0">
+                <div class="MT-15">
+                  <span class="dark-gray-color MR-15">Due Date</span>
+                  <mat-radio-button value="1">After Days</mat-radio-button>
+                </div>
+              </div>
+              <div class="col-md-6 PR-0 MT-15" *ngIf="checkBoxValue == 1">
+                <!--<mat-form-field>-->
+                <!--<mat-select formControlName="due_after_day" placeholder="After days">-->
+                <!--<mat-option *ngFor="let data of dateData" [value]="data">{{data}}</mat-option>-->
+                <!--</mat-select>-->
+                <!--</mat-form-field>-->
+                <mat-form-field>
+                  <input matInput type="number" formControlName="due_after_day" placeholder="After days">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="validation-msg"></div>
+          </div>
+          <div class="col-md-4">
+            <div class="row">
+              <div class="col-md-6 MT-15 PL-0">
+                <mat-radio-button value="2">On Date of month</mat-radio-button>
+              </div>
+              <div class="col-md-6 PR-0 MT-15" *ngIf="checkBoxValue == 2">
+                <mat-form-field>
+                  <mat-select formControlName="due_month_day" placeholder="On Date of Month">
+                    <mat-option *ngFor="let data of dateData.slice(1)" [value]="data">{{data}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div class="validation-msg"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row">
+              <div class="col-md-6 MT-15 PL-0">
+                <mat-radio-button value="3">On Particular Date</mat-radio-button>
+              </div>
+              <div class="col-md-6 PR-0 MT-15" *ngIf="checkBoxValue == 3">
+                <mat-form-field>
+                  <input formControlName="due_on_particular_date" matInput [matDatepicker]="particularDate"
+                         placeholder="Date">
+                  <mat-datepicker-toggle matSuffix [for]="particularDate"></mat-datepicker-toggle>
+                  <mat-datepicker #particularDate></mat-datepicker>
+                </mat-form-field>
+                <div class="validation-msg"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-radio-group>
+
+      <div class="row">
+        <div class="col-md-12"
+             *ngIf="addWorksheetForm.get('master_activity_id').value === 62 || addWorksheetForm.get('master_activity_id').value === 26">
+          <mat-form-field>
+            <input type="number" formControlName="budgeted_unit" matInput="" placeholder="Account Team Budgeted Unit">
+          </mat-form-field>
+          <div class="validation-msg"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <textarea formControlName="notes" matInput placeholder="Notes" rows="2"></textarea>
+          </mat-form-field>
+          <div class="validation-msg"></div>
+        </div>
+      </div>
+
+      <div class="col-md-12 MB-20">
+        <div class="row MT-30">
+          <div class="col-md-6 PL-0">
+          </div>
+          <div class="col-md-6 text-right PR-0">
+            <!--<button [disabled]="addWorksheetForm.invalid" type="submit" class="btn-primary">Save & Next</button>-->
+            <!--<button type="submit" class="btn-primary MR-5" (click)="onWorksheetPreviewDetails(2)"-->
+                    <!--[disabled]="addWorksheetForm.invalid">Set Rule Only-->
+            <!--</button>-->
+            <!--<button type="submit" class="btn-primary MR-5" (click)="onWorksheetPreviewDetails(3)"-->
+                    <!--[disabled]="addWorksheetForm.invalid">Set Rule & Create Worksheet-->
+            <!--</button>-->
+            <button type="submit" class="btn-primary MR-5" (click)="onWorksheetPreviewDetails(1)"
+                    [disabled]="addWorksheetForm.invalid">Save & Next
+            </button>
+            <button (click)="onWorksheet()" type="button" class="btn-default MR-5">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--End add worksheet form-->
+</div>

@@ -1,0 +1,46 @@
+<!--  Start archive contact menu dialog  -->
+<div class="modal approve-reject-dialog large-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">
+      <span>ARCHIVE CONTACT of {{contact?.trading_name}}</span>
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <form [formGroup]="archiveContactForm" (submit)="onArchiveContact(archiveContactForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-3 MT-10">
+          <span>Archive Reason*</span>
+        </div>
+        <div class="col-md-9">
+          <mat-form-field>
+            <textarea matInput formControlName="archived_reason" placeholder="Enter archive reason"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(archiveContactForm.get('archived_reason'))"
+                            [errMsg]="validationMsg.REASON_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-6">
+        </div>
+
+        <div class="col-md-6 text-right">
+          <button [disabled]="archiveContactForm.invalid" type="submit" class="btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End archive contact menu dialog  -->
+
+<!--  Start dialog layer -->
+<div class="modal-layer" (click)="onCloseDialog()"></div>
+<!--  End dialog layer -->

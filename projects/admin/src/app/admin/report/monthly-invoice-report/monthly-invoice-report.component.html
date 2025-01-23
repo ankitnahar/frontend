@@ -1,0 +1,149 @@
+<div class="common-report-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>REPORTS</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">MONTHLY INVOICE REPORT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header PT-5">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+            <div class="row">
+              <div class="col-md-12 row PLR-0">
+                <label class="col-md-2 PL-0 MT-20 fw-500 primary-color">Report Period</label>
+                <div class="col-md-3 PLR-0">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="fromdate" placeholder="dd-mm-yyyy"
+                           formControlName="from">
+                    <mat-datepicker-toggle matSuffix [for]="fromdate"></mat-datepicker-toggle>
+                    <mat-datepicker #fromdate></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3 PR-0">
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="todate" placeholder="dd-mm-yyyy"
+                           formControlName="to">
+                    <mat-datepicker-toggle matSuffix [for]="todate"></mat-datepicker-toggle>
+                    <mat-datepicker #todate></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4 MT-5">
+                  <!-- <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>-->
+                  <button type="submit" class="btn-orange btn-bordered">Search</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Grid Filter -->
+
+    <!-- End Grid Inner Header -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="10%"
+                (click)="getSortData('code', sortBy === 'code' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Client Code
+              <i *ngIf="sortBy === 'code'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'code' && sortOrder === 'asc', 'icon-down' :  sortBy === 'code' && sortOrder === 'desc'}">
+                {{sortBy === 'code' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="20%"
+                (click)="getSortData('name', sortBy === 'name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Trading Name
+              <i *ngIf="sortBy === 'name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'name' && sortOrder === 'desc'}">
+                {{sortBy === 'name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%"
+                (click)="getSortData('invoice_no', sortBy === 'invoice_no' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Invoice No
+              <i *ngIf="sortBy === 'invoice_no'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'invoice_no' && sortOrder === 'asc', 'icon-down' :  sortBy === 'invoice_no' && sortOrder === 'desc'}">
+                {{sortBy === 'invoice_no' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="8%">BK</th>
+            <th width="8%">AR</th>
+            <th width="8%">AP</th>
+            <th width="8%">DM</th>
+            <th width="8%">Payroll</th>
+            <th width="15%"
+                (click)="getSortData('created_on', sortBy === 'created_on' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Created On
+              <i *ngIf="sortBy === 'created_on'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_on' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_on' && sortOrder === 'desc'}">
+                {{sortBy === 'created_on' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="monthlyInvoice.length">
+            <tr *ngFor="let monthlyInvoiceData of monthlyInvoice; let i = index">
+              <td width="5%">{{i+1}}</td>
+              <td width="10%">{{monthlyInvoiceData.code}}</td>
+              <td width="20%" class="word-break">{{monthlyInvoiceData.name}}</td>
+              <td width="10%">{{monthlyInvoiceData.invoice_no}}</td>
+              <td width="8%">{{monthlyInvoiceData.fixed_fee}}</td>
+              <td width="8%">{{monthlyInvoiceData.AR}}</td>
+              <td width="8%">{{monthlyInvoiceData.AP}}</td>
+              <td width="8%">{{monthlyInvoiceData.DM}}</td>
+              <td width="8%">{{monthlyInvoiceData.Payroll}}</td>
+              <td width="15%">{{monthlyInvoiceData.created_on | date : 'dd-MM-yyyy'}}</td>
+            </tr>
+            </tbody>
+            <tbody *ngIf="monthlyInvoice.length === 0" class="panel-title">No Records Found!</tbody>
+          </table>
+        </div>
+        <table *ngIf="monthlyInvoice.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,156 @@
+<div class="bank-information-container">
+  <div class="with-filter-grid-container">
+    <div class="grid-inner-header PT-5">
+      <div class="row">
+        <div class="col-md-6 leave-type-list">
+          <ul>
+            <li class="PL-0">
+              <a class="red-color list-alignment">
+                <i class="material-icons">fiber_manual_record</i> Inactive bank</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="expand-grid">
+      <div class="expand-grid__thead">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="15%"
+                (click)="getSortData('bank_name', sortBy === 'bank_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Bank
+              <i *ngIf="sortBy === 'bank_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'bank_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'bank_name' && sortOrder === 'desc'}">
+                {{sortBy === 'bank_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%"
+                (click)="getSortData('type_name', sortBy === 'type_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              A/C type
+              <i *ngIf="sortBy === 'type_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'type_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'type_name' && sortOrder === 'desc'}">
+                {{sortBy === 'type_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="15%"
+                (click)="getSortData('is_bank_or_credit_card', sortBy === 'is_bank_or_credit_card' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Bank/CC/Paypal AC
+              <i *ngIf="sortBy === 'is_bank_or_credit_card'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'is_bank_or_credit_card' && sortOrder === 'asc', 'icon-down' :  sortBy === 'is_bank_or_credit_card' && sortOrder === 'desc'}">
+                {{sortBy === 'is_bank_or_credit_card' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="15%"
+                (click)="getSortData('account_no', sortBy === 'account_no' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Account No
+              <i *ngIf="sortBy === 'account_no'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'account_no' && sortOrder === 'asc', 'icon-down' :  sortBy === 'account_no' && sortOrder === 'desc'}">
+                {{sortBy === 'account_no' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%"
+                (click)="getSortData('bank_link', sortBy === 'bank_link' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Bank link?
+              <i *ngIf="sortBy === 'bank_link'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'bank_link' && sortOrder === 'asc', 'icon-down' :  sortBy === 'bank_link' && sortOrder === 'desc'}">
+                {{sortBy === 'bank_link' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%"
+                (click)="getSortData('viewing_rights', sortBy === 'viewing_rights' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Viewing rights?
+              <i *ngIf="sortBy === 'viewing_rights'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'viewing_rights' && sortOrder === 'asc', 'icon-down' :  sortBy === 'viewing_rights' && sortOrder === 'desc'}">
+                {{sortBy === 'viewing_rights' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%"
+                (click)="getSortData('auto_feed_up', sortBy === 'auto_feed_up' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Auto Feed?
+              <i *ngIf="sortBy === 'auto_feed_up'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'auto_feed_up' && sortOrder === 'asc', 'icon-down' :  sortBy === 'auto_feed_up' && sortOrder === 'desc'}">
+                {{sortBy === 'auto_feed_up' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="10%">Modified By</th>
+          </thead>
+        </table>
+      </div>
+      <div class="expand-grid__tbody expand-grid-scrollable">
+        <table>
+          <tbody *ngFor="let bankInformation of bankInformationList; let i = index"
+                 [ngClass]="{'red-tr' : bankInformation.is_active === 0}">
+          <tr [ngClass]="{'is-active-row' : trIndex === i}" class="hover-icons row-data">
+            <td width="5%">
+              <a class="open-inner-data" (click)="openRow(i)"><i [ngClass]="{'is-open' : trIndex === i}"
+                                                                 class="material-icons">keyboard_arrow_down</i></a>
+              {{i+1}}
+            </td>
+            <td width="15%" class="word-break">{{bankInformation?.bank_id?.bank_name}}</td>
+            <td width="10%" class="word-break">{{bankInformation?.type_id?.type_name}}</td>
+            <td width="15%" class="word-break">{{bankInformation?.is_bank_or_credit_card > 0 ?
+              getBankAccountDataType(bankInformation?.is_bank_or_credit_card) : ''}}
+            </td>
+            <td width="15%" class="word-break">{{bankInformation?.account_no}}</td>
+            <td width="10%">{{bankInformation?.bank_link !== '' ? getBankLinkDataType(bankInformation?.bank_link) :
+              ''}}
+            </td>
+            <td width="10%">{{bankInformation?.viewing_rights !== '' ?
+              getBankLinkDataType(bankInformation?.viewing_rights) : ''}}
+            </td>
+            <td width="10%">{{bankInformation?.auto_feed_up !== '' ? getBankLinkDataType(bankInformation?.auto_feed_up)
+              :
+              ''}}
+            </td>
+            <td width="10%">{{bankInformation?.created_by?.created_by}}
+            </td>
+          </tr>
+          <tr *ngIf="trIndex === i" class="inner-data">
+            <div class="row PT-10">
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>BSB No</div>
+                  <div>{{bankInformation?.bsb_notes}}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>Notes</div>
+                  <div>{{bankInformation?.notes}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="row PT-10">
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>Follow up notes</div>
+                  <div>{{bankInformation?.follow_up_notes}}</div>
+                </div>
+              </div>
+            </div>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="expand-grid__tfoot">
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!--end bank information grid-->
+  </div>
+</div>

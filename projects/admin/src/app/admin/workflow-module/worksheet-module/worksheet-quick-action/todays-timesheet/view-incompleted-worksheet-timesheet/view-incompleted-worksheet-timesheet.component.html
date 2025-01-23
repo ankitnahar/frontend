@@ -1,0 +1,74 @@
+<!-- Admin worksheet module Today's Timesheet Incompleted worksheet start -->
+<div class="view-incompleted-worksheet-timesheet-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onWorksheetDashboard()">WORKSHEET</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onTodaysTimesheet()">TODAY'S TIMESHEET</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">INCOMPLETED WORKSHEET</span>
+        </div>
+      </div>
+
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                          *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                          *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                          *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                          *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                          *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                          *ngIf="tabDataWorksheetTraining['view']">Training List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                          *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                    Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                          *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                    Listing
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <app-view-incompleted></app-view-incompleted>
+</div>
+<!-- Admin worksheet module Today's Timesheet Incompleted worksheet end-->

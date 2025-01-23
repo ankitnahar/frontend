@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------------------------------
+// ================================= HRMS Announcement Dailog scss ===============================
+// -----------------------------------------------------------------------------------------------
+.modal {
+  &.announcement-dialog {
+    .modal__close {
+    }
+    .modal__header {
+      h3 {
+      }
+    }
+    .modal__body {
+      .mat-checkbox-layout {
+        .mat-checkbox-label {
+          color: $gray-color;
+        }
+      }
+    }
+    .modal__footer {
+      text-align: right;
+      padding-right: 2rem;
+
+    }
+  }
+}

@@ -1,0 +1,108 @@
+<!--  Start add checklist question dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">ADD CLIENT QUESTION</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <form [formGroup]="addChecklistQuestionForm" (submit)="onSubmitChecklistQuestionForm(addChecklistQuestionForm)">
+    <div class="modal__body">
+
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-select placeholder="Checklist name" formControlName="entity_checklist_id" required
+                        (selectionChange)="onSelectChecklist($event['value'])">
+              <mat-option *ngFor="let checklist of checklistList" [value]="checklist">
+                {{checklist.checklistname}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addChecklistQuestionForm.get('entity_checklist_id'))"
+                            [errMsg]="validationMsg.CHECKLIST_NAME"></app-validation>
+          </div>
+        </div>
+      </div>
+
+      <div class="row MT-10 MB-20">
+        <div class="col-md-4">
+          <span class="fw-500">Master Activity</span>
+        </div>
+        <div class="col-md-8">
+          <span class="gray-color">{{selectedChecklist ? selectedChecklist['masteractivityname'] : 'N/A'}}</span>
+        </div>
+      </div>
+
+      <div class="row MB-10">
+        <div class="col-md-4">
+          <span class="fw-500">Task</span>
+        </div>
+        <div class="col-md-8">
+          <span class="gray-color">{{selectedChecklist ? selectedChecklist['taskname'] : 'N/A'}}</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-select placeholder="Group" formControlName="checklist_group_id" required>
+              <mat-option *ngFor="let group of groupList" [value]="group['id']">{{group['value']}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addChecklistQuestionForm.get('checklist_group_id'))"
+                            [errMsg]="validationMsg.GROUP"></app-validation>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <textarea formControlName="question_name" rows="2" matInput placeholder="Question" required></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addChecklistQuestionForm.get('question_name'))"
+                            [errMsg]="validationMsg.QUESTION_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <textarea formControlName="help_text" rows="2" matInput placeholder="Help text"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <mat-select placeholder="Is Applicable" formControlName="is_applicable">
+              <mat-option value="0">Please Select</mat-option>
+              <mat-option value="1">Applicable</mat-option>
+              <mat-option value="2">Not Applicable</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-35">
+          <button class="btn-primary" [disabled]="addChecklistQuestionForm.invalid">Submit</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End add checklist question dialog  -->

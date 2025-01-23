@@ -1,0 +1,575 @@
+<div class="discontinue-client-container">
+
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>CLIENT</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">DISCONTINUE CLIENT</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 PLR-0">
+          <div class="row">
+            <div class="col-md-4 inner-header-title">
+              <button class="open-dialog-btn" (click)="onDiscontinueClientDialog()" *ngIf="tabData['add_edit']">
+                <mat-icon class="material-icons">add</mat-icon>
+                Discontinue Client
+              </button>
+            </div>
+            <div class="col-md-8 MT-15 status-type-list">
+              <a class="primary-color MR-10">
+                <mat-icon class="material-icons">fiber_manual_record</mat-icon>
+                Not Completed</a>
+              <a class="light-orange-color">
+                <mat-icon class="material-icons">fiber_manual_record</mat-icon>
+                Completed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()" *ngIf="tabData['export']">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+          <div class="grid-search">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientListParent"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Parent Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         (change)="onChangeParentEntity($event);"
+                         formControlName="parent_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="tamList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TAM"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="technical_account_manager">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="tlList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TL"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="team_lead">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="atlList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="ATL"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="assistant_team_lead">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput formControlName="contract_signed_date_from" [matDatepicker]="contactdatefrom"
+                       (click)="contactdatefrom.open()"
+                       placeholder="Contract date From">
+                <mat-datepicker-toggle matSuffix [for]="contactdatefrom"></mat-datepicker-toggle>
+                <mat-datepicker #contactdatefrom></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput formControlName="contract_signed_date_to" [matDatepicker]="contactdateto"
+                       (click)="contactdateto.open()"
+                       placeholder="Contract date To">
+                <mat-datepicker-toggle matSuffix [for]="contactdateto"></mat-datepicker-toggle>
+                <mat-datepicker #contactdateto></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="staffListData"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Discontinue By"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="discontinue_by">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput formControlName="discontinued_on_from" [matDatepicker]="discontinuedfrom"
+                       (click)="discontinuedfrom.open()"
+                       placeholder="Discontinued on From">
+                <mat-datepicker-toggle matSuffix [for]="discontinuedfrom"></mat-datepicker-toggle>
+                <mat-datepicker #discontinuedfrom></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput formControlName="discontinued_on_to" [matDatepicker]="discontinuedto"
+                       (click)="discontinuedto.open()"
+                       placeholder="Discontinued on To">
+                <mat-datepicker-toggle matSuffix [for]="discontinuedto"></mat-datepicker-toggle>
+                <mat-datepicker #discontinuedto></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Status" formControlName="status" [multiple]="true">
+                  <mat-option *ngFor="let option of statusListData" [value]="option?.id">
+                    {{option?.status}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="parentTradingName.value">
+          <span class="tag__title">Parent Trading Name:</span>
+          <span>
+            <ng-select class="custom" [items]="clientListParent"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="parent_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="tradingName.value">
+          <span class="tag__title">Trading Name:</span>
+          <span>
+            <ng-select class="custom" [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('entity_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="technical_account_manager.value">
+          <span class="tag__title">TAM :</span>
+          <span>
+            <ng-select [items]="tamList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="TAM"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                       formControlName="technical_account_manager">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('technical_account_manager')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="team_lead.value">
+          <span class="tag__title">TL :</span>
+          <span>
+            <ng-select [items]="tlList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="TL"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                       formControlName="team_lead">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('team_lead')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="assistant_team_lead.value">
+          <span class="tag__title">ATL :</span>
+          <span>
+            <ng-select [items]="atlList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="ATL"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                       formControlName="assistant_team_lead">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('assistant_team_lead')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="contractsigneddateFrom.value">
+          <span class="tag__title">Contract Date From :</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="contactdatefrom1" formControlName="contract_signed_date_from"
+                     placeholder="Contract date From" #dateRef
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="contactdatefrom1"></mat-datepicker-toggle>
+              <mat-datepicker #contactdatefrom1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('contract_signed_date_from')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="contractsigneddateTo.value">
+          <span class="tag__title">Contract Date To :</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="contactdateto1" formControlName="contract_signed_date_to"
+                     placeholder="Contract date To" #dateRef
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="contactdateto1"></mat-datepicker-toggle>
+              <mat-datepicker #contactdateto1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('contract_signed_date_to')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="discontinuedBy.value">
+          <span class="tag__title">Discontinued By:</span>
+          <span>
+            <ng-select class="custom" [items]="staffListData"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Discontinue By"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="discontinue_by"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('discontinue_by')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="discontinuedateonFrom.value">
+          <span class="tag__title">Discontinued On From :</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="discontinuedfrom1" formControlName="discontinued_on_from"
+                     placeholder="Discontinued on From" #dateRef
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="discontinuedfrom1"></mat-datepicker-toggle>
+              <mat-datepicker #discontinuedfrom1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('discontinued_on_from')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="discontinuedateonTo.value">
+          <span class="tag__title">Discontinued Date To :</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="discontinuedto1" formControlName="discontinued_on_to"
+                     placeholder="Discontinued on To" #dateRef
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="discontinuedto1"></mat-datepicker-toggle>
+              <mat-datepicker #discontinuedto1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('discontinued_on_to')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="statusField.value">
+          <span class="tag__title">Status:</span>
+          <span>
+            <mat-form-field>
+                 <mat-select placeholder="Status" formControlName="status" [multiple]="true"
+                             (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let option of statusListData" [value]="option?.id">
+                    {{option?.status}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('status')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="technical_account_manager.value
+          || team_lead.value || assistant_team_lead.value
+          || parentTradingName.value || tradingName.value || contractsigneddateFrom.value || contractsigneddateTo.value || discontinuedBy.value || discontinuedateonFrom.value || discontinuedateonTo.value || statusField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+  </div>
+
+  <!-- Start Filter Tags -->
+
+  <!-- Start Table -->
+  <div class="expand-grid">
+    <div class="expand-grid__thead">
+      <table>
+        <thead>
+        <tr>
+          <th width="3%">Sr. No</th>
+          <th width="6%">Client Code
+          </th>
+          <th width="12%">Parent Trading Name
+          </th>
+          <th width="12%">Trading Name
+          </th>
+          <th width="8%">TAM</th>
+          <th width="8%">Discontinued on</th>
+          <th width="6%">Monthly FF</th>
+          <th width="6%">Total Revenue</th>
+          <th width="6%">Last FY Revenue</th>
+          <th width="6%">Last 3 Invoice Total</th>
+          <th width="6%">Status</th>
+          <th width="9%">Stage
+            <mat-icon
+              [matTooltip]="'If a client belongs to Full resource & Taxation not agreed then the sales tab will not be displayed.'"
+              class="v-align-middle gray-color">info
+            </mat-icon>
+          </th>
+          <th width="8%">Operation Team Comment</th>
+          <th width="4%">Action</th>
+        </tr>
+        </thead>
+      </table>
+      <div class="expand-grid__tbody expand-grid-scrollable">
+        <table *ngIf="discontinueEntityList.length">
+          <tbody *ngFor="let discontinueEntity of discontinueEntityList; let i = index;">
+          <tr [ngClass]="{'is-active-row' : trIndex === i}"
+              class="hover-icons row-data">
+            <td width="3%" (click)="openRow(i)">
+              <a class="open-inner-data">
+                <mat-icon [ngClass]="{'is-open' : trIndex === i}" class="material-icons">keyboard_arrow_down
+                </mat-icon>
+              </a>
+              {{i+1}}
+            </td>
+            <td width="6%">{{discontinueEntity?.code}}</td>
+            <td width="12%">{{discontinueEntity?.parent_name}}</td>
+            <td width="12%" class="word-break">{{discontinueEntity?.trading_name}}</td>
+            <td width="8%" class="word-break">{{discontinueEntity?.technical_account_manager}}</td>
+            <td width="8%">{{discontinueEntity?.discontinue_on | date: 'dd-MM-yyyy'}}</td>
+            <td width="6%" *ngIf="discontinueEntity?.ff_amount!= null">{{discontinueEntity?.ff_amount | currency:'
+              ':false}}
+            </td>
+            <td width="6%" *ngIf="discontinueEntity?.ff_amount === null">-</td>
+            <td width="6%">{{discontinueEntity?.totalRevenue}}</td>
+            <td width="6%">{{discontinueEntity?.lastfyRevanue}}</td>
+            <td width="6%">{{discontinueEntity?.lastthreeinvoiceRevanue}}</td>
+            <td width="6%" class="word-break">{{discontinueEntity?.status?.status}}</td>
+            <td width="9%" class="word-break">
+              <a class="cursor-pointer" *ngFor="let stage of discontinueEntity?.stage"
+                 (click)="onStageQuestion(discontinueEntity, stage)">
+                  <span class="label-primary-bg-color label_tag_block ML-5"
+                        *ngIf="stage.status === '0'">{{stage.name}}</span>
+                <span class="label-orange-bg-color label_tag_block ML-5"
+                      (click)="onViewDiscontinueDetails(discontinueEntity, stage)"
+                      *ngIf="stage.status === '1'">{{stage.name}}</span></a>
+              <!--<span class="label-orange-bg-color ML-5">Billing</span></a>-->
+            </td>
+            <td width="8%">
+              <span (click)="onDiscontinueReasonDialog(discontinueEntity)"
+                    *ngIf="discontinueEntity?.discontinue_comment!==''">Reason</span>
+            </td>
+            <td width="4%">
+              <ul>
+                <li>
+                  <mat-icon [matMenuTriggerFor]="menuaction">more_vert</mat-icon>
+                  <mat-menu #menuaction="matMenu" class="column-menu">
+                    <button mat-menu-item class="menu-header">
+                      <h3>Action</h3>
+                    </button>
+                    <button mat-menu-item (click)="onDiscontinueCommentDialog(discontinueEntity)">
+                      <mat-icon>textsms</mat-icon>
+                      Comments
+                    </button>
+                    <button mat-menu-item (click)="onViewClient(discontinueEntity)">
+                      <mat-icon>remove_red_eye</mat-icon>
+                      View Client
+                    </button>
+                    <button mat-menu-item (click)="onOpenRestoreClientModal(discontinueEntity)" *ngIf="isRestore">
+                      <mat-icon>restore_from_trash</mat-icon>
+                      Restore Client
+                    </button>
+                    <button mat-menu-item (click)="onDiscontinueClientLogDialog(discontinueEntity)">
+                      <mat-icon>comment</mat-icon>
+                      Discontinue Log
+                    </button>
+                    <button mat-menu-item (click)="onViewDiscontinueDetails(discontinueEntity, defaultStage)">
+                      <mat-icon>remove_red_eye</mat-icon>
+                      View Discontinue Details
+                    </button>
+                    <button mat-menu-item (click)="onExcelReport(discontinueEntity)">
+                      <mat-icon>import_export</mat-icon>
+                      Excel Report
+                    </button>
+                  </mat-menu>
+                </li>
+              </ul>
+            </td>
+          </tr>
+          <tr *ngIf="trIndex === i" class="inner-data">
+            <div class="row PT-10">
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>Contract date</div>
+                  <div>{{discontinueEntity?.contract_signed_date | date : 'dd-MM-yyyy'}}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>Discontinue by</div>
+                  <div>{{discontinueEntity?.discontinue_by?.userfullname}}</div>
+                </div>
+              </div>
+              <div class="col-md-6 MT-10">
+                <div class="inner-data__view">
+                  <div>Discontinue reason(QC)</div>
+                  <div> {{discontinueEntity?.discontinue_comment_by_qc}}</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 MT-10">
+                <div class="inner-data__view">
+                  <div>Discontinue reason(Sales)</div>
+                  <div> {{discontinueEntity?.discontinue_comment_by_sales}}</div>
+                </div>
+              </div>
+              <!--<div class="col-md-4">-->
+              <!--<div class="inner-data__view">-->
+              <!--<div>Date of sales call</div>-->
+              <!--<div>12-5-2017</div>-->
+              <!--</div>-->
+              <!--</div>-->
+            </div>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="expand-grid__tfoot" *ngIf="discontinueEntityList.length">
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- End Table -->
+  <div *ngIf="!discontinueEntityList.length" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

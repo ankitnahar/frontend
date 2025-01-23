@@ -1,0 +1,91 @@
+<div class="update-client-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>CLIENT</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onClient()">VIEW CLIENT</a></span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">UPDATE CLIENT'S INFORMATION |</span>
+          <span *ngIf="clientData?.is_parent === 0"> Parent Client : {{clientData?.parent_entity?.trading_name}} | </span>
+          <span>{{clientData?.code}} - {{clientData?.name}}</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a *ngIf="showHistory" (click)="onShowHistory()">
+                <label>View History</label>
+                <i class="material-icons">history</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--start tab menu-->
+  <div class="update-client">
+    <!--<mat-tab-group class="demo-tab-group contact-tab" [selectedIndex]="selectedIndexData"  (selectedTabChange)="onSelectTab($event)">-->
+    <mat-tab-group class="demo-tab-group contact-tab" [selectedIndex]="selectedIndexData"
+                   (selectedTabChange)="onSelectTab($event)">
+      <mat-tab label="Main" *ngIf="tabData['add_edit']">
+        <div *ngIf="isActiveTabText === 'Main'">
+          <app-main-client></app-main-client>
+        </div>
+      </mat-tab>
+      <mat-tab label="Client Allocation" *ngIf="tabDataClientAllocation['add_edit']">
+        <div *ngIf="isActiveTabText === 'Client Allocation'">
+          <app-client-allocation [tabInformation]="clientTabInfo"></app-client-allocation>
+        </div>
+      </mat-tab>
+      <mat-tab label="Information" *ngIf="tabData['add_edit']">
+        <div *ngIf="isActiveTabText === 'Information'">
+          <app-information></app-information>
+        </div>
+      </mat-tab>
+      <!--<mat-tab label="Bank Information" *ngIf="tabDataBank['add_edit']">
+        <div *ngIf="isActiveTabText === 'Bank Information'">
+          <app-bank-information></app-bank-information>
+        </div>
+      </mat-tab>-->
+      <mat-tab label="Client Checklist" *ngIf="tabDataChecklist['add_edit']">
+        <div *ngIf="isActiveTabText === 'Client Checklist'">
+          <app-client-checklist [clientInformation]="clientData"></app-client-checklist>
+        </div>
+      </mat-tab>
+      <mat-tab label="Special Notes" *ngIf="tabDataNotes['add_edit']">
+        <div *ngIf="isActiveTabText === 'Special Notes'">
+          <app-special-notes [clientInformation]="clientData"></app-special-notes>
+        </div>
+      </mat-tab>
+      <mat-tab label="Trigger Information">
+        <div *ngIf="isActiveTabText === 'Trigger Information'">
+          <app-trigger-information></app-trigger-information>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Worksheet Schedule" *ngIf="clientData?.discontinue_stage == 0">
+        <div *ngIf="isActiveTabText === 'Worksheet Schedule'">
+          <app-auto-worksheet></app-auto-worksheet>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <!--end tab menu-->
+</div>
+
+<!--History modal-->
+<div *ngIf="isOpenHistoryDialog">
+  <app-history-dialog [dialogStatus]="isOpenHistoryDialog" (close)="isOpenHistoryDialog = $event"></app-history-dialog>
+</div>

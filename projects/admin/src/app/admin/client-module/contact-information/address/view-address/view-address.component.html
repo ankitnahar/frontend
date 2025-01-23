@@ -1,0 +1,87 @@
+<!--  Start address view dialog  -->
+<div class="modal large-modal view-address-modal-container">
+  <div class="modal__header">
+    <div class="modal__header__logo">
+      <span>{{address?.modified_by?.userfullname}} | Modified On: <span>{{address?.modified_on | date : 'dd-MM-yyyy HH:mm:ss'}}</span></span>
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Star user details -->
+        <div class="approve-reject-user-details">
+          <div class="row">
+            <div class="col-md-12 PL-0">
+              <div class="row MT-20">
+                <div class="col-md-3 PL-0">
+                  <label>Parent Trading Name</label>
+                </div>
+                <div class="col-md-9 PR-0">
+                  <span>{{address?.parent_name}}</span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3 PL-0">
+                  <label>Trading Name</label>
+                </div>
+                <div class="col-md-9 PR-0">
+                  <span>{{address?.entity_id?.trading_name}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-3 PL-0">
+                  <label>Type</label>
+                </div>
+                <div class="col-md-9 PR-0">
+                  <span>{{address?.type > 0 ? getAddressType(address?.type) : ''}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-3 PL-0">
+                  <label>Address</label>
+                </div>
+                <div class="col-md-9 PR-0">
+                  <span>{{address?.street_address}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-3 PL-0">
+                  <label>Suburb</label>
+                </div>
+                <div class="col-md-9 PR-0">
+                  <span>{{address?.suburb}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-3 PL-0">
+                  <label>State</label>
+                </div>
+                <div class="col-md-9 PR-0">
+                  <span>{{address?.state_id > 0 ? getAddressState(address?.state_id) : ''}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-3 PL-0">
+                  <label>Postcode</label>
+                </div>
+                <div class="col-md-9 PR-0">
+                  <span>{{address?.postcode}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  End address view dialog  -->
+
+<!--  Start dialog layer -->
+<div class="modal-layer" (click)="onCloseDialog()"></div>
+<!--  End dialog layer -->

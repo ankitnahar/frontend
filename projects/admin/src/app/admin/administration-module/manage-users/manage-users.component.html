@@ -1,0 +1,476 @@
+<!-- Admin (Administration) manager users html view -->
+<div class="admin-manage-users-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">MANAGE USER</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li *ngIf="isUserReports">
+              <a>
+                <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="DownloadZohoReport()">User Zoho Reports</button>
+                  <button mat-menu-item (click)="DownloadRightReport()">User Right Reports</button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn" (click)="onAddUSer()" *ngIf="tabData['add_edit']">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add User
+          </button>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-7">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span>
+                <mat-icon>filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()" *ngIf="tabData['export']">
+                <span>Excel</span>
+                <mat-icon>file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+          <div class="grid-search">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onToggleFilter()">Esc <i class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm.value, filterForm.valid)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="BioMetric ID" formControlName="user_bio_id"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Full Name" formControlName="userfullname"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="User Type" formControlName="user_type">
+                  <mat-option *ngFor="let typeList of userTypeList.slice(1)" [value]="typeList?.key">
+                    {{ typeList?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Email Address" formControlName="email"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Designation" [multiple]="true" formControlName="designationName">
+                  <mat-option *ngFor="let designation of designationList" [value]="designation?.id">
+                    {{ designation?.designation_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userDataList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="First Approval User"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="first_approval_user">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userDataList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Second Approval User"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="second_approval_user">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Login Access" formControlName="is_active">
+                  <mat-option value="1">Open</mat-option>
+                  <mat-option value="0">Block</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Shift Name" [multiple]="true" formControlName="shiftName">
+                  <mat-option *ngFor="let shift of shiftList" [value]="shift?.id">
+                    {{ shift?.shift_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Location" [multiple]="true" formControlName="locationName">
+                  <mat-option *ngFor="let location of locationList" [value]="location?.id">
+                    {{ location?.location_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Entity" formControlName="Entity"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12 MT-20 text-right">
+              <button type="reset" class="btn-cancel" (click)="resetForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="secondFilterForm">
+        <div class="row">
+          <div class="tag" *ngIf="filterForm.get('user_bio_id').value">
+            <span class="tag__title">Bio ID: </span>
+            <span>
+              <mat-form-field>
+                <input matInput placeholder="BioMetric ID" formControlName="user_bio_id"
+                       [value]="filterForm.get('user_bio_id').value"
+                       (keyup)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, false)"/>
+              </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('user_bio_id')">close</i>
+          </div>
+
+          <div class="tag" *ngIf="filterForm.get('userfullname').value">
+            <span class="tag__title">Full Name: </span>
+            <span>
+              <mat-form-field>
+                <input matInput placeholder="Full Name" formControlName="userfullname"
+                       [value]="filterForm.get('userfullname').value"
+                       (keyup)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, false)"/>
+              </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('userfullname')">close</i>
+          </div>
+
+          <div class="tag" *ngIf="filterForm.get('user_type').value">
+            <span class="tag__title">User Type: </span>
+            <span>
+            <mat-form-field>
+             <mat-select placeholder="User Type"
+                         (selectionChange)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, true)"
+                         formControlName="user_type" [(ngModel)]="filterForm.get('user_type').value">
+                  <mat-option *ngFor="let typeList of userTypeList.slice(1)" [value]="typeList?.key">
+                    {{ typeList?.label}}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+              </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('user_type')">close</i>
+          </div>
+
+          <div class="tag" *ngIf="filterForm.get('email').value">
+            <span class="tag__title">Email Address: </span>
+            <span>
+            <mat-form-field>
+              <input matInput placeholder="Email Address" formControlName="email"
+                     [value]="filterForm.get('email').value"
+                     (keyup)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, false)"/>
+            </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('email')">close</i>
+          </div>
+
+          <div class="tag"
+               *ngIf="filterForm.get('designationName').value && filterForm.get('designationName').value.length">
+            <span class="tag__title">Designation: </span>
+            <span>
+              <mat-form-field>
+                <mat-select placeholder="Designation" [multiple]="true"
+                            (selectionChange)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, true)"
+                            formControlName="designationName" [(ngModel)]="filterForm.get('designationName').value">
+                  <mat-option *ngFor="let designation of designationList" [value]="designation?.id">
+                    {{ designation?.designation_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('designationName','designation_id')">close</i>
+          </div>
+          <div class="tag" *ngIf="filterForm.get('first_approval_user').value">
+            <span class="tag__title">First Approval Name: </span>
+            <span>
+             <ng-select [items]="userDataList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="First Approval User"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="first_approval_user"
+                        (change)="keyDownFunction($event, advanceFilterForm, true)">
+              </ng-select>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('first_approval_user')">close</i>
+          </div>
+          <div class="tag" *ngIf="filterForm.get('second_approval_user').value">
+            <span class="tag__title">Second Approval Name: </span>
+            <span>
+              <ng-select [items]="userDataList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Second Approval User"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="second_approval_user"
+                         (change)="keyDownFunction($event, advanceFilterForm, true)">
+              </ng-select>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('second_approval_user')">close</i>
+          </div>
+          <div class="tag"
+               *ngIf="filterForm.get('is_active').value && filterForm.get('is_active').value.length">
+            <span class="tag__title">Login Access: </span>
+            <span>
+            <mat-form-field>
+              <mat-select placeholder="Login Access" [(ngModel)]="filterForm.get('is_active').value"
+                          (selectionChange)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, true)"
+                          formControlName="is_active">
+                <mat-option value="1">Open</mat-option>
+                <mat-option value="0">Block</mat-option>
+              </mat-select>
+            </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('is_active')">close</i>
+          </div>
+
+          <div class="tag"
+               *ngIf="filterForm.get('shiftName').value && filterForm.get('shiftName').value.length">
+            <span class="tag__title">Shift Name: </span>
+            <span>
+            <mat-form-field>
+              <mat-select placeholder="shift Name" [(ngModel)]="filterForm.get('shiftName').value"
+                          (selectionChange)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, true)"
+                          [multiple]="true" formControlName="shiftName">
+                <mat-option *ngFor="let shift of shiftList" [value]="shift?.id">
+                  {{ shift?.shift_name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('shiftName')">close</i>
+          </div>
+
+          <div class="tag"
+               *ngIf="filterForm.get('locationName').value && filterForm.get('locationName').value.length">
+            <span class="tag__title">Shift Name: </span>
+            <span>
+            <mat-form-field>
+              <mat-select placeholder="Location" [(ngModel)]="filterForm.get('locationName').value" [multiple]="true"
+                          formControlName="locationName"
+                          (selectionChange)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, true)">
+                <mat-option *ngFor="let location of locationList" [value]="location?.id">
+                  {{ location?.location_name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('locationName')">close</i>
+          </div>
+
+          <div class="tag" *ngIf="filterForm.get('Entity').value">
+            <span class="tag__title">Entity: </span>
+            <span>
+              <mat-form-field>
+                <input matInput placeholder="Entity" formControlName="Entity"
+                       [value]="filterForm.get('Entity').value"
+                       (keyup)="keyDownFunction($event, secondFilterForm.value, secondFilterForm.valid, false)"/>
+              </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="deleteMsg('Entity')">close</i>
+          </div>
+
+          <div class="clearAll-tags" *ngIf="filterForm.get('user_bio_id').value ||
+          filterForm.get('userfullname').value || filterForm.get('user_type').value ||
+          filterForm.get('designationName').value || filterForm.get('first_approval_user').value  ||
+          filterForm.get('second_approval_user').value  || filterForm.get('locationName').value ||
+          filterForm.get('shiftName').value || filterForm.get('email').value || filterForm.get('Entity').value">
+            <a (click)="resetForm()">Clear all</a>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr.No</th>
+            <th width="4%"
+                (click)="getSortData('user_bio_id', sortBy === 'user_bio_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Bio ID
+              <i *ngIf="sortBy === 'user_bio_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'user_bio_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'user_bio_id' && sortOrder === 'desc'}">
+                {{sortBy === 'user_bio_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+
+            </th>
+            <th width="8%"
+                (click)="getSortData('userfullname', sortBy === 'userfullname' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Full Name
+              <i *ngIf="sortBy === 'userfullname'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'userfullname' && sortOrder === 'asc', 'icon-down' :  sortBy === 'userfullname' && sortOrder === 'desc'}">
+                {{sortBy === 'userfullname' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="15%"
+                (click)="getSortData('email', sortBy === 'email' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Email
+              <i *ngIf="sortBy === 'email'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'email' && sortOrder === 'asc', 'icon-down' :  sortBy === 'email' && sortOrder === 'desc'}">
+                {{sortBy === 'email' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="8%">Designation
+              <!--<i class="material-icons icon-up">arrow_upward</i>-->
+              <!--<i class="material-icons icon-down" *ngIf="false">arrow_downward</i>-->
+            </th>
+            <th width="11%">Entity</th>
+            <th width="8%">Shift Name
+              <!--<i class="material-icons icon-up">arrow_upward</i>-->
+              <!--<i class="material-icons icon-down" *ngIf="false">arrow_downward</i>-->
+            </th>
+            <th width="8%">Location
+              <!--<i class="material-icons icon-up">arrow_upward</i>-->
+              <!--<i class="material-icons icon-down" *ngIf="false">arrow_downward</i>-->
+            </th>
+            <th width="8%">First Approval
+            </th>
+            <th width="8%">Second Approval
+            </th>
+            <th width="7%">User Type
+            </th>
+            <th width="6%" class="text-center">Login Access
+            </th>
+            <th width="5%">Action</th>
+          </tr>
+          </thead>
+        </table>
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="userList.length">
+            <tr *ngFor="let user of userList; let i = index">
+              <td width="4%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="4%">{{user?.user_bio_id}}</td>
+              <td width="8%">{{user?.userfullname}}</td>
+              <td width="15%">
+                <div class="word-break">{{user?.email}}</div>
+              </td>
+              <td width="8%">{{user?.designation_id?.designation_name}}</td>
+              <td width="11%"><span [innerHTML]="user?.Entity"></span></td>
+              <td width="8%">{{user?.shift_id?.shift_name}}</td>
+              <td width="8%">{{user?.location_id?.location_name}}</td>
+              <td width="8%">{{user?.first_approval?.first_approval_user}}</td>
+              <td width="8%">{{user?.second_approval?.second_approval_user}}</td>
+              <td width="7%">{{getUserType(user?.user_type)}}</td>
+
+              <td width="6%" class="text-center">
+                <mat-slide-toggle [(ngModel)]="slideData[i]" *ngIf="tabData['add_edit']"
+                                  (change)="onDisabledConfirmDialog($event, user, i)"></mat-slide-toggle>
+              </td>
+              <td width="5%">
+                <mat-icon class="edit-icon" (click)="onUpdateUser(user)" *ngIf="tabData['add_edit']">edit</mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <table *ngIf="userList.length">
+      <tfoot>
+      <tr>
+        <td colspan="10">
+          <mat-paginator [length]="totalRecords"
+                         [pageSize]="pageSize"
+                         [pageIndex]="pageIndex"
+                         [pageSizeOptions]="pageArray"
+                         (page)="onPageChange($event)">
+          </mat-paginator>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+  </div>  <!-- End Table -->
+  <div *ngIf="userList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Grid Inner Header -->
+</div>

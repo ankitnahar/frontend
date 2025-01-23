@@ -1,0 +1,122 @@
+<div class="bookkeeping-basic-container" *ngIf="isEdit">
+  <span class="panel-title">Taxation Basic</span>
+  <form [formGroup]="taxationbasicForm" (submit)="onSubmitTaxationInfo(taxationbasicForm)">
+    <div class="row">
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput placeholder="Rate Per Hour" formControlName="ff_rph" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(taxationbasicForm.get('ff_rph'))"
+                          [errMsg]="validationMsg.RATE_PER_HOUR_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(taxationbasicForm.get('ff_rph'))"
+                          [errMsg]="validationMsg.RATE_PER_HOUR_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <mat-form-field>
+          <textarea matInput placeholder="Tax Notes" formControlName="notes"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="col-md-12 MT-20 ng-star-inserted">
+      <div class="table-container">
+        <div class="table-block">
+          <table class="table PT-0">
+            <thead>
+            <button type="button" class="open-dialog-btn ML-10 MB-10" (click)="onAddTaxationBasicCharge()">
+              <mat-icon class="material-icons">add</mat-icon>
+              Add Tax Charges
+            </button>
+            <tr>
+              <th width="15%">Year</th>
+              <th width="15%">Amount</th>
+              <th width="15%">Option</th>
+              <th width="15%">Turnover</th>
+              <th width="30%">Notes</th>
+              <th width="10%">Action</th>
+            </tr>
+            </thead>
+
+            <tbody *ngIf="taxationTurnoverData.length">
+            <tr *ngFor="let turnoverData of taxationTurnoverData; let i = index">
+              <td width="15%">{{turnoverData?.tax_year}}</td>
+              <td width="15%">{{turnoverData?.tax_amount}}</td>
+              <td width="15%">{{turnoverData?.tax_condition}}</td>
+              <td width="15%">{{turnoverData?.turnover}}</td>
+              <td width="30%">{{turnoverData?.notes}}</td>
+              <td width="10%"><a (click)="onTaxationBasicConfirmationDialog(turnoverData)">
+                <mat-icon class="red-color">delete</mat-icon>
+              </a></td>
+            </tr>
+            </tbody>
+            <tbody *ngIf="taxationTurnoverData.length === 0">
+            <tr>
+              <td colspan="6">
+                <p class="orange-color">No Records Found!</p>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 text-right MTB-20">
+      <button type="button" class="btn-default MR-5">Cancel</button>
+      <button [disabled]="taxationbasicForm.invalid" type="submit" class="btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
+
+<div class="view-billing-info-container" *ngIf="!isEdit">
+  <div class="basic-details-border">
+    <span class="panel-title">Hosting Basic</span>
+    <form>
+      <div class="row">
+        <div class="col-md-12 label-span-color">
+          <div class="col-md-6">
+            <label>Rate Per Hour</label>
+            <span>{{taxationData?.ff_rph}}</span>
+          </div>
+          <div class="col-md-6">
+            <label>Note</label>
+            <span>{{taxationData?.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="col-md-12 MTB-20 ng-star-inserted" *ngIf="taxationTurnoverData.length">
+      <div class="table-container">
+        <div class="table-block">
+          <table class="table PT-0">
+            <thead>
+            <tr>
+              <th width="15%">Year</th>
+              <th width="15%">Amount</th>
+              <th width="15%">Option</th>
+              <th width="15%">Turnover</th>
+              <th width="30%">Notes</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let turnoverData of taxationTurnoverData; let i = index">
+              <td width="15%">{{turnoverData?.tax_year}}</td>
+              <td width="15%">{{turnoverData?.tax_amount}}</td>
+              <td width="15%">{{turnoverData?.tax_condition}}</td>
+              <td width="15%">{{turnoverData?.turnover}}</td>
+              <td width="30%">{{turnoverData?.notes}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,112 @@
+<!-- Start BreadCrumb Top Header -->
+<div class="breadcrumb-top-header">
+  <div class="row">
+    <div class="col-md-9 PL-0">
+      <div class="breadcrumb-top-header__breadcrumbs">
+        <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+        <i class="material-icons">keyboard_arrow_right</i>
+        <span>WORKFLOW</span>
+
+        <i class="material-icons">keyboard_arrow_right</i>
+        <span class="active"><a (click)="onWorksheetDashboardTab()">WORKSHEET DASHBOARD</a></span>
+
+        <i class="material-icons">keyboard_arrow_right</i>
+        <span class="active">WORKSHEET</span>
+      </div>
+    </div>
+    <div class="col-md-3 PR-0">
+      <div class="breadcrumb-top-header__right-menu">
+        <ul>
+          <li class="blue-drop-button">
+            <button (click)="openSOP()" type="button" class="btn-primary btn-add MB-10">SOP</button>
+          </li>
+          <li>
+            <a>
+              <label class="black-color">Quick actions</label>
+              <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+              <mat-menu #menu="matMenu" class="column-menu">
+                <button mat-menu-item class="menu-header">
+                  <h3>Quick Action</h3>
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                        *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                        *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                        *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                        *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                        *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                        *ngIf="tabDataWorksheetTraining['view']">Training List
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                        *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                  Worksheet
+                </button>
+                <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                        *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                  Listing
+                </button>
+              </mat-menu>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End BreadCrumb Top Header -->
+
+<!--start tab menu-->
+<div class="worksheet-main-tab-container">
+  <mat-tab-group class="demo-tab-group worksheet-tabs" (selectedTabChange)="tabChanged($event)">
+    <mat-tab label="My Worksheet" aria-label="0" *ngIf="isMyWorksheetTab">
+      <div *ngIf="isActiveTab == 0">
+        <app-myworksheet [myWorksheetCount]="myWorksheetCount"></app-myworksheet>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="View Incompleted Worksheet" aria-label="1"
+             *ngIf="isInCompletedWorksheetTab">
+      <div *ngIf="isActiveTab == 1">
+        <app-view-incompleted [incompleteWorksheetCount]="incompleteWorksheetCount" [isTab]="1"></app-view-incompleted>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="View Completed Worksheet" aria-label="2"
+             *ngIf="isCompletedWorksheetTab">
+      <div *ngIf="isActiveTab == 2">
+        <app-view-completed [completeWorksheetCount]="completeWorksheetCount"></app-view-completed>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="View Befree Worksheet" aria-label="3" *ngIf="isBefreeWorksheetTab">
+      <div *ngIf="isActiveTab == 3">
+        <app-view-befree-worksheet [befreeWorksheetCount]="befreeWorksheetCount"></app-view-befree-worksheet>
+      </div>
+    </mat-tab>
+
+    <!--<mat-tab label="Worksheet Report" aria-label="4">-->
+      <!--<div *ngIf="isActiveTab == 4">-->
+        <!--<app-worksheet-report></app-worksheet-report>-->
+      <!--</div>-->
+    <!--</mat-tab>-->
+
+  </mat-tab-group>
+</div>
+<!--end tab menu-->
+
+<!--Delete table row-->
+<div *ngIf="isDeleteItem" class="bottom-panel-action">
+  <button (click)="onConfirmationDialog()" type="button" class="btn-bordered btn-white">DELETE SELECTED TASK ></button>
+</div>

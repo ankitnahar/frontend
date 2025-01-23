@@ -1,0 +1,153 @@
+<!--  Start Approve leave dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">LEAVE APPROVAL</div>
+  </div>
+
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="approvalForm" (submit)="onSubmit(approvalForm)">
+    <div class="modal__body admin-hrms-attendance-summary-container">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-label class="fw-500">Name</mat-label>
+        </div>
+
+        <div class="col-md-8">
+          <p>{{leaveData?.created_by?.userfullname}}</p>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">First Approval Name</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-label class="MT-20">{{leaveData?.first_approval?.userfullname}}</mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Second Approval Name</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-label class="MT-20">
+            {{(leaveData?.second_approval?.userfullname) ? leaveData?.second_approval?.userfullname :'-'}}
+          </mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="fw-500">Leave Type</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-35">
+          <mat-label class="MT-20">
+            {{leaveData?.leave_type}}
+          </mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Reason for Leave</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-35">
+          <mat-label class="MT-20">
+            {{(leaveData?.leave_reason) ? leaveData?.leave_reason :'-'}}
+          </mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35"
+             *ngIf="leaveData?.status_id === 3 || leaveData?.status_id === 4">
+          <mat-label class="MT-20 fw-500">First Approval Comment</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <span *ngIf="leaveData?.status_id === 3 && userData?.designation_id?.designation_id != 7">
+          <mat-form-field>
+        <textarea matInput placeholder="Enter your comment" rows="3" required
+                  formControlName="comment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approvalForm.get('comment'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+            </span>
+          <mat-label class="MT-20"
+                     *ngIf="leaveData?.status_id === 4 || userData?.designation_id?.designation_id == 7">
+            {{attendanceSummaryDetail?.first_approval?.comment}}
+          </mat-label>
+        </div>
+
+
+        <div class="col-md-4 MT-35"
+             *ngIf="(leaveData?.status_id === 4 && userData?.designation_id?.designation_id != 7)">
+          <mat-label class="MT-20 fw-500">Second Approval Comment</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-10"
+             *ngIf="(leaveData?.status_id === 4 && userData?.designation_id?.designation_id != 7)">
+          <mat-form-field>
+              <textarea matInput placeholder="Enter your comment" rows="3" required
+                        formControlName="comment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approvalForm.get('comment'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-35" *ngIf="(userData?.designation_id?.designation_id === 7)">
+          <mat-label class="MT-20 fw-500">Super Admin Comment</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-10" *ngIf="(userData?.designation_id?.designation_id === 7)">
+          <mat-form-field>
+              <textarea matInput placeholder="Enter your comment" rows="3" required
+                        formControlName="comment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approvalForm.get('comment'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-6 text-left approval-name user-approved-request-details">
+          <span *ngIf="leaveData?.first_approval != null &&  leaveData?.first_approval?.id !==0"
+                class="{{leaveData?.status_id === 2 ? 'orange-color' : leaveData?.status_id === 3 ? '' : leaveData?.status_id === 4 ? 'green-color' : leaveData?.status_id === 5 ? 'green-color' : leaveData?.status_id === 6 ? 'red-color' : ''}}">
+            <img *ngIf="leaveData?.first_approval?.user_image"
+                 matTooltip="{{leaveData?.first_approval?.userfullname}}"
+                 src="{{url+leaveData?.first_approval?.user_image}}" width="30"/>
+            <img *ngIf="!leaveData?.first_approval?.user_image"
+                 matTooltip="{{leaveData?.first_approval?.userfullname}}"
+                 src="assets/images/profile_placeholder.png"
+                 width="30"/>
+          </span>
+          <span *ngIf="leaveData?.second_approval != null &&  leaveData?.second_approval?.id !==0"><mat-icon class="v-align-middle">arrow_forward</mat-icon></span>
+          <span *ngIf="leaveData?.second_approval != null &&  leaveData?.second_approval?.id !==0"
+                class="{{leaveData?.status_id === 4 ? '' :  leaveData?.status_id === 5 ? 'green-color' : leaveData?.status_id === 6 ? 'red-color' : ''}}">
+            <img *ngIf="leaveData?.second_approval?.user_image"
+                 matTooltip="{{leaveData?.second_approval?.userfullname}}"
+                 src="{{url+leaveData?.second_approval?.user_image}}"
+                 width="30"/>
+          <img *ngIf="!leaveData?.second_approval?.user_image"
+               matTooltip="{{leaveData?.second_approval?.userfullname}}"
+               src="assets/images/profile_placeholder.png"
+               width="30"/>
+          </span>
+        </div>
+        <div class="col-md-6 text-right">
+          <button type="submit" class="btn-primary MR-5" (click)="checkButtonBeheviour(1)" [disabled]="approvalForm.invalid">
+            {{(leaveData?.status_id === 2)?'Request send':'Approve'}}
+          </button>
+          <button type="submit" class="btn-orange" (click)="checkButtonBeheviour(0)"
+                  *ngIf="leaveData?.status_id == 3 || leaveData?.status_id == 4">Reject
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,62 @@
+<!-- Start View history modal -->
+<div class="modal large-modal history-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">VIEW HISTORY</div>
+
+    <div class="modal__header__datepicker">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="Start date" [matDatepicker]="startDateRef" (mousedown)="startDateRef.open()"
+                   [(ngModel)]="startDateValue" readonly/>
+            <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+            <mat-datepicker #startDateRef></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="End date" [matDatepicker]="endDateRef" (mousedown)="endDateRef.open()"
+                   [(ngModel)]="endDateValue" readonly/>
+            <mat-datepicker-toggle matSuffix [for]="endDateRef"></mat-datepicker-toggle>
+            <mat-datepicker #endDateRef></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <ul class="view-history-container">
+      <li *ngFor="let row of [0,1,2,3]">
+        <a>
+          <div class="profile-icon">
+            <img src="assets/images/profile_placeholder.png" width="28" height="28" alt=""/>
+          </div>
+          <div class="history-details">
+            <div>
+              <h3>Updated By <span>Manish Popat</span></h3>
+              <div class="history-time">
+                <i class="material-icons">query_builder</i>
+                <span>21 May 2018 04:20:00</span>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <ul class="history-content">
+              <li *ngFor="let row of [0,1]">
+                <i class="material-icons">done_all</i> Lorem Ipsum is simply dummy text of the printing.
+              </li>
+            </ul>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="modal-layer" (click)="onClose()"></div>
+<!-- End View history modal -->

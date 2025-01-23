@@ -1,0 +1,110 @@
+<!--  Start Approve timesheet dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">APPROVE MISS TIMESHEET</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="approveTimesheetForm" (submit)="onSubmit(approveTimesheetForm)">
+    <div class="modal__body">
+      <div class="row col-md-12 PLR-0">
+        <div class="col-md-4">
+          <mat-label class="fw-500">Staff Name</mat-label>
+        </div>
+
+        <div class="col-md-8">
+          <p>{{pendingTimesheetData?.assignee.userfullname}}</p>
+        </div>
+
+        <div class="col-md-4 MT-20">
+          <mat-label class="fw-500">Date</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-20">
+          <p>{{pendingTimesheetData?.date | date: "dd-MM-yyyy"}}</p>
+        </div>
+
+        <div class="col-md-4 MT-20">
+          <mat-label class="fw-500">First in time</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-20">
+          <p>{{pendingTimesheetData?.hr_detail_id?.punch_in}}</p>
+        </div>
+
+        <div class="col-md-4 MT-20">
+          <mat-label class="fw-500">Last in time</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-20">
+          <p>{{pendingTimesheetData?.hr_detail_id?.punch_out}}</p>
+        </div>
+
+        <div class="col-md-4 MT-20">
+          <mat-label class="fw-500">Working time</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-20">
+          <p>{{pendingTimesheetData?.hr_detail_id?.working_time}}</p>
+        </div>
+
+        <div class="col-md-4 MT-20">
+          <mat-label class="fw-500">Total timesheet unit</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-20">
+          <p>{{(pendingTimesheetData?.total_timesheet_unit)?pendingTimesheetData?.total_timesheet_unit:0}}</p>
+        </div>
+
+        <div class="col-md-4 MT-20">
+          <mat-label class="fw-500">Stage</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-20">
+          <p>{{getStageName(pendingTimesheetData?.stage_id)}}</p>
+        </div>
+
+        <div class="col-md-4 MT-20" *ngIf="pendingTimesheetData?.stage_id === 2">
+          <mat-label class="fw-500">Comment</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-20" *ngIf="pendingTimesheetData?.stage_id === 2">
+          <mat-form-field>
+              <textarea matInput placeholder="Enter your comment" rows="3" required
+                        formControlName="comments"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approveTimesheetForm.get('comments'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row" *ngIf="pendingTimesheetData?.stage_id === 1">
+        <div class="col-md-6 text-left">
+          <img matTooltip="{{pendingTimesheetData?.assignee?.timesheet_approval_user?.userfullname}}"
+               [src]="url+pendingTimesheetData?.assignee?.timesheet_approval_user?.user_image"
+               *ngIf="pendingTimesheetData?.assignee?.timesheet_approval_user?.userfullname" class="img_round_35"/>
+          <img matTooltip="No approval person"
+               [src]="user?.approval ? user?.approval : '/assets/images/profile_placeholder.png'"
+               *ngIf="!pendingTimesheetData?.assignee?.timesheet_approval_user?.userfullname" class="img_round_35"/>
+        </div>
+        <div class="col-md-6 text-right">
+          <button type="submit" class="btn-primary">Send for Approval</button>
+        </div>
+      </div>
+      <div class="row" *ngIf="pendingTimesheetData?.stage_id === 2">
+        <div class="col-md-12 text-right">
+          <button type="submit" class="btn-default MR-5" (click)="checkSubmitValue(0)">Reject</button>
+          <button type="submit" class="btn-primary" (click)="checkSubmitValue(1)">Approve</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

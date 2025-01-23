@@ -1,0 +1,44 @@
+<!--  Start share report dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">SHARE REPORT</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addShareReportForm" (submit)="onSubmitShareReportForm(addShareReportForm)">
+    <div class="modal__body min-height">
+      <div class="row">
+        <div class="col-md-12 custom-ng-select-dropdown">
+          <ng-select [items]="allShareUsers"
+                     [multiple]="true"
+                     [closeOnSelect]="true"
+                     bindLabel="userfullname"
+                     placeholder="Select User Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="addusername">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addShareReportForm.get('addusername'))"
+                            [errMsg]="validationMsg.SHARE_USER_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-12 PR-25 text-right">
+          <button class="btn-primary" type="submit" [disabled]="addShareReportForm.invalid">Share</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End share report dialog  -->

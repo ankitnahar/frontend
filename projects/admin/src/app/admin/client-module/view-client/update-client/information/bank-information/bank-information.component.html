@@ -1,0 +1,303 @@
+<div class="bank-information-container">
+  <div class="with-filter-grid-container">
+    <div class="MT-10"></div>
+    <form *ngIf="tabData['add_edit']" [formGroup]="addBankInfoForm" #addEditBankForm="ngForm"
+          (submit)="onBankInfoSubmit(addBankInfoForm.value, addBankInfoForm.valid,bankInformationObject)">
+      <div class="row">
+        <div class="col-md-4">
+              <ng-select [items]="bankListFilter"
+                         [closeOnSelect]="true"
+                         bindLabel="bank_name"
+                         placeholder="Select Bank"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="bank_id">
+              </ng-select>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(addBankInfoForm.get('bank_id'))"
+                                [errMsg]="validationMsg.BANK_NAME"></app-validation>
+            <!--<div class="col-md-1 PL-0 PR-0 MT-15">-->
+              <!--<a class="cursor-pointer orange-color" (click)="onAddBank()" *ngIf="tabDataBank['view']"><i-->
+                <!--class="material-icons">add</i></a>-->
+            <!--</div>-->
+          </div>
+        </div>
+        <div class="col-md-4">
+              <ng-select [items]="bankTypeListFilter"
+                         [closeOnSelect]="true"
+                         bindLabel="type_name"
+                         placeholder="Select type of account"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="type_id">
+              </ng-select>
+              <!--<mat-form-field>-->
+              <!--<mat-select formControlName="type_id" placeholder="Select type of account" required>-->
+              <!--<mat-option *ngFor="let bankAcccount of bankTypeListFilter" [value]="bankAcccount?.id">-->
+              <!--{{ bankAcccount?.type_name }}-->
+              <!--</mat-option>-->
+              <!--</mat-select>-->
+              <!--</mat-form-field>-->
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(addBankInfoForm.get('type_id'))"
+                                [errMsg]="validationMsg.ACCOUNT_TYPE"></app-validation>
+            <!--<div class="col-md-1 PL-0 PR-0 MT-15">-->
+              <!--<a class="cursor-pointer orange-color" (click)="onAddAccountType()" *ngIf="tabDataType['view']"><i-->
+                <!--class="material-icons">add</i></a>-->
+            <!--</div>-->
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="is_bank_or_credit_card" placeholder="Bank/CC/Paypal AC">
+              <mat-option *ngFor="let bankCheckAccount of bankAccounts.slice(1)" [value]="bankCheckAccount?.key">
+                {{ bankCheckAccount?.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBankInfoForm.get('is_bank_or_credit_card'))"
+                            [errMsg]="validationMsg.BANK_TYPE"></app-validation>
+          </div>
+        </div>
+      </div>
+      <div class="row MT-5">
+        <div class="col-md-4">
+          <mat-form-field>
+            <input formControlName="account_no" matInput type="text" autocomplete="off" placeholder="Account number"
+                   required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBankInfoForm.get('account_no'))"
+                            [errMsg]="validationMsg.ACCOUNT_NO"></app-validation>
+            <app-validation *ngIf="isValidField(addBankInfoForm.get('account_no'))"
+                            [errMsg]="validationMsg.ACCOUNT_NO_VALID"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="viewing_rights" placeholder="Viewing Rights?">
+              <mat-option *ngFor="let bankViewFeedData of bankViewFeed.slice(1)" [value]="bankViewFeedData?.key">
+                {{ bankViewFeedData?.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBankInfoForm.get('viewing_rights'))"
+                            [errMsg]="validationMsg.VIEW_RIGHTS"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="auto_feed_up" placeholder="Auto Feed?">
+              <mat-option *ngFor="let bankViewFeedData of bankViewFeed.slice(1)" [value]="bankViewFeedData?.key">
+                {{ bankViewFeedData?.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBankInfoForm.get('auto_feed_up'))"
+                            [errMsg]="validationMsg.AUTO_FEED"></app-validation>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <input formControlName="bsb_notes" matInput type="number" autocomplete="off" placeholder="BSB no"/>
+          </mat-form-field>
+          <div class="validation-msg"></div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <textarea formControlName="follow_up_notes" matInput autocomplete="off"
+                      placeholder="Internal Comment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg"></div>
+        </div>
+        <div class="col-md-4">
+          <ng-select [items]="bankComments"
+                     [closeOnSelect]="true"
+                     bindLabel="comment"
+                     placeholder="Befree Comment"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="notes">
+          </ng-select>
+          <!--<mat-form-field>-->
+            <!--<textarea matInput formControlName="notes" autocomplete="off" placeholder="Befree Comment"></textarea>-->
+          <!--</mat-form-field>-->
+          <!--<div class="validation-msg"></div>-->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4 text-right">
+          <button type="button" class="btn btn-default MR-5" (click)="closeAndReset($event)">Cancel</button>
+          <button [disabled]="addBankInfoForm.invalid" type="submit" class="btn-primary">{{(bankInformationObject.length
+            <= 0) ? 'Add' : 'Update'}}
+          </button>
+        </div>
+      </div>
+    </form>
+    <!--</mat-expansion-panel>-->
+    <!--</mat-accordion>-->
+
+    <!--start bank information grid-->
+    <span class="panel-title orange-color">Bank Information Details</span>
+    <div class="expand-grid">
+      <div class="expand-grid__thead">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="10%"
+                (click)="getSortData('bank_name', sortBy === 'bank_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Bank
+              <i *ngIf="sortBy === 'bank_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'bank_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'bank_name' && sortOrder === 'desc'}">
+                {{sortBy === 'bank_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="14%"
+                (click)="getSortData('type_name', sortBy === 'type_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              A/C type
+              <i *ngIf="sortBy === 'type_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'type_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'type_name' && sortOrder === 'desc'}">
+                {{sortBy === 'type_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="14%"
+                (click)="getSortData('is_bank_or_credit_card', sortBy === 'is_bank_or_credit_card' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Bank/CC/Paypal AC
+              <i *ngIf="sortBy === 'is_bank_or_credit_card'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'is_bank_or_credit_card' && sortOrder === 'asc', 'icon-down' :  sortBy === 'is_bank_or_credit_card' && sortOrder === 'desc'}">
+                {{sortBy === 'is_bank_or_credit_card' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="16%"
+                (click)="getSortData('account_no', sortBy === 'account_no' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Account No
+              <i *ngIf="sortBy === 'account_no'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'account_no' && sortOrder === 'asc', 'icon-down' :  sortBy === 'account_no' && sortOrder === 'desc'}">
+                {{sortBy === 'account_no' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="9%"
+                (click)="getSortData('viewing_rights', sortBy === 'viewing_rights' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Viewing rights?
+              <i *ngIf="sortBy === 'viewing_rights'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'viewing_rights' && sortOrder === 'asc', 'icon-down' :  sortBy === 'viewing_rights' && sortOrder === 'desc'}">
+                {{sortBy === 'viewing_rights' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="9%"
+                (click)="getSortData('auto_feed_up', sortBy === 'auto_feed_up' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Auto Feed?
+              <i *ngIf="sortBy === 'auto_feed_up'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'auto_feed_up' && sortOrder === 'asc', 'icon-down' :  sortBy === 'auto_feed_up' && sortOrder === 'desc'}">
+                {{sortBy === 'auto_feed_up' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="14%">Modified By</th>
+            <th width="9%">Action</th>
+          </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="expand-grid__tbody expand-grid-scrollable">
+        <table *ngIf="bankInformationList.length">
+          <tbody *ngFor="let bankInformation of bankInformationList; let i = index"
+                 [ngClass]="{'red-tr' : bankInformation.is_active === 0}">
+          <tr [ngClass]="{'is-active-row' : trIndex === i}" class="hover-icons row-data">
+            <td width="5%">
+              <a class="open-inner-data" (click)="openRow(i)"><i [ngClass]="{'is-open' : trIndex === i}"
+                                                                 class="material-icons">keyboard_arrow_down</i></a>
+              {{i+1}}
+            </td>
+            <td width="10%" class="word-break">{{bankInformation?.bank_id?.bank_name}}</td>
+            <td width="14%" class="word-break">{{bankInformation?.type_id?.type_name}}</td>
+            <td width="14%" class="word-break">{{bankInformation?.is_bank_or_credit_card > 0 ?
+              getBankAccountDataType(bankInformation?.is_bank_or_credit_card) : ''}}
+            </td>
+            <td width="16%" class="word-break">{{bankInformation?.account_no}}</td>
+            <td width="9%">{{bankInformation?.viewing_rights >=0 ? getBankLinkDataType(bankInformation?.viewing_rights)
+              : ''}}
+            </td>
+            <td width="9%">{{bankInformation?.auto_feed_up >=0 ? getBankLinkDataType(bankInformation?.auto_feed_up) :
+              ''}}
+            </td>
+            <td width="14%" class="word-break">{{bankInformation?.created_by?.created_by}}
+            </td>
+            <td width="9%">
+              <a class="wet-asphalt-color MR-5" [matTooltip]="'View History'"
+                 (click)="viewBankInformationHistory($event,bankInformation);"><i class="material-icons">history</i></a>
+              <a class="orange-color MR-5" *ngIf="tabData['add_edit']" [matTooltip]="'Edit'"
+                 (click)="editBankInformation($event,bankInformation);"><i class="material-icons">edit</i></a>
+              <mat-slide-toggle *ngIf="tabData['add_edit']" (click)="stopToCallDetails($event)"
+                                class="bank-information-container__toggle"
+                                [checked]="(bankInformation?.is_active) ? true : false"
+                                (change)="activeInactiveBankInformation($event.checked,bankInformation)"></mat-slide-toggle>
+            </td>
+          </tr>
+          <tr *ngIf="trIndex === i" class="inner-data">
+            <div class="row PT-10">
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>BSB No</div>
+                  <div>{{bankInformation?.bsb_notes}}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>Befree Comment</div>
+                  <div>{{bankInformation?.notes}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="row PT-10">
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>Internal Comment</div>
+                  <div>{{bankInformation?.follow_up_notes}}</div>
+                </div>
+              </div>
+            </div>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="expand-grid__tfoot" *ngIf="bankInformationList.length">
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!--end bank information grid-->
+  </div>
+  <div *ngIf="bankInformationList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>
+<!-- Start History modal-->
+<div *ngIf="isOpenHistoryDialog">
+  <app-update-client-history (close)="isOpenHistoryDialog = false"></app-update-client-history>
+</div>
+<!-- End History modal-->

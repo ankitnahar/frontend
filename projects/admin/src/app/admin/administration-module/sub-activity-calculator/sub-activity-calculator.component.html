@@ -1,0 +1,91 @@
+<div class="sub-activity-calculator-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">SUB ACTIVITY CALCULATOR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title MT-5">
+          <button class="open-dialog-btn" (click)="Addcalculator()">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add calculator
+          </button>
+        </div>
+        <div class="col-md-6">
+          <div class="grid-search">
+            <form [formGroup]="filterForm">
+              <mat-form-field floatLabel="never">
+                <input matInput placeholder="Search" formControlName="search" (keyup)="setAdvanceFilter(filterForm)">
+              </mat-form-field>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="85%">Name</th>
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="subActivityCalculatorList.length">
+            <tr *ngFor="let subactivitycalcalculator of subActivityCalculatorList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="85%">{{subactivitycalcalculator?.name}}</td>
+              <td width="10%">
+                <a class="light-orange-color" *ngIf="tabData['add_edit']" [matTooltip]="'Edit'"
+                   (click)="onEditSubActivity(subactivitycalcalculator)">
+                  <mat-icon class="material-icons">edit</mat-icon>
+                </a></td>
+            </tr>
+            </tbody>
+          </table>
+          <table *ngIf="subActivityCalculatorList.length">
+            <tfoot>
+            <tr>
+              <td colspan="10">
+                <mat-paginator [length]="totalRecords"
+                               [pageSize]="pageSize"
+                               [pageIndex]="pageIndex"
+                               [pageSizeOptions]="pageArray"
+                               (page)="onPageChange($event)">
+                </mat-paginator>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="subActivityCalculatorList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

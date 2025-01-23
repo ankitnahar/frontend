@@ -1,0 +1,572 @@
+<!-- Admin Header html View -->
+<div class="admin-hrms-dashboard-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="cursor-pointer">dashboard</mat-icon>
+          <span>Dashboard</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start My View Start -->
+  <div class="view_hrms row">
+    <div class="col-md-10"><h4 class="PT-15 primary-color" *ngIf="dashboardDetail?.myView">My View</h4>
+      <h4 class="PT-15 primary-color" *ngIf="dashboardDetail?.adminView">Admin View</h4>
+    </div>
+    <div class="row col-md-2 on-right PL-0">
+      <div class="col-md-10">
+        <mat-form-field floatLabel="never">
+          <mat-select placeholder="Months" (selectionChange)="onChangeGetValue($event.value)"
+                      [value]="yearMonth[0]['key']">
+            <mat-option *ngFor="let year of yearMonth;" [value]="year.key">{{year.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2 text-right MT-15">
+      <span class="material-icons cursor-pointer blink orange-color"
+            matTooltip="Filter result will be shown based on previous month’s 26 to current month’s 25 date.">
+help
+</span>
+      </div>
+    </div>
+  </div>
+  <div class="row progress-bar-section MT-15" *ngIf="dashboardDetail?.myView">
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('2', selectedYearMonth, 'myView', 'status')">
+                <h3>{{dashboardDetail?.myView?.pendingRequest}}</h3>
+                <label>Pending Request</label>
+              </a>
+            </div>
+
+            <div class="col-md-4 request-count">
+              <a (click)="attendanceSummary('3,4', selectedYearMonth, 'myView', 'status')">
+                <h3>{{dashboardDetail?.myView?.pendingForApproval}}</h3>
+                <label>Pending Approval</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('5', selectedYearMonth, 'myView', 'status')">
+                <h3>{{dashboardDetail?.myView?.approved}}</h3>
+                <label>Approved</label>
+              </a>
+            </div>
+
+            <div class="col-md-2 PL-0 request-count">
+              <a (click)="attendanceSummary('6', selectedYearMonth, 'myView', 'status')">
+                <h3>{{dashboardDetail?.myView?.rejected}}</h3>
+                <label>Rejected</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'myView', 'remark')">
+                <h3>{{dashboardDetail?.myView?.latecoming}}</h3>
+                <label>Late Coming</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('4', selectedYearMonth, 'myView', 'remark')">
+                <h3>{{dashboardDetail?.myView?.earlyleaving}}</h3>
+                <label>Early Leaving</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('1', selectedYearMonth, 'myView', 'finalremark')">
+                <h3>{{dashboardDetail?.myView?.halfday}}</h3>
+                <label>Half Day</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'myView', 'finalremark')">
+                <h3>{{dashboardDetail?.myView?.leave}}</h3>
+                <label>Leave</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-md-4 PLR-10">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-6 request-count">
+              <a (click)="attendanceSummary('0', selectedYearMonth, 'myView', 'stage_id')">
+                <h3>{{dashboardDetail?.myView?.pendingTimesheet}}</h3>
+                <label>User Pending Timesheet</label>
+              </a>
+            </div>
+
+            <div class="col-md-6 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'myView', 'stage_id')">
+                <h3>{{dashboardDetail?.myView?.approvePendingTimesheet}}</h3>
+                <label>Approved Pending Timesheet</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <!-- Start My View End -->
+
+  <!-- Start Progress bar -->
+  <div class="view_hrms row MT-15 MB-10" *ngIf="dashboardDetail?.teamView">
+    <div class="col-md-12 PTB-10">
+      <h4 class="orange-color">My Team View</h4>
+    </div>
+  </div>
+  <div class="row progress-bar-section MT-15" *ngIf="dashboardDetail?.teamView">
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('2', selectedYearMonth, 'teamView', 'status')">
+                <h3>{{dashboardDetail?.teamView?.pendingRequest}}</h3>
+                <label>Pending Request</label>
+              </a>
+            </div>
+
+            <div class="col-md-4 request-count">
+              <a (click)="attendanceSummary('3,4', selectedYearMonth, 'teamView', 'status')">
+                <h3>{{dashboardDetail?.teamView?.pendingForApproval}}</h3>
+                <label>Pending Approval</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('5', selectedYearMonth, 'teamView', 'status')">
+                <h3>{{dashboardDetail?.teamView?.approved}}</h3>
+                <label>Approved</label>
+              </a>
+            </div>
+
+            <div class="col-md-2 request-count PL-0">
+              <a (click)="attendanceSummary('6', selectedYearMonth, 'teamView', 'status')">
+                <h3>{{dashboardDetail?.teamView?.rejected}}</h3>
+                <label>Rejected</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'teamView', 'remark')">
+                <h3>{{dashboardDetail?.teamView?.latecoming}}</h3>
+                <label>Late Coming</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('4', selectedYearMonth, 'teamView', 'remark')">
+                <h3>{{dashboardDetail?.teamView?.earlyleaving}}</h3>
+                <label>Early Leaving</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('1', selectedYearMonth, 'teamView', 'finalremark')">
+                <h3>{{dashboardDetail?.teamView?.halfday}}</h3>
+                <label>Half Day</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'teamView', 'finalremark')">
+                <h3>{{dashboardDetail?.teamView?.leave}}</h3>
+                <label>Leave</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+
+    <div class="col-md-4 PLR-10">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+
+            <div class="col-md-6 request-count">
+              <a (click)="attendanceSummary('0', selectedYearMonth, 'teamView', 'stage_id')">
+                <h3>{{dashboardDetail?.teamView?.pendingTimesheet}}</h3>
+                <label>User Pending Timesheet</label>
+              </a>
+            </div>
+
+            <div class="col-md-6 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'teamView', 'stage_id')">
+                <h3>{{dashboardDetail?.teamView?.approvePendingTimesheet}}</h3>
+                <label>Approved Pending Timesheet</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+
+  <!-- Start Progress bar -->
+  <div class="row progress-bar-section MT-15" *ngIf="dashboardDetail?.adminView">
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('2', selectedYearMonth, 'adminView', 'status')">
+                <h3>{{dashboardDetail?.adminView?.pendingRequest}}</h3>
+                <label>Pending Request</label>
+              </a>
+            </div>
+
+            <div class="col-md-4 request-count">
+              <a (click)="attendanceSummary('3,4', selectedYearMonth, 'adminView', 'status')">
+                <h3>{{dashboardDetail?.adminView?.pendingForApproval}}</h3>
+                <label>Pending Approval</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('5', selectedYearMonth, 'adminView', 'status')">
+                <h3>{{dashboardDetail?.adminView?.approved}}</h3>
+                <label>Approved</label>
+              </a>
+            </div>
+
+            <div class="col-md-2 request-count PL-0">
+              <a (click)="attendanceSummary('6', selectedYearMonth, 'adminView', 'status')">
+                <h3>{{dashboardDetail?.adminView?.rejected}}</h3>
+                <label>Rejected</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'adminView', 'remark')">
+                <h3>{{dashboardDetail?.adminView?.latecoming}}</h3>
+                <label>Late Coming</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('4', selectedYearMonth, 'adminView', 'remark')">
+                <h3>{{dashboardDetail?.adminView?.earlyleaving}}</h3>
+                <label>Early Leaving</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('1', selectedYearMonth, 'adminView', 'finalremark')">
+                <h3>{{dashboardDetail?.adminView?.halfday}}</h3>
+                <label>Half Day</label>
+              </a>
+            </div>
+
+            <div class="col-md-3 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'adminView', 'finalremark')">
+                <h3>{{dashboardDetail?.adminView?.leave}}</h3>
+                <label>Leave</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+
+    <div class="col-md-4 PLR-10">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+
+            <div class="col-md-6 request-count">
+              <a (click)="attendanceSummary('0', selectedYearMonth, 'adminView', 'stage_id')">
+                <h3>{{dashboardDetail?.adminView?.pendingTimesheet}}</h3>
+                <label>User Pending Timesheet</label>
+              </a>
+            </div>
+
+            <div class="col-md-6 request-count">
+              <a (click)="attendanceSummary('3', selectedYearMonth, 'adminView', 'stage_id')">
+                <h3>{{dashboardDetail?.adminView?.approvePendingTimesheet}}</h3>
+                <label>Approved Pending Timesheet</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+
+  <div class="row progress-block-section PB-15">
+    <!-- Start Read Holiday Section -->
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="progress-section">
+        <mat-card-header>
+          <mat-card-title>
+            <h3>Holiday Info</h3>
+            <div class="select-menu">
+              <i class="material-icons">info</i>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+
+        <mat-card-content>
+          <div class="list-parent-section announcementSection">
+            <ul class="leave-request-list" *ngFor="let policy of readPoliciesHoliday;">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3><a (click)="onOpenReadPolicies(policy)">
+                  {{policy?.name}} </a></h3>
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- Start Read Holiday Section End-->
+
+    <!-- Start Quick Link action Section -->
+    <div class="col-md-4 PL-10 PR-0">
+      <mat-card class="progress-section">
+        <mat-card-header>
+          <mat-card-title>
+            <h3>Quick Link</h3>
+            <div class="select-menu">
+              <i class="material-icons">link</i>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+
+        <mat-card-content>
+          <div class="list-parent-section announcementSection">
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onReadPolicies()">Read Policies</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list"
+                *ngIf="isAddTimesheetButtonRights && userData?.user_timesheet_fillup_flag === 1">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3><a (click)="onAddTimeSheet()">Add Timesheet</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onDailyReport()">Daily Report</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onTodaysTimesheet()">Today's Timesheet</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+              <li class="user-details">
+                <h3 *ngIf="isInCompletedWorksheet['view']"><a (click)="onOpenTodaysIncompletedWorksheet()">Worksheet</a>
+                </h3>
+                <h3 *ngIf="!isInCompletedWorksheet['view']"><a (click)="onWorksheet()">Worksheet</a></h3>
+              </li>
+            </ul>
+
+            <ul class="leave-request-list" *ngIf="securityCodeTabData['view']">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a (click)="onSecurityCode()">Security Code</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a
+                  href="{{'https://docs.google.com/spreadsheets/d/10ceidL5LlnUKFlSP7N1Uk957Amq1wM3EkT6Wfus2Dx4/edit?ts=5dbaa7eb#gid=1180721457'}}"
+                  target="_blank">BK Knowledge Bank</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a
+                  href="{{'https://docs.google.com/spreadsheets/d/1d8vF-xDtV_FdDtzTCw3636tnEfVLIXXG0r4MRYE-j-8/edit#gid=0'}}"
+                  target="_blank">Knowledge Bank - BS-AU</a></h3>
+              </li>
+            </ul>
+            <ul class="leave-request-list">
+              <li>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </li>
+
+              <li class="user-details">
+                <h3><a
+                  href="{{'https://docs.google.com/spreadsheets/d/1MJdBlrAL_-zvsiBRJHlz_qVM5QUGSVMovhA84ZIXYUI/edit#gid=1609323003'}}"
+                  target="_blank">Payroll Knowledge Bank</a></h3>
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- End Quick Link action Section -->
+
+    <!-- Start Leave balance Section -->
+    <div class="col-md-4 PL-10">
+      <mat-card class="progress-section">
+        <mat-card-header>
+          <mat-card-title>
+            <h3>Your leave balance</h3>
+            <div class="select-menu">
+              <i class="material-icons">policy</i>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+
+        <mat-card-content>
+          <div class="">
+            <!-- Start Table -->
+            <div class="table-container">
+              <div class="table-block">
+                <table>
+                  <thead>
+                  <tr>
+                    <th width="20%">Sr. No</th>
+                    <th width="35%">Month</th>
+                    <th width="15%">CL</th>
+                    <th width="15%">HW</th>
+                    <th width="15%">LA</th>
+                  </tr>
+                  </thead>
+                </table>
+
+                <div class="table-body">
+                  <table>
+                    <tbody *ngIf="hrDetail?.leave_balance.length > 0">
+                    <tr *ngFor="let leavelist of hrDetail?.leave_balance; let i = index">
+                      <td width="20%">{{i+1}}</td>
+                      <td width="35%">{{leavelist?.month}}</td>
+                      <td width="15%">{{leavelist?.cl}}</td>
+                      <td width="15%">{{leavelist?.co}}</td>
+                      <td width="15%">{{leavelist?.la}}</td>
+                    </tr>
+                    </tbody>
+                    <tbody *ngIf="hrDetail?.leave_balance.length == 0">
+                    <tr>
+                      <td width="90%">No leave balance found.</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>  <!-- End Table -->
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="progress-section MT-15">
+        <mat-card-header>
+          <mat-card-title>
+            <h3 class="orange-color">New Launch </h3>
+            <div class="select-menu">
+              <i class="material-icons">new_releases</i>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+
+        <mat-card-content>
+          <div class="list-parent-section min-oranage-section announcementSection">
+            <p>Miniorange is going to live from 01.01.2022. So please use it and keep sharing your feedback. </p>
+            <ul class="PL-10 PT-10">
+              <li style="list-style: inside;">miniOrange, SSO platform and alternative to lastpass.</li>
+            </ul>
+            <ul class="leave-request-list">
+              <li class="user-details">
+                <p><span class="fw-500">miniOrange Support:</span> Hemang - 21132 | Nagalingam - 21013</p></li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- End Leave balance Section -->
+  </div>
+
+</div>

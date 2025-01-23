@@ -1,0 +1,16 @@
+.server-error-msg {
+  background: #f75828;
+  text-align: center;
+  color: #fff;
+  padding: 7px 0;
+  font-size: 15px;
+  font-weight: 600;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+.server-error-msg + .admin-header-sidebar-container {
+  top: 31px;
+}

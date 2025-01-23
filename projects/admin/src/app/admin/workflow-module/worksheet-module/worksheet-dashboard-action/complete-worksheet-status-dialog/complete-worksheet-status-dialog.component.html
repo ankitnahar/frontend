@@ -1,0 +1,220 @@
+<!--Start complete worksheet Dialog-->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo" *ngIf="isFormDataType ===0">COMPLETE WORKSHEET</div>
+    <div class="modal__header__logo" *ngIf="isFormDataType ===1">WORKSHEET TASK DETAIL</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+  <form [formGroup]="addCompleteWorksheetForm" *ngIf="isFormDataType === 0"
+        (submit)="onSubmitAddCompleteWorksheet(addCompleteWorksheetForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-label class="fw-500">
+            Client Name
+          </mat-label>
+        </div>
+
+        <div class="col-md-8">
+          <p>{{worksheetData.trading_name}}</p>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Master Activity</mat-label>
+        </div>
+        <div class="col-md-8 MT-30">
+          <mat-label class="MT-20">{{worksheetData.master_activity_id.name}}</mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Task</mat-label>
+        </div>
+        <div class="col-md-8 MT-30">
+          <mat-label class="MT-20">{{worksheetData.task_id.name}}</mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Period</mat-label>
+        </div>
+        <div class="col-md-8 MT-30">
+          <mat-label class="MT-20">{{worksheetData?.start_date | date : 'dd-MM-yyyy'}} To {{worksheetData?.end_date |
+            date : 'dd-MM-yyyy'}}
+          </mat-label>
+        </div>
+
+        <!--<div class="col-md-4 MT-35">-->
+          <!--<mat-label class="MT-20 fw-500">Do you want to create new worksheet task?</mat-label>-->
+        <!--</div>-->
+        <!--<div class="col-md-8 MT-35">-->
+          <!--<mat-label class="MT-20">-->
+            <!--<mat-radio-group (change)="onChangeType($event.value,1)" formControlName="is_create_new_task">-->
+              <!--<mat-radio-button [checked]="isAddNewTask === 1 ? true : false" value="1">Yes</mat-radio-button>-->
+              <!--<mat-radio-button [checked]="isAddNewTask === 2 ? true : false" class="ML-15" value="2">No-->
+              <!--</mat-radio-button>-->
+            <!--</mat-radio-group>-->
+          <!--</mat-label>-->
+        <!--</div>-->
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Is there any delay ?</mat-label>
+        </div>
+        <div class="col-md-8 MT-30">
+          <mat-label class="MT-20">
+            <mat-radio-group (change)="onChangeType($event.value,2)" formControlName="is_there_delay">
+              <mat-radio-button [checked]="isThereDelay === 1 ? true: false" value="1" [disabled]="true">Yes</mat-radio-button>
+              <mat-radio-button [checked]="isThereDelay === 2 ? true : false" class="ML-15" value="2" [disabled]="true">No
+              </mat-radio-button>
+            </mat-radio-group>
+          </mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35" *ngIf="isThereDelay === 1">
+          <mat-label class="MT-20 fw-500">Delay From</mat-label>
+        </div>
+        <div class="col-md-8 MT-30" *ngIf="isThereDelay === 1">
+          <mat-label class="MT-20">
+            <mat-radio-group (change)="onChangeType($event.value,3)" formControlName="delay_from">
+              <mat-radio-button [checked]="isDelayFrom === 1 ? true : false" value="1">Client</mat-radio-button>
+              <mat-radio-button [checked]="isDelayFrom === 2 ? true : false" class="ML-15" value="2">Befree
+              </mat-radio-button>
+            </mat-radio-group>
+          </mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35" *ngIf="isThereDelay === 1">
+          <mat-label class="MT-20 fw-500">Reason</mat-label>
+        </div>
+        <div class="col-md-8 MT-30" *ngIf="isThereDelay === 1">
+          <mat-form-field>
+            <textarea matInput rows="2" formControlName="delay_comment" required placeholder="Reason"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addCompleteWorksheetForm.get('delay_comment'))"
+                            [errMsg]="validationMsg.REASON_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-35" *ngIf="isDelayFrom === 2">
+          <mat-label class="MT-20 fw-500">Action</mat-label>
+        </div>
+        <div class="col-md-8 MT-30" *ngIf="isDelayFrom === 2">
+          <mat-form-field>
+            <textarea matInput rows="2" formControlName="delay_from_befree_action" required
+                      placeholder="Action"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addCompleteWorksheetForm.get('delay_from_befree_action'))"
+                            [errMsg]="validationMsg.ACTION_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <button type="submit" class="btn-primary" [disabled]="addCompleteWorksheetForm.invalid">Complete</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form [formGroup]="addCompleteWorksheetTaskFormDetails" *ngIf="isFormDataType === 1"
+        (submit)="onSubmitCompleteWorksheet(addCompleteWorksheetTaskFormDetails)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-label class="fw-500">
+            Client Name
+          </mat-label>
+        </div>
+
+        <div class="col-md-8">
+          <p>{{worksheetData.trading_name}}</p>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Frequency</mat-label>
+        </div>
+        <div class="col-md-8 MT-30">
+          <mat-label class="MT-20">{{worksheetData.frequency_name}}</mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Period</mat-label>
+        </div>
+        <div class="col-md-8 MT-30">
+          <mat-label class="MT-20">{{worksheetData?.start_date | date : 'dd-MM-yyyy'}} To {{worksheetData?.end_date |
+            date : 'dd-MM-yyyy'}}
+          </mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Start Date</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-form-field [floatLabel]="'never'">
+            <input matInput [matDatepicker]="startDate" (click)="startDate.open()"
+                   [value]="worksheetData.new_start_date"
+                   placeholder="Select Date" formControlName="start_date">
+            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+            <mat-datepicker #startDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">End Date</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-form-field [floatLabel]="'never'">
+            <input matInput [matDatepicker]="endDate" (click)="endDate.open()" [value]="worksheetData.new_end_date"
+                   placeholder="Select Date" formControlName="end_date">
+            <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+            <mat-datepicker #endDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Due Date</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-form-field [floatLabel]="'never'">
+            <input matInput [matDatepicker]="dueDate" (click)="dueDate.open()" [value]="worksheetData.new_due_date"
+                   placeholder="Select Date" formControlName="due_date">
+            <mat-datepicker-toggle matSuffix [for]="dueDate"></mat-datepicker-toggle>
+            <mat-datepicker #dueDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Last Report Sent</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-form-field [floatLabel]="'never'">
+            <input matInput [matDatepicker]="lastReportDate" (click)="lastReportDate.open()"
+                   formControlName="last_report_sent_date"
+                   placeholder="Select Date">
+            <mat-datepicker-toggle matSuffix [for]="lastReportDate"></mat-datepicker-toggle>
+            <mat-datepicker #lastReportDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Notes</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <textarea matInput formControlName="notes">{{worksheetData.notes}}</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <button type="submit" class="btn-primary" [disabled]="addCompleteWorksheetTaskFormDetails.invalid">Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

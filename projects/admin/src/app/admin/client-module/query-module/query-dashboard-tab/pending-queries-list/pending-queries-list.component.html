@@ -1,0 +1,439 @@
+<div class="admin-information-tab-container">
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-10 leave-type-list">
+          <ul>
+            <li>
+              <a class="back-color list-alignment">
+                <i class="material-icons">fiber_manual_record</i>Pending Count</a>
+            </li>
+            <li>
+              <a class="primary-color list-alignment">
+                <i class="material-icons">fiber_manual_record</i>Partial Count</a>
+            </li>
+            <li>
+              <a class="orange-color list-alignment"><i class="material-icons">fiber_manual_record</i>Received Count</a>
+            </li>
+            <li>
+              <a class="turquoise-color  list-alignment"><i class="material-icons">fiber_manual_record</i>Total Query</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="parentClientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Parent Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         (change)="onChangeParentEntity($event)"
+                         formControlName="parent_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Client Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Subject Line" formControlName="subject"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="tamList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TAM"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="technical_account_manager">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="tlList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TL"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="team_leader">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="atlList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="ATL"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="associate_team_lead">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Staff"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="team_member">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10" *ngIf="querySelectedStatus === 9">
+              <ng-select [items]="queryStatusList"
+                         [closeOnSelect]="true"
+                         bindLabel="status_name"
+                         placeholder="Stage"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         [multiple]="true"
+                         formControlName="stage_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="parent_id.value">
+          <span class="tag__title">Parent Trading Name:</span>
+          <span>
+          <ng-select class="custom" [items]="parentClientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="parent_id"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+            </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="entityIdField.value">
+          <span class="tag__title">Client Name: </span>
+          <span>
+         <ng-select [items]="clientList"
+                    [closeOnSelect]="true"
+                    bindLabel="trading_name"
+                    placeholder="Client Name"
+                    bindValue="id"
+                    [virtualScroll]="true"
+                    [searchable]="true"
+                    [hideSelected]="true"
+                    formControlName="entity_id"
+                    (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('entity_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="subjectField.value">
+          <span class="tag__title">Subject Line: </span>
+          <span>
+            <mat-form-field>
+             <input matInput formControlName="subject"
+                    (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('subject')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="tamField.value">
+          <span class="tag__title">TAM: </span>
+          <span>
+             <ng-select [items]="tamList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="TAM"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="technical_account_manager"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('technical_account_manager')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="tlField.value">
+          <span class="tag__title">TL: </span>
+          <span>
+            <ng-select [items]="tlList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="TL"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="team_leader"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('team_leader')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="atlField.value">
+          <span class="tag__title">ATL: </span>
+          <span>
+            <ng-select [items]="atlList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="ATL"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="associate_team_lead"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('associate_team_lead')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="tmField.value">
+          <span class="tag__title">Staff: </span>
+          <span>
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Staff"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="team_member"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('team_member')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="stageIdField.value">
+          <span class="tag__title">Stage : </span>
+          <span>
+             <ng-select [items]="queryStatusList"
+                        [closeOnSelect]="true"
+                        bindLabel="status_name"
+                        placeholder="Stage"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        [multiple]="true"
+                        formControlName="stage_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('stage_id')">close</mat-icon>
+        </div>
+        <div class="clearAll-tags"
+             *ngIf="parent_id.value || entityIdField.value || subjectField.value || stageIdField.value || tmField.value || tamField.value || tlField.value || atlField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <div class="table-container">
+      <div class="table-block">
+        <table class="table-body">
+          <thead>
+          <tr>
+            <th width="5%">Sr. No.</th>
+            <th width="10%">Parent Trading Name</th>
+            <th width="12%">Client Name</th>
+            <th width="17%">Subject Line</th>
+            <th width="5%">Counter</th>
+            <th width="12%">TAM</th>
+            <th width="12%">TL / ATL</th>
+            <th width="9%" *ngIf="querySelectedStatus === 9">Stage</th>
+            <th width="10%">Created On</th>
+            <th width="5%">Action</th>
+          </tr>
+          </thead>
+          <tbody *ngIf="queryList.length">
+          <tr *ngFor="let queryData of queryList; let i = index;" [ngClass]="{'red-tr-grid' : queryData?.created_on | dateCompareWithToday}">
+            <td width="5%">{{+pageSize * (pageIndex) + i + 1}}
+              <!--<mat-icon *ngIf="queryData?.discontinue_stage == 1" class="red-color v-align-middle"-->
+                        <!--[matTooltip]="'Discontinue Process Initiated'">block-->
+              <!--</mat-icon>-->
+            </td>
+            <td width="10%">{{queryData?.parent_name}}</td>
+            <td width="12%">{{queryData?.trading_name}}</td>
+            <td width="17%">{{queryData?.subject}}</td>
+            <td width="5%">
+              <span class="label-gray-bg-color MR-5">{{queryData?.pending_count}}</span>
+              <span class="label-primary-bg-color MR-5">{{queryData?.partial_count}}</span>
+              <span class="label-orange-bg-color MR-5">{{queryData?.received_count}}</span>
+              <span class="label-turquoise-bg-color MR-5">{{queryData?.totalInformation}}</span>
+            </td>
+            <td width="12%">{{queryData?.tam_name}}</td>
+            <td width="12%">{{queryData?.tl_name}}{{(queryData?.atl_name != null && queryData?.atl_name != '') ?
+              '/ '+queryData?.atl_name : ''}}
+            </td>
+            <td width="9%" *ngIf="querySelectedStatus === 9">{{queryData?.stage_id?.stage_name}}</td>
+            <td width="10%">{{queryData?.created_on | date : 'dd-MM-yyy HH:mm:ss'}}</td>
+            <td width="5%">
+              <a>
+                <mat-icon [matMenuTriggerFor]="menuaction">more_vert</mat-icon>
+                <mat-menu #menuaction="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Action</h3>
+                  </button>
+                  <button mat-menu-item
+                          (click)="OnEditQuery(queryData)" *ngIf="tabData['add_edit'] && queryData?.stage_id?.id <=6">
+                    <a>
+                      <mat-icon class="mat-icon_width_auto">edit</mat-icon>
+                      Edit Query
+                    </a>
+                  </button>
+                  <button mat-menu-item
+                          (click)="onViewQuery(queryData)">
+                    <a>
+                      <mat-icon class="mat-icon_width_auto">remove_red_eye</mat-icon>
+                      View Query
+                    </a>
+                  </button>
+                  <button mat-menu-item (click)="onQueryLog(queryData)">
+                    <a>
+                      <mat-icon class="material-icons">message</mat-icon>
+                      Query Log
+                    </a>
+                  </button>
+                  <button mat-menu-item (click)="onQueryReminderLog(queryData)">
+                    <a>
+                      <mat-icon class="material-icons">message</mat-icon>
+                      Reminder Log
+                    </a>
+                  </button>
+                  <button mat-menu-item (click)="onSnoozeQueryDialog(queryData)"
+                          *ngIf="queryData.stage_id?.id === 5">
+                    <a>
+                      <mat-icon class="mat-icon_width_auto">notifications_off</mat-icon>
+                      Snooze Query
+                    </a>
+                  </button>
+                  <button mat-menu-item (click)="onConfirmationDialog(1, 'ATL', queryData)"
+                          *ngIf="queryData.stage_id?.id === 1">
+                    <a>
+                      <mat-icon class="mat-icon_width_auto">redo</mat-icon>
+                      Move to ATL
+                    </a>
+                  </button>
+                  <button mat-menu-item (click)="onConfirmationDialog(2, 'TL', queryData)"
+                          *ngIf="queryData.stage_id?.id === 1 || queryData.stage_id?.id === 2">
+                    <a>
+                      <mat-icon class="mat-icon_width_auto">redo</mat-icon>
+                      Move to TL
+                    </a>
+                  </button>
+                  <button mat-menu-item (click)="onConfirmationDialog(3, 'TAM', queryData)"
+                          *ngIf="queryData.stage_id?.id === 1 || queryData.stage_id?.id === 2 || queryData.stage_id?.id === 3">
+                    <a>
+                      <mat-icon class="mat-icon_width_auto">how_to_reg</mat-icon>
+                      Move to TAM
+                    </a>
+                  </button>
+                  <button mat-menu-item
+                          (click)="onDeleteQuery(queryData)" *ngIf="tabData['add_edit'] && queryData?.stage_id?.id <5">
+                    <a>
+                      <mat-icon class="mat-icon_width_auto">delete</mat-icon>
+                      Delete Query
+                    </a>
+                  </button>
+                </mat-menu>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <table *ngIf="queryList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- End Data Grid -->
+  <div *ngIf="queryList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

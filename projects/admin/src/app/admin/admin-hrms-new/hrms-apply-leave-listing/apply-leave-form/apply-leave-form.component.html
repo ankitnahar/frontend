@@ -1,0 +1,229 @@
+<div class="">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>HRMS</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">
+            <a (click)="onLeaveListing()">LEAVE LISTING</a>
+          </span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">APPLY LEAVE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add Apply leave form-->
+  <div>
+    <span class="panel-title orange-color">Apply Leave</span>
+    <form [formGroup]="addApplyLeaveForm" (submit)="onSubmit(addApplyLeaveForm)">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Employee ID" formControlName="employee_id" readonly/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput type="text" placeholder="First Approval" value="{{userInfo?.first_approval?.userfullname}}"
+                   readonly/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Second Approval"
+                   value="{{userInfo?.second_approval?.userfullname}}" readonly/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select placeholder="Leave Type" formControlName="leave_type" required (selectionChange)="onChangeUpdate($event.value)">
+              <mat-option *ngFor="let leave of leaveType" [value]="leave?.id">
+                {{ leave?.leave_type}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addApplyLeaveForm.get('leave_type'))"
+                            [errMsg]="validationMsg.SERVICE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6 PL-0">
+              <mat-form-field>
+                <input matInput formControlName="from_date" [matDatepicker]="formDate" [min]="currentDate"
+                       placeholder="From Date" (dateChange)="getSetMinMaxDate();getDateRange();">
+                <mat-datepicker-toggle matSuffix [for]="formDate"></mat-datepicker-toggle>
+                <mat-datepicker #formDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6 PR-0">
+              <mat-form-field>
+                <input matInput formControlName="to_date" [matDatepicker]="toDate"
+                       placeholder="To Date" (dateChange)="getDateRange()" [min]="startDateValue" [max]="endDateValue">
+                <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                <mat-datepicker #toDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="row col-md-10 bg-leave" *ngFor="let getDate of getDateArray().controls; let j = index">
+          <div class="col-md-4">
+
+            <mat-form-field>
+              <mat-select placeholder="{{getDate.get('leave_date').value}}" [formControl]="getDate.get('date_value')"
+                          required>
+                <mat-option *ngFor="let halfDay of halfDayOrFullDayList.slice(1)" [value]="halfDay?.key">
+                  {{ halfDay?.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(getDate.get('date_value'))"
+                              [errMsg]="validationMsg.POSITION"></app-validation>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field *ngIf="getDate.get('date_value').value === 0">
+              <mat-select placeholder="{{getDate.get('leave_date').value}}"
+                          [formControl]="getDate.get('half_day_type')" required>
+                <mat-option *ngFor="let dayItem of halfDayListData.slice(1)" [value]="dayItem?.key">
+                  {{ dayItem?.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(getDate.get('half_day_type'))"
+                              [errMsg]="validationMsg.POSITION"></app-validation>
+            </div>
+          </div>
+        </div>
+
+        <!--div<div class="col-md-6">
+          <div class="row">
+            <div class="col-md-3 PL-0" *ngFor="let getDate of getDateArray().controls; let j = index">
+              <mat-form-field>
+                <mat-select placeholder="{{getDate.get('leave_date').value}}" [formControl]="getDate.get('date_value')"
+                            required>
+                  <mat-option *ngFor="let halfDay of halfDayOrFullDayList.slice(1)" [value]="halfDay?.key">
+                    {{ halfDay?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(getDate.get('date_value'))"
+                                [errMsg]="validationMsg.POSITION"></app-validation>
+              </div>
+
+              <mat-form-field *ngIf="getDate.get('date_value').value === 0">
+                <mat-select placeholder="{{getDate.get('leave_date').value}}"
+                            [formControl]="getDate.get('half_day_type')" required>
+                  <mat-option *ngFor="let dayItem of halfDayListData.slice(1)" [value]="dayItem?.key">
+                    {{ dayItem?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(getDate.get('half_day_type'))"
+                                [errMsg]="validationMsg.POSITION"></app-validation>
+              </div>
+            </div>
+          </div>
+        </div>-->
+
+
+        <div class="col-md-8">
+          <mat-form-field>
+            <mat-select placeholder="Have you inform to team incharge about this leave?" formControlName="inform_team"
+                        required>
+              <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                {{ yesNo?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addApplyLeaveForm.get('inform_team'))"
+                            [errMsg]="validationMsg.POSITION"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-select placeholder="Did you check weekly task list?" formControlName="weekly_task" required>
+              <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                {{ yesNo?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addApplyLeaveForm.get('weekly_task'))"
+                            [errMsg]="validationMsg.POSITION"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-select placeholder="Was there anything due while you are on leave?" formControlName="anything_due"
+                        required>
+              <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                {{ yesNo?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addApplyLeaveForm.get('anything_due'))"
+                            [errMsg]="validationMsg.POSITION"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+        </div>
+
+        <div class="col-md-12 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="If due – you must talk to team incharge to make sure it has been allocated to other team member.
+            Write your comments." formControlName="anything_due_comments" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addApplyLeaveForm.get('anything_due_comments'))"
+                            [errMsg]="validationMsg.PERSON_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Reason for Leave" formControlName="leave_reason" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addApplyLeaveForm.get('leave_reason'))"
+                            [errMsg]="validationMsg.PERSON_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 MB-20">
+          <div class="row MT-30">
+            <div class="col-md-6 PL-0">
+
+            </div>
+            <div class="col-md-6 text-right PR-0">
+              <button type="button" class="btn-default MR-5">Cancel</button>
+              <button [disabled]="addApplyLeaveForm.invalid" type="submit" class="btn-primary">Apply Leave
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--Over add apply leave form-->
+</div>
+

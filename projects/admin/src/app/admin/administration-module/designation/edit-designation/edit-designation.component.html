@@ -1,0 +1,60 @@
+<div class="admin-manage-users-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onDesignation()">DESIGNATION</a></span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">EDIT DESIGNATION - {{designationName}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- admin (Administration) previleges html view -->
+  <div class="admin-user-privileges-container">
+    <div class="row">
+      <div class="col-md-2">
+        <mat-form-field floatLabel="never">
+          <mat-select placeholder="Choose an option" [(ngModel)]="selectedPrivilegeType"
+                      (selectionChange)="onChangePageRight($event.value)">
+            <mat-option *ngFor="let rights of privilegeList" [value]="rights?.key">
+              {{ rights.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-7"></div>
+      <div class="col-md-3">
+      </div>
+    </div>
+
+    <!-- Start page rights view -->
+    <div *ngIf="activeEnumView == enumView.PAGE_RIGHTS_VIEW">
+      <app-edit-pagerights-designation [pageRightsValue]="selectedPrivilegeType"></app-edit-pagerights-designation>
+    </div>  <!-- End page rights view -->
+
+    <!-- Start page rights view -->
+    <div *ngIf="activeEnumView == enumView.DYNAMIC_FIELD_GROUP_VIEW">
+      <app-edit-dynamic-field-group-designation
+        [pageRightsValue]="selectedPrivilegeType"></app-edit-dynamic-field-group-designation>
+    </div>  <!-- End page rights view -->
+
+    <!-- Start page rights view -->
+    <div *ngIf="activeEnumView == enumView.OTHER_VIEW">
+      <app-edit-other-rights [pageRightsValue]="selectedPrivilegeType"></app-edit-other-rights>
+    </div>  <!-- End page rights view -->
+
+    <!-- Start page rights view -->
+    <div *ngIf="activeEnumView == enumView.WORKSHEET_STATUS_RIGHTS_VIEW">
+      <app-edit-worksheet-status-rights [pageRightsValue]="selectedPrivilegeType"></app-edit-worksheet-status-rights>
+    </div>  <!-- End page rights view -->
+  </div>
+
+</div>

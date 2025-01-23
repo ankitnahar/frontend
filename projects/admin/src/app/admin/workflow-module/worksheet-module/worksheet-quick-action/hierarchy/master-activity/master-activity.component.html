@@ -1,0 +1,313 @@
+<!-- Worksheet master activity Container -->
+<!-- Start Data Grid -->
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header">
+    <div class="row">
+      <div class="col-md-6 inner-header-title">
+        <button class="open-dialog-btn" (click)="openAddEditMasterActivityDialog()"><i class="material-icons">add</i>
+          Add Master Activity
+        </button>
+      </div>
+      <div class="col-md-6">
+        <ul class="download-icon">
+          <li>
+            <a (click)="onToggleFilter()">
+              <span>Filter</span>
+              <mat-icon>filter_list</mat-icon>
+            </a>
+          </li>
+
+          <li (click)="downloadExcel()">
+            <a>
+              <span>Excel</span>
+              <mat-icon>file_download</mat-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!-- Start Grid Filter -->
+  <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+    <div class="filter-action-icon">
+          <span class="filter-close" *ngIf="isOpenFilterView" (click)="onToggleFilter()">Esc <i
+            class="material-icons">close</i></span>
+    </div>
+    <div class="grid-filter-container">
+      <div class="filter-title">
+        <h3>Advance Filter</h3>
+      </div>
+      <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput placeholder="Code" formControlName="code"/>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4">
+            <ng-select [items]="masterActivityData"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Master Activity"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="id">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <mat-form-field>
+              <mat-select placeholder="Team" formControlName="user_team_id">
+                <mat-option *ngFor="let data of teamData; let i = index;" [value]="+data.id">{{data.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Worksheet Schedule" formControlName="inschedule">
+                <mat-option *ngFor="let yesNo of yesNoList.slice(1); let i = index;" [value]="yesNo.key">
+                  {{yesNo.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 MT-10">
+            <mat-form-field>
+              <input matInput [matDatepicker]="modifiedon" placeholder="Created on" formControlName="modified_on">
+              <mat-datepicker-toggle matSuffix [for]="modifiedon"></mat-datepicker-toggle>
+              <mat-datepicker #modifiedon></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 MT-10">
+
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Created By"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="created_by">
+            </ng-select>
+          </div>
+
+          <div class="col-md-12 MT-20 text-right">
+            <button type="button" class="btn-cancel" (click)="onClearTags()">Clear</button>
+            <button type="submit" class="btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Filter -->
+
+  <!-- Start Filter Tags -->
+  <div class="filter-tags">
+    <form [formGroup]="advanceFilterForm">
+      <div class="tag" *ngIf="code.value">
+        <span class="tag__title">Code :</span>
+        <span>
+           <mat-form-field>
+                <input matInput placeholder="41" formControlName="code"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+              </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('code')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="id.value">
+        <span class="tag__title">Master Activity :</span>
+        <span>
+          <ng-select [items]="masterActivityData"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Master Activity"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="id"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="user_team_id.value">
+        <span class="tag__title">Team :</span>
+        <span>
+             <mat-form-field>
+              <mat-select placeholder="Team" formControlName="user_team_id"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-option *ngFor="let data of teamData; let i = index;" [value]="+data.id">{{data.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('user_team_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="inschedule.value">
+        <span class="tag__title">Worksheet Schedule :</span>
+        <span>
+             <mat-form-field>
+              <mat-select placeholder="Yes" formControlName="inschedule"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-option *ngFor="let yesNo of yesNoList.slice(1); let i = index;"
+                            [value]="yesNo.key">{{yesNo.label}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('inschedule')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="modified_on.value">
+        <span class="tag__title">Created on :</span>
+        <span>
+              <mat-form-field>
+                <input matInput [matDatepicker]="modifiedon1" placeholder="Date" formControlName="modified_on"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly>
+                <mat-datepicker-toggle matSuffix [for]="modifiedon1"></mat-datepicker-toggle>
+                <mat-datepicker #modifiedon1></mat-datepicker>
+              </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('modified_on')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="created_by.value">
+        <span class="tag__title">Created By :</span>
+        <span>
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Created By"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="created_by"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+        </span>
+        <i class="material-icons tag__close" (click)="onClearTag('created_by')">close</i>
+      </div>
+
+      <div class="clearAll-tags" *ngIf="code.value
+        || id.value
+        || user_team_id.value
+        || inschedule.value
+        || modified_on.value
+        || created_by.value">
+        <a (click)="onClearTags()">Clear all</a>
+      </div>
+    </form>
+  </div>
+  <!-- End Filter Tags -->
+
+  <!-- Start Table -->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr.No</th>
+
+          <th width="5%" (click)="getSortData('code',
+            (sortBy === 'code') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Code
+            <i *ngIf="sortBy === 'code'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'code'),
+                 'icon-up' : ((sortBy === 'code') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+              {{(sortBy === 'code') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+            </i>
+          </th>
+
+
+          <th width="25%" (click)="getSortData('name',
+            (sortBy === 'name') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Master Activity
+            <i *ngIf="sortBy === 'name'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'name'),
+                 'icon-up' : ((sortBy === 'name') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+              {{(sortBy === 'name') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+            </i>
+          </th>
+
+
+          <th width="25%">Associated Team</th>
+
+          <th width="10%" (click)="getSortData('inschedule',
+            (sortBy === 'inschedule') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">In Schedule
+            <i *ngIf="sortBy === 'inschedule'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'inschedule'),
+                 'icon-up' : ((sortBy === 'inschedule') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+              {{(sortBy === 'inschedule') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+          <th width="20%">Created By
+          </th>
+
+          <th width="10%">Action</th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let data of masterActivityListData; let i = index">
+            <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+            <td width="5%">{{data?.code}}</td>
+            <td width="25%">{{data?.name}}</td>
+            <td width="25%">{{getTeamName(data?.user_team_id)}}</td>
+            <td width="10%" *ngIf="data?.inschedule === 1"><span class="turquoise-color"><mat-icon
+              class="grid_icon_trip_origin">trip_origin</mat-icon>Yes</span></td>
+            <td width="10%" *ngIf="data?.inschedule !== 1"><span class="red-color"><mat-icon
+              class="grid_icon_trip_origin">trip_origin</mat-icon>No</span></td>
+            <td width="20%">{{data?.created_by?.created_by}} | {{data?.created_on | date : 'dd-MM-yyyy'}}</td>
+            <td width="10%">
+              <mat-icon class="light-orange-color" [matTooltip]="'Edit'"
+                        (click)="openAddEditMasterActivityDialog(data)">edit
+              </mat-icon>
+              <mat-slide-toggle [matTooltip]="'Active/Inactive'" [(ngModel)]="slideData[i]"
+                                (change)="onDisabledConfirmDialog($event, data, i)"></mat-slide-toggle>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <table *ngIf="masterActivityListData.length">
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <!-- End Table -->
+  <div *ngIf="!masterActivityListData.length" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>
+<!-- End Data Grid -->

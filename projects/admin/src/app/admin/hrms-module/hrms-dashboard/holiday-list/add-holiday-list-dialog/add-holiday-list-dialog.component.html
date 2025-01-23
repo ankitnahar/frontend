@@ -1,0 +1,103 @@
+<!--  Start Add Holiday list dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{(holidayDetail?.id)?'Update':'Add'}} Holiday</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addHolidayListForm" (submit)="onSubmit(addHolidayListForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MT-10" *ngIf="holidayDetail?.id">
+          <ng-select [items]="dateList"
+                     [closeOnSelect]="true"
+                     bindLabel="date"
+                     placeholder="Date"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="holiday_id" disableControl="true">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addHolidayListForm.get('holiday_id'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 MT-10 custom-ng-select-dropdown" *ngIf="holidayDetail?.id">
+          <ng-select
+            [items]="shifList"
+            [multiple]="true"
+            bindLabel="shift_name"
+            [hideSelected]="true"
+            [closeOnSelect]="true"
+            bindValue="id"
+            placeholder="Shift Name"
+            formControlName="shift_id" required>
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addHolidayListForm.get('shift_id'))"
+                            [errMsg]="validationMsg.SHIFT_NAME"></app-validation>
+          </div>
+        </div>
+
+
+        <div class="col-md-12 MT-10 custom-ng-select-dropdown" *ngIf="!holidayDetail?.id">
+          <ng-select
+            [items]="shifList"
+            bindLabel="shift_name"
+            [hideSelected]="true"
+            [closeOnSelect]="true"
+            bindValue="id"
+            placeholder="Shift Name"
+            formControlName="shift_id" required>
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addHolidayListForm.get('shift_id'))"
+                            [errMsg]="validationMsg.SHIFT_NAME"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 MT-10" *ngIf="!holidayDetail?.id">
+          <ng-select [items]="dateList"
+                     [closeOnSelect]="true"
+                     [multiple]="true"
+                     bindLabel="date"
+                     placeholder="Date"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="holiday_id">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addHolidayListForm.get('holiday_id'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <textarea matInput formControlName="description" rows="3" placeholder="Notes"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addHolidayListForm.get('description'))"
+                            [errMsg]="validationMsg.NOTE_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addHolidayListForm.invalid">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

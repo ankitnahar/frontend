@@ -1,0 +1,69 @@
+<form (submit)="changePageRights()">
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr. No.</th>
+          <th width="25%" (click)="getSortPrivilegelistData('group_name',
+             (privilegelistSortBy === 'group_name') ? (privilegelistSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Field Group
+            <i [ngClass]="{'material-icons': true,
+            'active' : (privilegelistSortBy === 'group_name'),
+            'icon-up' : ((privilegelistSortBy === 'group_name') && (privilegelistSortOrder === 'asc')),
+            'icon-down' : true}">
+              {{(privilegelistSortBy === 'group_name') ? ((privilegelistSortOrder === 'asc') ?
+              'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+            </i>
+          </th>
+          <th width="35%" (click)="getSortPrivilegelistData('field_title',
+             (privilegelistSortBy === 'field_title') ? (privilegelistSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Field
+            <i [ngClass]="{'material-icons': true,
+            'active' : (privilegelistSortBy === 'field_title'),
+            'icon-up' : ((privilegelistSortBy === 'field_title') && (privilegelistSortOrder === 'asc')),
+            'icon-down' : true}">
+              {{(privilegelistSortBy === 'field_title') ? ((privilegelistSortOrder === 'asc') ?
+              'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+            </i>
+          </th>
+          <th width="15%">
+            <mat-checkbox [checked]="is_viewAll"
+                          (change)="assignPrivilegeToAll($event.checked,'view')"></mat-checkbox>
+            View
+          </th>
+          <th width="20%">
+            <mat-checkbox [checked]="is_add_editAll"
+                          (change)="assignPrivilegeToAll($event.checked,'add_edit')"></mat-checkbox>
+            Add / Edit
+          </th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let privilege of privileges | filter:{field_title: filterText} ; let i = index">
+            <td width="5%">{{i+1}}</td>
+            <td width="25%">{{privilege?.group_name}}</td>
+            <td width="35%">{{privilege?.field_title}}</td>
+            <td width="15%">
+              <mat-checkbox (change)="changeIsViewPrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.view) ? true : false"></mat-checkbox>
+            </td>
+            <td width="20%">
+              <mat-checkbox (change)="changeIsAddPrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.add_edit) ? true : false"></mat-checkbox>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-12 save-history-btns text-right MTB-10">
+        <button type="button" (click)="ngOnInit()" class="btn-default MR-10">Cancel</button>
+        <button type="submit" class="btn-primary">Update</button>
+      </div>
+    </div>
+  </div><!-- End Table -->
+</form>

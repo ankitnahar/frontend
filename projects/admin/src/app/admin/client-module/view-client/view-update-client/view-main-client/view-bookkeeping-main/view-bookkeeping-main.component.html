@@ -1,0 +1,110 @@
+<!--basic tab html start-->
+<div class="view-basic-main-tab-container">
+  <div class="row">
+    <div class="col-md-10 PL-0">
+      <span class="panel-title">View {{currentTabName}}</span>
+    </div>
+    <div class="col-md-2" *ngIf="tabChildData.length > 0">
+      <mat-form-field>
+        <mat-select [(value)]="accountType" placeholder="Select Service" (selectionChange)="onChangeService($event)">
+          <mat-option [value]="tab.id">{{tab.group_name}}</mat-option>
+          <mat-option *ngFor="let childTabs of tabChildData" [value]="childTabs?.id">
+            {{ childTabs?.group_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <form>
+    <div class="row" *ngIf="displayArray.length">
+      <div class="col-md-6 label-span-color" *ngFor="let data of displayArray; let i = index;">
+        <div class="MB-10">
+          <label class="fw-500">{{data.key}}:</label>
+          <span class="col-md-9">{{data.value}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="accountType === 2">
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500">Version Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.version_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> Software Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.software_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="accountType === 3">
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> BK Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.bk_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> BK Review Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.bk_review_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="accountType === 4">
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> Payroll Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.payroll_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="accountType === 5">
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> AP Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.ap_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="accountType === 6">
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> AR Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.ar_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="accountType === 7">
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> DM Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.dm_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="accountType === 8">
+      <div class="col-md-6 label-span-color">
+        <div class="MB-10">
+          <label class="fw-500"> Tax Notes:</label>
+          <span class="col-md-9"><a (click)="onClientServicesNotesDialog(clientData?.tax_notes)"
+                                    class="cursor-pointer light-orange-color"><mat-icon class="v-align-middle">remove_red_eye </mat-icon></a> </span>
+        </div>
+      </div>
+    </div>
+    <!--<span class="panel-title orange-color" *ngIf="displayArray.length <=0">-->
+    <!--No Data found.-->
+    <!--</span>-->
+  </form>
+</div>

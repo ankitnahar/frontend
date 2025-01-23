@@ -1,0 +1,184 @@
+<div class="other-information-container">
+  <div class="with-filter-grid-container">
+    <div class="MT-10"></div>
+    <form [formGroup]="addOtherInfoForm" (submit)="onSubmit(addOtherInfoForm)" #addOtherInfoFormData="ngForm">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-12 PL-0">
+              <ng-select [items]="otherParticularList"
+                         [closeOnSelect]="true"
+                         bindLabel="account_name"
+                         placeholder="Particular Type"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="otheraccount_id">
+              </ng-select>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(addOtherInfoForm.get('otheraccount_id'))"
+                                [errMsg]="validationMsg.OTHER_ACCOUNT"></app-validation>
+              </div>
+            </div>
+            <!--<div class="col-md-1 PL-0 PR-0 MT-15">-->
+              <!--<a class="cursor-pointer orange-color" (click)="onAddParticular()"><i-->
+                <!--class="material-icons">add</i></a>-->
+            <!--</div>-->
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-12 PL-0">
+              <ng-select [items]="isViewAccessList"
+                         [closeOnSelect]="true"
+                         bindLabel="label"
+                         placeholder="View Online Access"
+                         bindValue="key"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="view_access">
+              </ng-select>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(addOtherInfoForm.get('view_access'))"
+                                [errMsg]="validationMsg.VIEW_ACCESS"></app-validation>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-12 PL-0">
+              <mat-form-field>
+                <textarea matInput formControlName="befree_comment" placeholder="Befree Comments"></textarea>
+              </mat-form-field>
+              <div class="validation-msg">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-12 PL-0">
+              <mat-form-field>
+                <textarea matInput formControlName="internal_comment" placeholder="Internal Comments"></textarea>
+              </mat-form-field>
+              <div class="validation-msg">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-12 PL-0">
+              <ng-select [items]="activeInactiveList"
+                         [closeOnSelect]="true"
+                         bindLabel="label"
+                         placeholder="Status"
+                         bindValue="key"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="is_active">
+              </ng-select>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(addOtherInfoForm.get('is_active'))"
+                                [errMsg]="validationMsg.STATUS_REQUIRED"></app-validation>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4  text-right MT-20">
+          <button type="button" class="btn btn-default MR-5" (click)="closeAndReset()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="addOtherInfoForm.invalid">{{(otherInformationObject &&
+            otherInformationObject['id']) ? 'Update': 'Add'}}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!--start other information grid-->
+    <span class="panel-title orange-color">Other Information Details</span>
+
+    <!-- Start grid -->
+    <div class="table-container dialog-table-container">
+      <div class="table-block">
+        <table class="PT-0">
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="10%"
+                (click)="getSortData('account_name', sortBy === 'account_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Particular
+              <i *ngIf="sortBy === 'account_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'account_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'account_name' && sortOrder === 'desc'}">
+                {{sortBy === 'account_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+            <th width="14%"
+                (click)="getSortData('view_access', sortBy === 'view_access' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              View Online Access
+              <i *ngIf="sortBy === 'view_access'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'view_access' && sortOrder === 'asc', 'icon-down' :  sortBy === 'view_access' && sortOrder === 'desc'}">
+                {{sortBy === 'view_access' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+            <th width="14%"
+                (click)="getSortData('befree_comment', sortBy === 'befree_comment' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Befree Comments
+              <i *ngIf="sortBy === 'befree_comment'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'befree_comment' && sortOrder === 'asc', 'icon-down' :  sortBy === 'befree_comment' && sortOrder === 'desc'}">
+                {{sortBy === 'befree_comment' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+            <th width="14%"
+                (click)="getSortData('internal_comment', sortBy === 'internal_comment' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Internal Comments
+              <i *ngIf="sortBy === 'internal_comment'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'internal_comment' && sortOrder === 'asc', 'icon-down' :  sortBy === 'internal_comment' && sortOrder === 'desc'}">
+                {{sortBy === 'internal_comment' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+            <th width="8%">Status</th>
+            <th width="9%">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let otherinfo of otherInformationList; let i = index">
+            <td>{{+pageSize * (pageIndex) + i + 1}}</td>
+            <td>{{otherinfo?.other_account_id?.account_name}}</td>
+            <td>{{getIsViewAccess(otherinfo?.view_access)}}</td>
+            <td>{{otherinfo?.befree_comment}}</td>
+            <td>{{otherinfo?.internal_comment}}</td>
+            <td>
+              <mat-slide-toggle [checked]="(otherinfo?.is_active) ? true : false"
+                                (change)="activeInactiveOtherInfo($event.checked,otherinfo)"></mat-slide-toggle>
+            </td>
+            <td><a (click)="onEditOtherInformation(otherinfo)">
+              <mat-icon class="mat-icon_width_auto orange-color">edit</mat-icon>
+            </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!--end bank information grid-->
+  </div>
+  <div *ngIf="otherInformationList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<!-- Start add more bank modal -->
+<div class="modal large-modal bank-dialog">
+  <div class="modal__header">
+    <div class="modal__header__logo">Add More Plan</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <form [formGroup]="addPlanForm" #addMorePlanForm="ngForm" (submit)="onSoftwareSubmit(addPlanForm)">
+      <div class="row">
+        <div class="col-md-6 PL-0">
+          <mat-form-field>
+            <mat-select formControlName="parent_id" placeholder="Software" required>
+              <mat-option *ngFor="let software of softwareList" [value]="software?.id">
+                {{ software?.software_plan}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addPlanForm.get('parent_id'))"
+                            [errMsg]="validationMsg.SOFTWARE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 PL-0">
+          <mat-form-field>
+            <input formControlName="software_plan" matInput type="text" placeholder="Plan" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addPlanForm.get('software_plan'))"
+                            [errMsg]="validationMsg.PLAN_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+
+        <div class="col-md-6 PL-0">
+          <mat-form-field>
+            <input formControlName="amount" matInput type="number" placeholder="Amount" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addPlanForm.get('amount'))"
+                            [errMsg]="validationMsg.AMOUNT_REQUIRED"></app-validation>
+          </div>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addPlanForm.get('amount'))"
+                            [errMsg]="validationMsg.AMOUNT_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-5">
+          <button [disabled]="addPlanForm.invalid" class="btn-primary" type="submit">Save</button>
+        </div>
+      </div>
+    </form>
+    <div class="table-container dialog-table-container MT-10">
+      <div class="table-block">
+        <!--<div class="row">
+          <div class="col-md-4 PL-0">
+            <div class="position-relative search-bank-information">
+              <i class="material-icons">search</i>
+              <input placeholder="Search" type="text"/>
+            </div>
+          </div>
+          <div class="col-md-8 PR-0">
+          </div>
+        </div>-->
+        <table>
+          <thead>
+          <tr>
+            <th width="10%">Sr. no.</th>
+            <th width="20%">Software</th>
+            <th width="20%">Plan</th>
+            <th width="10%">Amount</th>
+            <th width="25%">Modified By</th>
+            <th width="15%">Action</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let plantypeData of planType; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{plantypeData?.parent_id?.software_plan}}
+              <!--<input type="text" />-->
+            </td>
+            <td>{{plantypeData?.software_plan}}</td>
+            <td>{{plantypeData?.amount}}</td>
+            <td>{{plantypeData?.modified_by?.modified_by}}</td>
+            <td>
+              <a class="orange-color ML-10 MR-10" [matTooltip]="'Edit'" (click)="onEditPlanTypeData(plantypeData)">
+                <mat-icon class="material-icons">edit</mat-icon>
+              </a>
+              <mat-slide-toggle *ngIf="slideActiveInactive[i]" [(ngModel)]="slideActiveInactive[i]"
+                                (change)="openToggleConfirmationDialog($event, plantypeData, i)"></mat-slide-toggle>
+              <mat-slide-toggle *ngIf="!slideActiveInactive[i]" [checked]="(plantypeData['is_active']) ? true : false"
+                                (change)="openToggleConfirmationDialog($event, plantypeData, i)"></mat-slide-toggle>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-layer" (click)="onClose()"></div>
+<!-- End add more bank  modal -->

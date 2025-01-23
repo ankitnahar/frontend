@@ -1,0 +1,374 @@
+<!-- Worksheet master checklist Question Container -->
+<!-- Start Data Grid -->
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header">
+    <div class="row">
+      <div class="col-md-6 inner-header-title">
+        <button class="open-dialog-btn" (click)="openAddEditMasterChecklistQuestionDialog()"><i class="material-icons">add</i>
+          Add Master Checklist Question
+        </button>
+      </div>
+      <div class="col-md-6">
+        <ul class="download-icon">
+          <li>
+            <a (click)="onOpenFilter()">
+              <span>Filter</span> <i class="material-icons">filter_list</i>
+            </a>
+          </li>
+
+          <li (click)="downloadExcel()">
+            <a>
+              <span>Excel</span> <i class="material-icons">file_download</i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!-- Start Grid Filter -->
+  <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+    <div class="filter-action-icon">
+          <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <i
+            class="material-icons">close</i></span>
+    </div>
+    <div class="grid-filter-container">
+      <div class="filter-title">
+        <h3>Advance Filter</h3>
+      </div>
+      <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+        <div class="row">
+          <div class="col-md-4">
+            <ng-select [items]="masterChackList"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Master checklist"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="changeMasterCheckList($event);"
+                       formControlName="master_checklist_id">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <ng-select [items]="masterActivityData"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Master Activity"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="getTaskData($event);"
+                       formControlName="master_activity_id">
+            </ng-select>
+            <!--<mat-form-field>-->
+            <!--<mat-select placeholder="Master Activity"  formControlName="master_activity_id" (selectionChange)="getTaskData($event)">-->
+            <!--<mat-option *ngFor="let data of masterActivityData; let i = index;" [value]="+data.id">{{data.name}}</mat-option>-->
+            <!--</mat-select>-->
+            <!--</mat-form-field>-->
+          </div>
+
+          <div class="col-md-4">
+            <ng-select [items]="taskDataMain"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Task Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="task_id">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4 MT-10">
+            <ng-select [items]="groupArray"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Group Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="checklist_group_id">
+            </ng-select>
+            <!--<mat-form-field>-->
+            <!--<mat-select placeholder="Group" formControlName="groupName" [(ngModel)]="groupSelectedValue">-->
+            <!--<mat-option *ngFor="let data of groupArray; let i = index" [value]="data.name">{{data.name}}</mat-option>-->
+            <!--</mat-select>-->
+            <!--</mat-form-field>-->
+          </div>
+
+          <div class="col-md-4 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Question" formControlName="question_name"/>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Status" formControlName="is_active">
+                <mat-option *ngFor="let active of activeInactiveList.slice(1)" [value]="active?.key">
+                  {{ active.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-12 text-right">
+            <button type="button" class="btn-cancel" (click)="onClearTags()">Clear</button>
+            <button type="submit" class="btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Filter -->
+
+  <!-- Start Filter Tags -->
+  <div class="filter-tags">
+    <form [formGroup]="advanceFilterForm">
+      <div class="tag" *ngIf="masterChecklistId.value">
+        <span class="tag__title">Master Checklist :</span>
+        <span>
+          <ng-select [items]="masterChackList"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Master checklist"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true); changeMasterCheckList($event);"
+                     formControlName="master_checklist_id">
+            </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('master_checklist_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="masterActvitiyId.value">
+        <span class="tag__title">Master Activity :</span>
+        <span>
+          <ng-select [items]="masterActivityData"
+                     [closeOnSelect]="true"
+                     bindLabel="name"
+                     placeholder="Master Activity"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true); getTaskData($event);"
+                     formControlName="master_activity_id">
+            </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('master_activity_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="taskId.value">
+        <span class="tag__title">Task :</span>
+        <span>
+           <ng-select [items]="taskDataMain"
+                      [closeOnSelect]="true"
+                      bindLabel="name"
+                      placeholder="Task Name"
+                      bindValue="id"
+                      [virtualScroll]="true"
+                      [searchable]="true"
+                      [hideSelected]="true"
+                      (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                      formControlName="task_id">
+            </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('task_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="checklistGroupId.value">
+        <span class="tag__title">Group :</span>
+        <span>
+           <ng-select [items]="groupArray"
+                      [closeOnSelect]="true"
+                      bindLabel="name"
+                      placeholder="Group"
+                      bindValue="id"
+                      [virtualScroll]="true"
+                      [searchable]="true"
+                      [hideSelected]="true"
+                      (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                      formControlName="checklist_group_id">
+            </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('checklist_group_id')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="question_name.value">
+        <span class="tag__title">Question :</span>
+        <span>
+           <mat-form-field>
+                <input matInput placeholder="Question" formControlName="question_name"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+           </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('question_name')">close</i>
+      </div>
+
+      <div class="tag" *ngIf="is_active.value">
+        <span class="tag__title">Status :</span>
+        <span>
+              <mat-form-field>
+                <mat-select placeholder="Status" formControlName="is_active">
+                  <mat-option *ngFor="let active of activeInactiveList.slice(1)" [value]="active?.key">
+                    {{ active.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('is_active')">close</i>
+      </div>
+
+      <div class="clearAll-tags" *ngIf="
+          masterChecklistId.value
+        || masterActvitiyId.value
+        || taskId.value
+        || question_name.value
+        || is_active.value
+        || checklistGroupId.value">
+        <a (click)="onClearTags()">Clear all</a>
+      </div>
+    </form>
+  </div>
+  <!-- End Filter Tags -->
+
+  <!-- Start Table -->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="3%">Sr. No</th>
+
+          <th width="20%" (click)="getSortData('checklistName',
+            (sortBy === 'checklistName') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Master Checklist
+            <i *ngIf="sortBy === 'checklistName'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'checklistName'),
+                 'icon-up' : ((sortBy === 'checklistName') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+              {{(sortBy === 'checklistName') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+
+          <th width="15%" (click)="getSortData('activityName',
+          (sortBy === 'activityName') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Master Activity
+            <i *ngIf="sortBy === 'activityName'" [ngClass]="{'material-icons': true,
+              'active' : (sortBy === 'activityName'),
+               'icon-up' : ((sortBy === 'activityName') && (sortOrder === 'asc')),
+               'icon-down' : true}">
+              {{(sortBy === 'activityName') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+          <th width="14%" (click)="getSortData('taskName',
+          (sortBy === 'taskName') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Task
+            <i *ngIf="sortBy === 'taskName'" [ngClass]="{'material-icons': true,
+              'active' : (sortBy === 'taskName'),
+               'icon-up' : ((sortBy === 'taskName') && (sortOrder === 'asc')),
+               'icon-down' : true}">
+              {{(sortBy === 'taskName') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+            </i>
+          </th>
+
+          <th width="8%" (click)="getSortData('groupName',
+           (sortBy === 'groupName') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Group
+            <i *ngIf="sortBy === 'groupName'" [ngClass]="{'material-icons': true,
+               'active' : (sortBy === 'groupName'),
+                'icon-up' : ((sortBy === 'groupName') && (sortOrder === 'asc')),
+                'icon-down' : true}">
+              {{(sortBy === 'groupName') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+          <th width="22%" (click)="getSortData('question_name',
+          (sortBy === 'question_name') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Question
+            <i *ngIf="sortBy === 'question_name'" [ngClass]="{'material-icons': true,
+              'active' : (sortBy === 'question_name'),
+               'icon-up' : ((sortBy === 'question_name') && (sortOrder === 'asc')),
+               'icon-down' : true}">
+              {{(sortBy === 'question_name') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+          <th width="10%" (click)="getSortData('created_by',
+          (sortBy === 'created_by') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Created By
+            <i *ngIf="sortBy === 'created_by'" [ngClass]="{'material-icons': true,
+              'active' : (sortBy === 'created_by'),
+               'icon-up' : ((sortBy === 'created_by') && (sortOrder === 'asc')),
+               'icon-down' : true}">
+              {{(sortBy === 'created_by') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+              'arrow_downward'}}
+            </i>
+          </th>
+
+          <th width="8%">Action</th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let masterchecklist of masterCheckList; let i = index">
+            <td width="3%">{{+pageSize * (pageIndex) + i + 1}}</td>
+            <td width="20%">{{masterchecklist?.checklistName}}</td>
+            <td width="15%">{{masterchecklist?.activityName}}</td>
+            <td width="14%">{{masterchecklist?.taskName}}</td>
+            <td width="8%">{{masterchecklist?.groupName}}</td>
+            <td width="22%" style="word-break: break-word">{{masterchecklist?.question_name}}</td>
+            <td width="10%">{{masterchecklist?.created_by?.userfullname}} | {{masterchecklist?.created_on | date
+              :'dd-MM-yyyy'}}
+            </td>
+            <td width="8%">
+              <mat-icon class="turquoise-color" *ngIf="masterchecklist.help_text"
+                        [matTooltip]="masterchecklist.help_text">info
+              </mat-icon>
+              <mat-icon class="light-orange-color" [matTooltip]="'Edit'"
+                        (click)="openAddEditMasterChecklistQuestionDialog(masterchecklist)">edit
+              </mat-icon>
+              <mat-slide-toggle [matTooltip]="slideData[i] ? 'Inactive': 'Active'" [(ngModel)]="slideData[i]"
+                                (change)="onDisabledConfirmDialog($event, masterchecklist, i)"></mat-slide-toggle>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <table *ngIf="masterCheckList.length">
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <!-- End Table -->
+  <div *ngIf="!masterCheckList.length" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>
+<!-- End Data Grid -->

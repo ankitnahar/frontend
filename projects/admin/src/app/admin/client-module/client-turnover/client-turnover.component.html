@@ -1,0 +1,386 @@
+<!-- Admin (Client) Turn over Container -->
+<div class="client-turnover-container client-open-menu-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <i class="material-icons cursor-pointer">home</i>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">CLIENT TURNOVER</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <i class="material-icons">info</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Add Edit Account Selector -->
+  <app-add-edit-client-turnover *ngIf="tabData['add_edit']" [turnoverRecord]="selectedTurnoverRecord"
+                                [panelStatus]="isEditTurnover"
+                                [yearList]="yearList"
+                                (addUpdateTurnoverEvent)="getClientTurnoverList(page, clientTurnoverSortBy, clientTurnoverSortOrder)"></app-add-edit-client-turnover>
+  <!-- End Add Edit Account Selector -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3>Client Turnover</h3>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()" *ngIf="tabData['export']">
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="turnoverFilterForm" (submit)="turnoverAdvanceFilter(turnoverFilterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Year" [multiple]="true" formControlName="yearName">
+                  <mat-option *ngFor="let year of yearList" [value]="year">{{year}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Total" formControlName="total"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Sept Qtr" formControlName="sept_qtr"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="March Qtr" formControlName="march_qtr"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="June Qtr" formControlName="june_qtr"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Dec Qtr" formControlName="dec_qtr"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetTurnoverFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="turnoverFilterOuterViewForm">
+        <div class="tag" *ngIf="entityIdField.value">
+          <span class="tag__title">Client Name :</span>
+          <span>
+            <ng-select class="custom" [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity"
+                       (change)="turnoverAdvanceFilterKeyUp($event, turnoverFilterOuterViewForm, true)">
+          </ng-select>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('entity', 'entity')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="yearField.value && yearField.value.length">
+          <span class="tag__title">Year :</span>
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="Year" readonly
+                          formControlName="yearName" [multiple]="true"
+                          (selectionChange)="turnoverAdvanceFilterKeyUp($event, turnoverFilterOuterViewForm, true)"
+                          #selectRef>
+                <mat-option *ngFor="let year of yearList" [value]="year">{{year}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('yearName','year')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="totalField.value">
+          <span class="tag__title">Total :</span>
+          <span>
+            <mat-form-field>
+                <input matInput placeholder="Total"
+                       formControlName="total"
+                       (keyup)="turnoverAdvanceFilterKeyUp($event, turnoverFilterOuterViewForm, false)"/>
+              </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('total')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="septQuarterField.value">
+          <span class="tag__title">Sept Qtr :</span>
+          <span>
+            <mat-form-field>
+                <input matInput placeholder="Sept Qtr"
+                       formControlName="sept_qtr"
+                       (keyup)="turnoverAdvanceFilterKeyUp($event, turnoverFilterOuterViewForm, false)"/>
+              </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('sept_qtr')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="decQuarterField.value">
+          <span class="tag__title">Dec Qtr :</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="Dec Qtr"
+                     formControlName="dec_qtr"
+                     (keyup)="turnoverAdvanceFilterKeyUp($event, turnoverFilterOuterViewForm, false)"/>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('dec_qtr')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="marchQuarterField.value">
+          <span class="tag__title">March Qtr :</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="March Qtr"
+                     formControlName="march_qtr"
+                     (keyup)="turnoverAdvanceFilterKeyUp($event, turnoverFilterOuterViewForm, false)"/>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('march_qtr')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="juneQuarterField.value">
+          <span class="tag__title">June Qtr :</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="June Qtr"
+                     formControlName="june_qtr"
+                     (keyup)="turnoverAdvanceFilterKeyUp($event, turnoverFilterOuterViewForm, false)"/>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('june_qtr')">close</i>
+        </div>
+
+
+        <div class="clearAll-tags" *ngIf="(entityIdField.value) || (yearField.value.length) || (totalField.value) ||
+(septQuarterField.value) || (decQuarterField.value) || (marchQuarterField.value) || (juneQuarterField.value)">
+          <a (click)="resetTurnoverFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+
+            <th width="25%" (click)="getSortClientTurnoverList('name',
+             (clientTurnoverSortBy === 'name') ? (clientTurnoverSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Client Name
+              <i [ngClass]="{'material-icons': true,
+               'active': (clientTurnoverSortBy === 'name'),
+               'icon-up' : ((clientTurnoverSortBy === 'name') && (clientTurnoverSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientTurnoverSortBy === 'name') ? ((clientTurnoverSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="10%" (click)="getSortClientTurnoverList('year',
+             (clientTurnoverSortBy === 'year') ? (clientTurnoverSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Year
+              <i [ngClass]="{'material-icons': true,
+               'active': (clientTurnoverSortBy === 'year'),
+               'icon-up' : ((clientTurnoverSortBy === 'year') && (clientTurnoverSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientTurnoverSortBy === 'year') ? ((clientTurnoverSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+
+            <th width="10%" (click)="getSortClientTurnoverList('sept_qtr',
+             (clientTurnoverSortBy === 'sept_qtr') ? (clientTurnoverSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Sept Qtr
+              <i [ngClass]="{'material-icons': true,
+               'active': (clientTurnoverSortBy === 'sept_qtr'),
+               'icon-up' : ((clientTurnoverSortBy === 'sept_qtr') && (clientTurnoverSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientTurnoverSortBy === 'sept_qtr') ? ((clientTurnoverSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="10%" (click)="getSortClientTurnoverList('dec_qtr',
+             (clientTurnoverSortBy === 'dec_qtr') ? (clientTurnoverSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Dec Qtr
+              <i [ngClass]="{'material-icons': true,
+               'active': (clientTurnoverSortBy === 'dec_qtr'),
+               'icon-up' : ((clientTurnoverSortBy === 'dec_qtr') && (clientTurnoverSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientTurnoverSortBy === 'dec_qtr') ? ((clientTurnoverSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="10%" (click)="getSortClientTurnoverList('march_qtr',
+             (clientTurnoverSortBy === 'march_qtr') ? (clientTurnoverSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              March Qtr
+              <i [ngClass]="{'material-icons': true,
+               'active': (clientTurnoverSortBy === 'march_qtr'),
+               'icon-up' : ((clientTurnoverSortBy === 'march_qtr') && (clientTurnoverSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientTurnoverSortBy === 'march_qtr') ? ((clientTurnoverSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="10%" (click)="getSortClientTurnoverList('june_qtr',
+             (clientTurnoverSortBy === 'june_qtr') ? (clientTurnoverSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              June Qtr
+              <i [ngClass]="{'material-icons': true,
+               'active': (clientTurnoverSortBy === 'june_qtr'),
+               'icon-up' : ((clientTurnoverSortBy === 'june_qtr') && (clientTurnoverSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientTurnoverSortBy === 'june_qtr') ? ((clientTurnoverSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="10%" (click)="getSortClientTurnoverList('total',
+             (clientTurnoverSortBy === 'total') ? (clientTurnoverSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Total
+              <i [ngClass]="{'material-icons': true,
+               'active': (clientTurnoverSortBy === 'total'),
+               'icon-up' : ((clientTurnoverSortBy === 'total') && (clientTurnoverSortOrder === 'asc')),
+               'icon-down' : true}">
+                {{(clientTurnoverSortBy === 'total') ? ((clientTurnoverSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let turnover of clientTurnoverList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="25%">{{turnover?.entity_id?.name | checkEmpty}}</td>
+              <td width="10%">{{turnover?.year | checkEmpty}}</td>
+              <td width="10%">{{turnover?.sept_qtr | checkEmpty}}</td>
+              <td width="10%">{{turnover?.dec_qtr | checkEmpty}}</td>
+              <td width="10%">{{turnover?.march_qtr | checkEmpty}}</td>
+              <td width="10%">{{turnover?.june_qtr | checkEmpty}}</td>
+              <td width="10%">{{turnover?.total | checkEmpty}}</td>
+              <td width="10%">
+                <mat-icon class="primary-color" *ngIf="tabData['add_edit']"
+                          (click)="onUpdateClientTurnoverModal(turnover)">edit
+                </mat-icon>
+                <mat-icon class="red-color" *ngIf="tabData['delete']" (click)="onOpenClientTurnoverModal(turnover)">
+                  delete
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onClientTurnoverPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+  <!-- End Data Grid -->
+</div>

@@ -1,0 +1,85 @@
+<!--Client allocation start-->
+<div class="client-allocation">
+  <div class="row client-allocation__header">
+    <div class="col-md-3">
+      <b>Role</b>
+    </div>
+    <div class="col-md-3" *ngFor="let rights of otherRights">
+      <b>{{rights['group_name']}}</b>
+    </div>
+  </div>
+
+  <div *ngIf="designationList.length > 0">
+    <form [formGroup]="clientForm" (submit)="onClientSubmit(clientForm.value,clientForm.valid)">
+      <div class="client-allocation__body">
+        <div class="row">
+          <div class="col-md-3 PLR-0">
+            <div class="row">
+              <div class="col-md-12" *ngFor="let designtion of designationList; let i=index">
+                <mat-form-field>
+                  <input matInput [value]="designtion?.designation_name" [formControlName]="'designation_'+(i+1)"
+                         [disableControl]="true" class="role_disable">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3 PLR-0" *ngFor="let rights of otherRights">
+            <div class="row">
+              <div class="col-md-12" *ngFor="let row of designationList; let i=index">
+                <!--<mat-form-field floatLabel="never">-->
+                <!--<mat-select placeholder="Please select" [formControlName]="rights['group_name']+'_'+(i+1)"-->
+                <!--(selectionChange)="getUserByTeam(designationList[i+1],i+1,rights,$event.value)">-->
+                <!--<mat-option *ngFor="let user of userDesignationWise[rights['group_name']+'_'+(i+1)]" [value]="+user?.id">-->
+                <!--{{ user?.userfullname }}-->
+                <!--</mat-option>-->
+                <!--</mat-select>-->
+                <!--</mat-form-field>-->
+                <ng-select [items]="userDesignationWise[rights['group_name']+'_'+(i+1)]"
+                           bindLabel="userfullname"
+                           bindValue="id"
+                           placeholder="Please select"
+                           [closeOnSelect]="true"
+                           [virtualScroll]="true"
+                           [searchable]="true"
+                           (change)="getUserByTeam(designationList[i+1],i+1,rights,$event)"
+                           [formControlName]="rights['group_name']+'_'+(i+1)">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row MT-20 MB-20">
+        <div class="col-md-1">
+          <span class="orange-color">Other Staff:</span>
+        </div>
+        <div class="col-md-10">
+          <ng-select [items]="otherUserListData"
+                     bindLabel="userfullname"
+                     bindValue="id"
+                     [multiple]="true"
+                     placeholder="Other Staff"
+                     [closeOnSelect]="true"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="onSelectUserUpdate($event)"
+                     formControlName="other">
+          </ng-select>
+          <p class="turquoise-color">
+            <mat-icon class="v-align-middle">info</mat-icon>
+            If user already allocated in above designation then that user will not be allocated in other staff even if
+            you are assigning in other staff.
+          </p>
+        </div>
+        <div class="col-md-1 MT-10 text-right">
+          <button [disabled]="clientForm.invalid" type="submit" class="btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!--Client allocation end-->
+

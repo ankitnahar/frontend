@@ -1,0 +1,277 @@
+<!-- Worksheet Sub client List Container -->
+<div class="sub-client-list-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onWorksheetDashboard()">WORKSHEET</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">SUB CLIENT LIST</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                          *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                          *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                          *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                          *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                          *ngIf="tabDataWorksheetTraining['view']">Training List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                          *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                    Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                          *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                    Listing
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn" (click)="openSubClientListDialog(null)">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add Sub Client List
+          </button>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+          <span class="filter-close" *ngIf="isOpenFilterView" (click)="onToggleFilter()">Esc <mat-icon
+            class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-4">
+              <ng-select class="custom" [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Client Name" formControlName="subclient"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-4">
+              <mat-form-field>
+                <mat-select placeholder="Status" formControlName="is_active">
+                  <mat-option *ngFor="let activeInactive of activeInactiveList.slice(1)" [value]="activeInactive?.key">
+                    {{ activeInactive?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-12 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="entityIdField.value">
+          <span class="tag__title">Practice Name(Trading Name) :</span>
+          <span>
+            <ng-select class="custom" [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('entity_id', 'entity_id')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="subClientField.value">
+          <span class="tag__title">Client Name :</span>
+          <span>
+             <mat-form-field>
+             <input matInput placeholder="Client Name" formControlName="subclient"
+                    (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('subclient', 'subclient')">close</i>
+        </div>
+
+        <div class="tag" *ngIf="activeField.value !== null">
+          <span class="tag__title">Status :</span>
+          <span>
+             <mat-form-field>
+              <mat-select placeholder="Status" formControlName="is_active">
+                 <mat-option *ngFor="let active of activeInactiveList.slice(1)" [value]="active?.key">
+                    {{ active.label }}
+                  </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <i class="material-icons tag__close" (click)="onClearTag('is_active', 'is_active')">close</i>
+        </div>
+
+        <div class="clearAll-tags" *ngIf="entityIdField.value || subClientField.value || activeField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+
+
+            <th width="42%"
+                (click)="getSortData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Practice Name(Trading Name)
+              <i *ngIf="sortBy === 'trading_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+                {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="45%"
+                (click)="getSortData('subclient', sortBy === 'subclient' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Client Name
+              <i *ngIf="sortBy === 'subclient'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'subclient' && sortOrder === 'asc', 'icon-down' :  sortBy === 'subclient' && sortOrder === 'desc'}">
+                {{sortBy === 'subclient' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="8%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let subClient of subClientList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="42%">{{subClient?.entity_id?.trading_name}}</td>
+              <td width="45%">{{subClient?.subclient}}</td>
+              <td width="8%">
+                <mat-icon class="light-orange-color" [matTooltip]="'Edit'" (click)="openSubClientListDialog(subClient)">
+                  edit
+                </mat-icon>
+                <mat-slide-toggle *ngIf="slideActiveInactive[i]" [(ngModel)]="slideActiveInactive[i]"
+                                  (change)="openToggleConfirmationDialog($event, subClient, i)"></mat-slide-toggle>
+                <mat-slide-toggle *ngIf="!slideActiveInactive[i]" [checked]="(subClient.is_active) ? true : false"
+                                  (change)="openToggleConfirmationDialog($event, subClient, i)"></mat-slide-toggle>
+
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="subClientList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    <div *ngIf="!subClientList.length" class="panel-title red-color">
+      No Records Found!
+    </div>
+  </div>
+  <!-- End Data Grid -->
+</div>

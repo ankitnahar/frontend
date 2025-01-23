@@ -1,0 +1,311 @@
+<div class="add-on-off-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onInvoice()">INVOICE</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onManageRecurring()">RECURRING</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">{{(getRecurringData && getRecurringData.id && getRecurringData.id > 0) ? 'EDIT RECURRING' : 'ADD RECURRING'}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add recurring form-->
+  <div>
+    <span class="panel-title">{{(getRecurringData && getRecurringData.id && getRecurringData.id > 0) ? 'EDIT RECURRING - ' + getRecurringData.recurring_name : 'ADD RECURRING'}}</span>
+    <form [formGroup]="addRecurringForm" (submit)="onSubmitAddRecurringForm(addRecurringForm)">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-radio-group (change)="onChangeType($event.value)">
+            <mat-radio-button [checked]="isMultipleClientName ? false : true" value="2">Single Client</mat-radio-button>
+            <mat-radio-button [checked]="isMultipleClientName ? true : false" class="ML-15" value="1">Multiple Client
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="row MT-20">
+        <div class="{{ isMultipleClientName ? 'col-md-3' : 'col-md-4' }}">
+          <mat-form-field>
+            <input matInput placeholder="Recurring Name" formControlName="recurring_name" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('recurring_name'))"
+                            [errMsg]="validationMsg.NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="isMultipleClientName">
+          <mat-form-field>
+            <mat-select formControlName="service_id" placeholder="Service" (selectionChange)="OnFrequencyChange()"
+                        required>
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                {{ service?.service_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('service_id'))"
+                            [errMsg]="validationMsg.SERVICE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="isMultipleClientName">
+          <mat-form-field>
+            <mat-select formControlName="fixed_fee" placeholder="Fixed Fee" required [disabled]="!isMultipleClientName"
+                        (selectionChange)="OnFrequencyChange()">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let ff of fixedFeeList.slice(1)" [value]="ff?.key">
+                {{ ff?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('fixed_fee'))"
+                            [errMsg]="validationMsg.FIXED_FEE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="isMultipleClientName">
+          <mat-form-field>
+            <mat-select formControlName="frequency_id" placeholder="Frequency" required
+                        [disabled]="!isMultipleClientName" (selectionChange)="OnFrequencyChange()">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                {{frequency?.frequency_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('frequency_id'))"
+                            [errMsg]="validationMsg.FREQUENCY_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div *ngIf="!isMultipleClientName" class="col-md-8">
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="billing_name"
+                     placeholder="Select Client"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="onClientChange($event)"
+                     formControlName="entity_id">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('entity_id'))"
+                            [errMsg]="validationMsg.INVOICE_SELECT_CLIENT_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div *ngIf="isMultipleClientName" class="row col-md-12">
+          <span class="panel-title M-0 text-right back-color col-md-12">You have selected <span class="primary-color">{{(selectedFilterEntity) ? selectedFilterEntity.length : 0}}</span> clients.</span>
+          <div class="col-md-10 PLR-0">
+            <ng-select
+              [items]="clientListMultiple"
+              [hideSelected]="true"
+              bindLabel="billing_name"
+              placeholder="Select Client"
+              bindValue="id"
+              [virtualScroll]="true"
+              [multiple]="true"
+              (change)="onClientChangeUpdateCount($event)"
+              formControlName="entity_id">
+            </ng-select>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(addRecurringForm.get('entity_id'))"
+                              [errMsg]="validationMsg.INVOICE_SELECT_CLIENT_NAME_REQUIRED"></app-validation>
+            </div>
+          </div>
+          <div *ngIf="isMultipleClientName" class="col-md-2 MT-20 text-right">
+            <span (click)="selectAll()" class="cursor-pointer orange-color">Select All | </span>
+            <span (click)="unselectAll()" class="cursor-pointer wet-asphalt-color">DeSelect All</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="row" *ngIf="!isMultipleClientName">
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="service_id" placeholder="Service"
+                        (selectionChange)="onChangeService($event.value, 1)"
+                        required>
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                {{ service?.service_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('service_id'))"
+                            [errMsg]="validationMsg.SERVICE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="fixed_fee" placeholder="Fixed Fee" required [disabled]="!isMultipleClientName">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let ff of fixedFeeList.slice(1)" [value]="ff?.key">
+                {{ ff?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('fixed_fee'))"
+                            [errMsg]="validationMsg.FIXED_FEE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="frequency_id" placeholder="Frequency" required
+                        [disabled]="!isMultipleClientName">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                {{frequency?.frequency_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('frequency_id'))"
+                            [errMsg]="validationMsg.FREQUENCY_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <input formControlName="next_due" matInput [matDatepicker]="wipstartDate" placeholder="WIP Start Date"
+                   required>
+            <mat-datepicker-toggle matSuffix [for]="wipstartDate"></mat-datepicker-toggle>
+            <mat-datepicker #wipstartDate></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addRecurringForm.get('next_due'))"
+                            [errMsg]="validationMsg.WIP_START_DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-4 MT-20 PL-0"> Invoice Date</div>
+            <div class="col-md-4 PL-0">
+              <mat-form-field>
+                <mat-select formControlName="inv_logic" placeholder="Add Days" required>
+                  <mat-option value="+">+</mat-option>
+                  <mat-option value="-">-</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(addRecurringForm.get('inv_logic'))"
+                                [errMsg]="validationMsg.INVOICE_DATE_REQUIRED"></app-validation>
+              </div>
+            </div>
+            <div class="col-md-4 PL-0">
+              <mat-form-field>
+                <input matInput placeholder="No. Of Days" formControlName="inv_days" required/>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(addRecurringForm.get('inv_days'))"
+                                [errMsg]="validationMsg.INVOICE_DATE_REQUIRED"></app-validation>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 PR-0">
+          <div class="row">
+            <div class="col-md-4 MT-20 PL-0"> Invoice Days</div>
+            <div class="col-md-8 PL-0">
+              <mat-form-field>
+                <mat-select formControlName="inv_weekday" placeholder="Invoice Day">
+                  <mat-option *ngFor="let days of daysList" [value]="days?.key">
+                    {{ days?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-radio-group (change)="onChangeRepetition($event.value)">
+        <div class="row MT-10">
+          <div class="col-md-1 MT-30">Repetition</div>
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-3 MT-15 PL-0">
+                <mat-radio-button value="1" [checked]="isRepetition == 1 ? true : false">Repeat Indefinitely
+                </mat-radio-button>
+              </div>
+              <div class="col-md-3 MT-15 PL-0" *ngIf="isRepetition == 1">
+                <mat-form-field>
+                  <input formControlName="repeat_indefinitely" matInput [matDatepicker]="date2" placeholder="Date">
+                  <mat-datepicker-toggle matSuffix [for]="date2"></mat-datepicker-toggle>
+                  <mat-datepicker #date2></mat-datepicker>
+                </mat-form-field>
+                <div class="validation-msg"></div>
+              </div>
+              <div class="col-md-2 MT-15 PL-0">
+                <mat-radio-button value="2" [checked]="isRepetition == 2 ? true : false">Repeat Until</mat-radio-button>
+              </div>
+              <div class="col-md-3 MT-15 PL-0" *ngIf="isRepetition == 2">
+                <mat-form-field>
+                  <input formControlName="repeat_date" matInput [matDatepicker]="date1" placeholder="Date">
+                  <mat-datepicker-toggle matSuffix [for]="date1"></mat-datepicker-toggle>
+                  <mat-datepicker #date1></mat-datepicker>
+                </mat-form-field>
+                <div class="validation-msg"></div>
+              </div>
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-6 MT-15 PL-0">
+                    <mat-radio-button value="3" [checked]="isRepetition == 3 ? true : false">Repeat #Times
+                    </mat-radio-button>
+                  </div>
+                  <div class="col-md-6 MT-15" *ngIf="isRepetition == 3">
+                    <mat-form-field>
+                      <input matInput placeholder="Number of Times" formControlName="times"/>
+                    </mat-form-field>
+                    <div class="validation-msg"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </mat-radio-group>
+
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <textarea formControlName="notes" matInput placeholder="Notes" rows="2"></textarea>
+          </mat-form-field>
+          <div class="validation-msg"></div>
+        </div>
+      </div>
+
+      <div class="col-md-12 MB-20">
+        <div class="row MT-30">
+          <div class="col-md-6 PL-0">
+          </div>
+          <div class="col-md-6 text-right PR-0">
+            <button (click)="onInvoice()" type="button" class="btn-default MR-5">Cancel</button>
+            <button [disabled]="addRecurringForm.invalid" type="submit" class="btn-primary">Save & Next</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--End add recurring form-->
+</div>

@@ -1,0 +1,17 @@
+<progress-hud></progress-hud>
+<div [hidden]="!loading">
+  <div class="loader-spinner">
+    <div class="spinner-eff spinner-eff-2">
+      <div class="square"></div>
+    </div>
+  </div>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+<app-admin-header-sidebar *ngIf="isLoggedIn" class="admin-header-sidebar-selector"></app-admin-header-sidebar>
+
+
+<!--<progress-hud></progress-hud>-->
+<div class="admin-body-container router-output">
+  <app-admin-left-sidebar *ngIf="hasRoute('admin-hrms-new')"></app-admin-left-sidebar>
+  <router-outlet (activate)="onActivate()" *ngIf="!hasRoute('admin-hrms-new')"></router-outlet>
+</div>

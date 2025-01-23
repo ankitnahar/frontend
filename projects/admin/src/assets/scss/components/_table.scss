@@ -1,0 +1,680 @@
+// ---------------------------------------------------------------------------------------------
+// ===================================  Table scss file =======================================
+// ---------------------------------------------------------------------------------------------
+
+//
+// Grid Top Header
+//
+.breadcrumb-top-header {
+  background-color: lighten($light-gray-color, 20%);
+  padding: 0;
+  .col-md-6, .col-md-8 {
+    padding: 0;
+  }
+  &__breadcrumbs {
+    padding: 0.9rem 0 0.4rem 0.7rem;
+    i, .mat-icon {
+      font-size: 2rem;
+      position: relative;
+      top: -0.1rem;
+      color: lighten($dark-blue-color, 15%);
+    }
+    span {
+      position: relative;
+      top: -0.6rem;
+      font-size: 1.3rem;
+      color: lighten($dark-blue-color, 15%);
+      font-weight: 500;
+      &.active {
+        a {
+          color: $primary-color;
+          cursor: pointer;
+          &:visited {
+            color: $orange-color;
+          }
+        }
+      }
+      a {
+        text-decoration: none;
+        cursor: pointer;
+      }
+      &:last-child {
+        color: $orange-color;
+      }
+    }
+  }
+  &__right-menu {
+    text-align: right;
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style-type: none;
+        display: inline-block;
+        text-align: center;
+        a {
+          padding: 0.5rem 0.8rem 0.3rem 0.8rem;
+          display: block;
+          // border-left: 1px solid lighten($light-gray-color, 12%);
+          cursor: pointer;
+          &:hover {
+            text-decoration: none;
+          }
+          span {
+            cursor: pointer;
+            position: relative;
+            top: -0.6rem;
+          }
+          span + i.material-icons {
+            font-size: 2rem;
+          }
+          label {
+            vertical-align: super;
+            margin: 0 .4rem;
+            cursor: pointer;
+            position: relative;
+            top: -.2rem;
+            color: $gray-color;
+            font: {
+              weight: 400;
+              size: 1.3rem;
+            }
+          }
+          .mat-slide-toggle-label {
+            top: -.6rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+//
+// Grid inn er header
+//
+.grid-inner-header {
+  //  border-bottom: 1px solid lighten($light-gray-color, 20%);
+  .inner-header-title {
+    h3 {
+      margin: 0;
+      line-height: 5rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: $orange-color;
+    }
+  }
+  @at-root .grid-search {
+    width: 20rem;
+    float: right;
+    .add-one {
+      position: relative;
+      margin-top: 1rem;
+      input {
+        border: none;
+        border-bottom: 1px solid $light-gray-color;
+        outline: 0;
+        padding: 1rem 0 .5rem 2rem;
+      }
+      .prefix {
+        position: absolute;
+        left: 0;
+        top: 1rem;
+        i, .mat-icon {
+          font-size: 1.7rem;
+        }
+      }
+    }
+  }
+
+  ul.download-icon {
+    float: right;
+    padding: 0.7rem 0 0 1rem;
+    margin: 0;
+    li {
+      list-style-type: none;
+      display: inline-block;
+      text-align: center;
+      a {
+        padding: 0.5rem 0.8rem 0.3rem 0.8rem;
+        display: block;
+        cursor: pointer;
+        //color: $dark-primary-color;
+        span {
+          cursor: pointer;
+          position: relative;
+          top: -0.6rem;
+        }
+        span + i.material-icons, span + .mat-icon.material-icons {
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+}
+
+.orange-color {
+  color: $orange-color !important;
+}
+
+.wet-asphalt-color {
+  color: $wet-asphalt-color !important;
+}
+
+//
+// Grid Filter Tags
+//
+.filter-tags {
+  .tag {
+    background-color: lighten($primary-light-color, 10%);
+    display: inline-block;
+    padding: .3rem .5rem .3rem .8rem;
+    color: $dark-primary-color;
+    margin: 0 0 1rem 1.5rem;
+    &__title {
+
+    }
+    input {
+      // padding: .5rem;
+      //width: 10rem;
+      display: inline-block;
+      border: none;
+      color: $dark-primary-color;
+      outline: 0;
+      &[readonly] {
+        background-color: lighten($primary-light-color, 10%);
+      }
+    }
+    &__close {
+      font-size: 1.8rem;
+      position: relative;
+      top: .4rem;
+      cursor: pointer;
+    }
+    .mat-form-field-wrapper {
+      padding-bottom: 0 !important;
+    }
+  }
+
+  .clearAll-tags {
+    display: inline-block;
+    margin-left: .5rem;
+    margin-top: 1rem;
+    a {
+      color: $gray-color;
+      cursor: pointer;
+    }
+  }
+}
+
+//
+// Table inner header
+//
+.table-container {
+  background-color: $white-color;
+  overflow: auto;
+  .table-block {
+    table {
+      font-size: 1.4rem;
+      width: 100%;
+      text-align: left;
+      border-spacing: 0;
+      //padding: 1.5rem 0 0 0;
+      thead {
+        tr {
+          th {
+            border-bottom: 1px solid lighten($light-gray-color, 12%);
+            color: $black-color;
+            position: relative;
+            font-weight: 500;
+            font-size: 1.3rem;
+            padding: 1rem;
+            background: lighten($light-gray-color, 20%);
+            .icon-down, .icon-up {
+              position: absolute;
+              font-size: 1.7rem;
+              cursor: pointer;
+              &.active {
+                color: $black-color;
+              }
+            }
+            .icon-up {
+              //top: -.2rem;
+            }
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            padding: 0.7rem 1rem;
+            font-size: 1.3rem;
+            color: darken($dark-blue-color, 15%);
+            border-bottom: 1px solid lighten($light-gray-color, 20%);
+            i, .mat-icon {
+              font-size: 1.8rem;
+              cursor: pointer;
+            }
+            i.edit-icon, .mat-icon.edit-icon {
+              color: lighten($orange-color, 12%);
+              font-size: 1.8rem;
+            }
+            img {
+              border: 2px solid $light-gray-color;
+              border-radius: 2rem;
+              width: 28px;
+              height: 28px;
+              vertical-align: middle;
+            }
+          }
+          &:nth-child(even) {
+            //background-color: lighten($light-gray-color, 21%);
+          }
+          &:nth-child(odd) {
+
+          }
+          &:first-child {
+            td {
+              // border-top: 1px solid lighten($light-gray-color, 15%);
+            }
+          }
+        }
+      }
+
+      tfoot {
+        tr {
+          td {
+            //border-top: 2px solid #e6e6e6;
+            //            padding-top: 1.5rem;
+          }
+        }
+      }
+    }
+
+    // new pattern table
+    table.table {
+      background: lighten($light-gray-color, 23%);
+      border: .1rem solid lighten($gray-color, 40%);
+
+      tr {
+        background: transparent !important;
+        td {
+          color: $black-color;
+        }
+      }
+    }
+  }
+}
+
+// Table no striped
+
+.table-no-striped {
+  .table-block {
+    .table-body {
+      table {
+        tbody {
+          tr {
+            &:nth-child(even) {
+              background-color: $white-color;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+//
+// Table body scss
+//
+.table-body {
+  max-height: 61vh;
+  overflow: auto;
+  padding: 1.5rem 0;
+  position: relative;
+  table {
+    padding: 0 0 0 0 !important;
+    tbody {
+      tr {
+        td {
+          i, mat-icon {
+            cursor: pointer;
+          }
+          mat-icon.primary-color, mat-icon.red-color, mat-icon.light-gray-color {
+            font-size: 1.8rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+.table-body-without-filter {
+  max-height: 68vh;
+}
+
+.hover-icons {
+  position: relative;
+  cursor: pointer;
+  height: 4rem;
+  &__action {
+    position: absolute;
+    right: 1rem;
+    background: lighten($light-gray-color, 20);
+    opacity: 0;
+    a {
+      margin-right: 1rem;
+      color: $primary-color;
+      i, .mat-icon {
+        line-height: 2.7rem;
+      }
+    }
+  }
+
+  &:hover {
+    background: lighten($light-gray-color, 20) !important;
+    .hover-icons__action {
+      opacity: 1;
+    }
+  }
+}
+
+.scrollable-grid {
+  .hover-icons {
+    &__action {
+      left: 5rem;
+      right: auto;
+    }
+  }
+}
+
+//.with-filter-grid-container {
+//  width: 99.2%;
+//}
+
+//
+// Filter scss
+//
+.filter {
+  transition: 0.2s all ease;
+  width: 99.7%;
+  position: absolute;
+  background-color: lighten($primary-color, 49%);
+  z-index: 9;
+  box-sizing: border-box;
+  padding: 1rem;
+  .filter-action-icon {
+    span.filter-close {
+      right: 2rem;
+      position: absolute;
+      color: $black-color;
+      z-index: 2;
+      cursor: pointer;
+      top: 1.4rem;
+      i, .mat-icon {
+        vertical-align: middle;
+        font-size: 2.1rem;
+        position: relative;
+        top: -.1rem;
+      }
+    }
+  }
+  .grid-filter-container {
+    width: 100%;
+    transition: 0.2s all ease;
+    box-sizing: border-box;
+    .filter-title {
+      text-align: left;
+      h3 {
+        margin: 0;
+        line-height: 3rem;
+        padding-left: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: $dark-primary-color;
+      }
+    }
+    &.grid-filter-container-none {
+      width: 0rem !important;
+      height: 0rem !important;
+      overflow: hidden;
+      float: left;
+      transition: 0.2s all ease;
+      //height: 0;
+
+    }
+  }
+}
+
+.column-menu {
+  .mat-menu-item {
+    i, .mat-icon {
+      vertical-align: middle;
+    }
+    &:hover {
+      color: $gray-color !important;
+    }
+  }
+  .menu-header {
+    background-color: $dark-primary-color;
+    color: $white-color;
+    &:hover {
+      background-color: $primary-color !important;
+      color: $white-color !important;
+    }
+
+    h3 {
+      font-weight: normal;
+      font-size: 1.6rem;
+    }
+  }
+}
+
+.dialog-table-container {
+  table {
+    thead {
+      th {
+        padding: 1rem 0 1rem 1rem !important;
+        background-color: lighten($light-gray-color, 16%);
+        font-size: 1.5rem;
+        color: $dark-black-color;
+        .icon-up {
+          //top: 0.8rem !important;
+        }
+      }
+    }
+    tbody {
+      tr {
+        //background: $white-color !important;
+        td {
+          color: $black-color !important;
+        }
+      }
+    }
+  }
+}
+
+.date_no_border {
+  text-align: left;
+  .mat-form-field {
+    width: 90%;
+  }
+  .mat-form-field-appearance-legacy .mat-form-field-infix {
+    border-top: 0px !important;
+  }
+  .readonly_date {
+    display: inline-block;
+    margin-bottom: 21px;
+  }
+}
+
+/**Multi line ellipsis**/
+.multiline-ellipsis {
+  height: 77px;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  a {
+    padding-left: 3px !important;
+    text-decoration: none !important;
+    color: $dark-primary-color !important;
+  }
+}
+
+/*action table row*/
+.red-tr {
+  background: lighten($red-color, 31) !important;
+}
+
+.teal-tr {
+  background: lighten($turquoise-color, 53);
+}
+
+.orange-tr {
+  background: lighten($light-orange-color, 31) !important;
+}
+
+.turquoise-tr {
+  background: lighten($turquoise-color, 53) !important;
+}
+
+.wet-asphalt-color-tr {
+  background: lighten($wet-asphalt-color, 57) !important;
+}
+
+.asbestos-color-tr {
+  background: lighten($asbestos-color, 31) !important;
+}
+
+.grid_icon_trip_origin {
+  font-size: 13px !important;
+  vertical-align: middle;
+  width: 15px !important;
+}
+
+/*expand grid scss*/
+.expand-grid {
+  .text-overflow-elipsis {
+    @include elipsis(90%);
+  }
+
+  &__thead {
+    table {
+      font-size: 1.4rem;
+      width: 100%;
+      text-align: left;
+      border-spacing: 0;
+      padding: .5rem 0 0 0;
+    }
+    th {
+      text-align: left;
+      border-bottom: 1px solid lighten($light-gray-color, 12%);
+      color: $black-color;
+      position: relative;
+      font-weight: 500;
+      font-size: 1.3rem;
+      padding: 1rem;
+      //background
+      .icon-down, .icon-up {
+        position: absolute;
+        font-size: 1.7rem;
+        cursor: pointer;
+        &.active {
+          color: $black-color;
+        }
+      }
+      .icon-up {
+        //top: -.2rem;
+      }
+    }
+  }
+  .expand-grid-scrollable {
+    max-height: 61vh;
+    overflow: auto;
+    padding: 0;
+    position: relative;
+  }
+  &__tbody {
+    table {
+      font-size: 1.4rem;
+      width: 100%;
+      text-align: left;
+      border-spacing: 0;
+      padding: 1.5rem 0;
+      tr {
+        border-bottom: 1px solid lighten($light-gray-color, 20%);
+        td {
+          display: table-cell;
+          padding: 0.7rem 1rem;
+          font-size: 1.3rem;
+          color: darken($gray-color, 15%);
+          i, .mat-icon {
+            font-size: 1.8rem;
+            cursor: pointer;
+          }
+          i.edit-icon, .mat-icon.edit-icon {
+            color: lighten($gray-color, 15%);
+            font-size: 1.8rem;
+          }
+          .open-inner-data .mat-icon {
+            width: auto
+          }
+          /* img{
+             border: 2px solid $light-gray-color;
+             border-radius: 2rem;
+             width: 28px;
+             height: 28px;
+             vertical-align: middle;
+           }*/
+        }
+      }
+    }
+  }
+
+  &__tfoot {
+    float: none;
+  }
+
+  &__large {
+    overflow-x: scroll;
+    width: 100%;
+    overflow-y: hidden;
+
+    & > div {
+      min-width: 160rem;
+    }
+  }
+
+  .hover-icons__action {
+    padding: 0.5rem 1rem !important;
+    top: 0;
+  }
+}
+
+//
+.label_tag_block {
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+/**
+ * Responsive Design Started
+ */
+
+@include respond(big-desktop) {
+}
+
+@include respond(tab-land) {
+}
+
+@include respond(tab-port) {
+}
+
+@include respond(phone) {
+  .breadcrumb-top-header__breadcrumbs {
+    padding: 4rem 0 0.4rem 0;
+    span {
+      font-size: 1.1rem;
+    }
+  }
+}

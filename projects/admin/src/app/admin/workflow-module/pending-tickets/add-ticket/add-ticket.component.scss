@@ -1,0 +1,11 @@
+@import "../../../../../assets/scss/main";
+
+.bg-gray {
+  background-color: lighten($light-gray-color, 20%);
+  padding: 1rem;
+  margin: 0 1.4rem;
+}
+
+::ng-deep .mat-tooltip {
+  white-space: pre-line !important;
+}

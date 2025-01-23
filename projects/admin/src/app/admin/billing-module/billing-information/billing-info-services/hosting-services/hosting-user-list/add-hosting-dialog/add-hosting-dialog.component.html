@@ -1,0 +1,103 @@
+<!--  Start Sub Client List dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{(hostingUser) ? 'EDIT' : 'ADD'}} HOSTING USER</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+  <form [formGroup]="hostingAddUserForm" (submit)="onHostingUserSubmit(hostingAddUserForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <input formControlName="username" matInput placeholder="Username" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(hostingAddUserForm.get('username'))"
+                            [errMsg]="validationMsg.USERNAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-20">
+          <label class="MR-20">Type :</label>
+          <mat-radio-group formControlName="plan_type" required>
+            <mat-radio-button *ngFor="let userType of hostingUserTypeList" [value]="userType?.key"
+                              (change)="changeHostingType($event.value)">
+              {{ userType?.label}}
+            </mat-radio-button>
+          </mat-radio-group>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(hostingAddUserForm.get('plan_type'))"
+                            [errMsg]="validationMsg.TYPE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input formControlName="rate" matInput placeholder="Rate"/>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <mat-select formControlName="is_active" placeholder="Status" required>
+              <mat-option *ngFor="let activeInactive of activeInactiveList.slice(1)" [value]="activeInactive?.key">
+                {{ activeInactive?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(hostingAddUserForm.get('is_active'))"
+                            [errMsg]="validationMsg.STATUS_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput readonly placeholder="Activation date" [matDatepicker]="startDateRef" readonly
+                   formControlName="activedate"
+                   (mousedown)="startDateRef.open()" required/>
+            <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+            <mat-datepicker #startDateRef disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(hostingAddUserForm.get('activedate'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput readonly placeholder="Inactivation date" [matDatepicker]="inactiveDateRef" readonly
+                   formControlName="inactivedate"
+                   (mousedown)="inactiveDateRef.open()" required/>
+            <mat-datepicker-toggle matSuffix [for]="inactiveDateRef"></mat-datepicker-toggle>
+            <mat-datepicker #inactiveDateRef disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(hostingAddUserForm.get('inactivedate'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Notes" formControlName="notes" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <div class="row">
+          <div class="col-md-12 PR-25 text-right">
+            <button type="button" class="btn-default MR-5">Cancel</button>
+            <button [disabled]="hostingAddUserForm.invalid" type="submit" class="btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change Sub client list dialog  -->

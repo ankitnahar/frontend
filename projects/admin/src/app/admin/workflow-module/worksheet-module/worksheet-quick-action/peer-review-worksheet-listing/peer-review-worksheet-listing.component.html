@@ -1,0 +1,822 @@
+<!--peer review worksheet listing container html start-->
+<div class="admin-peer-review-worksheet-listing-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onWorksheetDashboard()">WORKSHEET</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">PEER REVIEW REQUIRE WORKSHEET</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                          *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                          *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                          *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                          *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                          *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                          *ngIf="tabDataWorksheetTraining['view']">Training List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                          *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                    Worksheet
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- End button container -->
+
+  <!-- Start BreadCrumb Top Header -->
+  <!-- End BreadCrumb Top Header -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header PT-5">
+      <div class="row">
+        <div class="col-md-6 leave-type-list">
+          <ul>
+            <li class="blue-drop-button">
+              <button type="button" class="btn-primary btn-bordered" (click)="onCompletedPeerReviewWorksheet()">
+                Completed peer review worksheet
+              </button>
+            </li>
+            <li>
+              <a class="red-color list-alignment"><i class="material-icons">fiber_manual_record</i> Indicates Overdue
+                Task</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li (click)="downloadExcel()" *ngIf="tabData['export']">
+              <a>
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onToggleFilter()">Esc
+          <mat-icon class="material-icons">close</mat-icon>
+        </span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientListParent"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Parent Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         (change)="onChangeParentEntity($event);"
+                         formControlName="parent_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="masterActivityList"
+                         [closeOnSelect]="true"
+                         bindLabel="name"
+                         placeholder="Master activity"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [hideSelected]="true"
+                         [multiple]="true"
+                         (change)="getTaskFilterList($event)"
+                         formControlName="master_activity_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="taskList"
+                         [closeOnSelect]="true"
+                         bindLabel="name"
+                         placeholder="Task"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         [multiple]="true"
+                         formControlName="task_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select formControlName="frequency_id" placeholder="Frequency">
+                  <mat-option *ngFor="let frequency of frequencyList;" [value]="frequency.id">
+                    {{frequency.frequency_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <div class="row">
+                <div class="col-md-6 PL-0">
+                  <mat-form-field>
+                    <input matInput formControlName="start_date" [matDatepicker]="periodFrom"
+                           placeholder="Period From">
+                    <mat-datepicker-toggle matSuffix [for]="periodFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #periodFrom></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-6 PR-0">
+                  <mat-form-field>
+                    <input matInput formControlName="end_date" [matDatepicker]="periodTo" placeholder="Period To">
+                    <mat-datepicker-toggle matSuffix [for]="periodTo"></mat-datepicker-toggle>
+                    <mat-datepicker #periodTo></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <div class="row">
+                <div class="col-md-6 PL-0">
+                  <mat-form-field>
+                    <input matInput formControlName="due_date_from" [matDatepicker]="dueDateFrom"
+                           placeholder="Due date From">
+                    <mat-datepicker-toggle matSuffix [for]="dueDateFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #dueDateFrom></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-6 PR-0">
+                  <mat-form-field>
+                    <input matInput formControlName="due_date_to" [matDatepicker]="dueDateTo"
+                           placeholder="Due date To">
+                    <mat-datepicker-toggle matSuffix [for]="dueDateTo"></mat-datepicker-toggle>
+                    <mat-datepicker #dueDateTo></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select formControlName="category_id" [multiple]="true" placeholder="Category">
+                  <mat-option *ngFor="let category of categoryData;" [value]="category.key">{{category.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select formControlName="related_entity" placeholder="Related Entity">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1);" value="{{yesNo.key}}">{{yesNo.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="tamList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TAM"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="technical_account_manager">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="staffList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Team Member"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="team_member">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Additional Staff"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="additional_assignee">
+              </ng-select>
+            </div>
+
+            <div class="col-md-12 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button [disabled]="filterForm.invalid" type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="parent_id.value">
+          <span class="tag__title">Parent Trading Name :</span>
+          <span>
+             <ng-select [items]="clientListParent"
+                        [closeOnSelect]="true"
+                        bindLabel="trading_name"
+                        placeholder="Trading Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="parent_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="entity_id.value">
+          <span class="tag__title">Client name :</span>
+          <span>
+             <ng-select class="custom" [items]="clientList"
+                        [closeOnSelect]="true"
+                        bindLabel="trading_name"
+                        placeholder="Trading Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="entity_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('entity_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="master_activity_id.value && master_activity_id.value.length">
+          <span class="tag__title">Master activity :</span>
+          <span>
+            <ng-select [items]="masterActivityList"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Master activity"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [hideSelected]="true"
+                       [multiple]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);getTaskFilterList($event);"
+                       formControlName="master_activity_id">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('master_activity_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="task_id.value && task_id.value.length">
+          <span class="tag__title">Task :</span>
+          <span>
+            <ng-select [items]="taskList"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Task"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       [multiple]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                       formControlName="task_id">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('task_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="frequency_id.value">
+          <span class="tag__title">Frequency :</span>
+          <span>
+            <mat-form-field>
+              <mat-select formControlName="frequency_id" placeholder="Frequency"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+               <mat-option *ngFor="let frequency of frequencyList;" [value]="frequency.id">
+                    {{frequency.frequency_name}}
+                  </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('frequency_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="start_date.value">
+          <span class="tag__title">Period From :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="start_date" [matDatepicker]="perdiodFromDate"
+                     placeholder="Period From" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="perdiodFromDate"></mat-datepicker-toggle>
+              <mat-datepicker #perdiodFromDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('start_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="end_date.value">
+          <span class="tag__title">Period To :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="end_date" [matDatepicker]="perdiodToDate"
+                     placeholder="Period To" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="perdiodToDate"></mat-datepicker-toggle>
+              <mat-datepicker #perdiodToDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('end_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="due_date_from.value">
+          <span class="tag__title">Due Date From :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="due_date_from" [matDatepicker]="dueFromDate"
+                     placeholder="Due Date From" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="dueFromDate"></mat-datepicker-toggle>
+              <mat-datepicker #dueFromDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('due_date_from')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="due_date_to.value">
+          <span class="tag__title">Due Date To :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="due_date_to" [matDatepicker]="dueToDate"
+                     placeholder="Due Date To"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="dueToDate"></mat-datepicker-toggle>
+              <mat-datepicker #dueToDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+        </div>
+
+        <div class="tag" *ngIf="category_id.value">
+          <span class="tag__title">Category :</span>
+          <span>
+            <mat-form-field>
+              <mat-select [multiple]="true" formControlName="category_id" placeholder="Category"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-option *ngFor="let category of categoryData;" [value]="category.key">{{category.label}}
+                  </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('category_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="related_entity.value">
+          <span class="tag__title">Related Entity :</span>
+          <span>
+            <mat-form-field>
+              <mat-select formControlName="related_entity" placeholder="Related Entity"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+               <mat-option *ngFor="let yesNo of yesNoList.slice(1);" value="{{yesNo.key}}">{{yesNo.label}}
+                  </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('related_entity')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="technical_account_manager.value">
+          <span class="tag__title">TAM :</span>
+          <span>
+            <ng-select class="custom" [items]="tamList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="TAM"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                       formControlName="technical_account_manager">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('technical_account_manager')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="team_member.value">
+          <span class="tag__title">Team member :</span>
+          <span>
+            <ng-select class="custom" [items]="staffList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Team Member"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                       formControlName="team_member">
+            </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('team_member')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="additional_assignee.value">
+          <span class="tag__title">Additional staff :</span>
+          <span>
+             <ng-select class="custom" [items]="userList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="Additional Staff"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                        formControlName="additional_assignee">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('additional_assignee')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags" *ngIf="
+          entity_id.value || parent_id.value
+		      || (master_activity_id.value && master_activity_id.value.length)
+          || (task_id.value && task_id.value.length)
+          || frequency_id.value
+          || start_date.value
+          || end_date.value
+          || due_date_to.value
+          || due_date_from.value
+          || category_id.value
+          || related_entity.value
+          || technical_account_manager.value
+          || team_member.value
+          || additional_assignee.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+  </div>
+
+  <!--my worksheet container html start-->
+  <div class="view-worksheet-tab-container">
+    <div class="expand-grid">
+      <div class="expand-grid">
+        <div>
+          <div class="expand-grid__thead">
+            <table>
+              <thead>
+              <tr>
+                <th width="6%">Sr.No.</th>
+                <th width="12%">Parent Trading Name</th>
+                <th width="10%" (click)="getSortData('trading_name',
+            (sortBy === 'trading_name') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Client Name
+                  <i *ngIf="sortBy === 'trading_name'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'trading_name'),
+                 'icon-up' : ((sortBy === 'trading_name') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                    {{(sortBy === 'trading_name') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                    'arrow_downward'}}
+                  </i>
+                </th>
+
+                <th width="10%" (click)="getSortData('task_id',
+              (sortBy === 'task_id') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Task
+                  <i *ngIf="sortBy === 'task_id'" [ngClass]="{'material-icons': true,
+                  'active' : (sortBy === 'task_id'),
+                   'icon-up' : ((sortBy === 'task_id') && (sortOrder === 'asc')),
+                   'icon-down' : true}">
+                    {{(sortBy === 'task_id') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                    'arrow_downward'}}
+                  </i>
+                </th>
+
+                <th width="5%" (click)="getSortData('frequency_id',
+            (sortBy === 'frequency_id') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Frequency
+                  <i *ngIf="sortBy === 'frequency_id'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'frequency_id'),
+                 'icon-up' : ((sortBy === 'frequency_id') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                    {{(sortBy === 'frequency_id') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                    'arrow_downward'}}
+                  </i>
+                </th>
+                <th width="9%">Period Date
+                  <mat-icon [matTooltip]="'Period Start Date & End Date'" class="v-align-middle gray-color">info
+                  </mat-icon>
+                </th>
+
+                <th width="9%" (click)="getSortData('due_date',
+            (sortBy === 'due_date') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Reminder/ Due Date
+                  <i *ngIf="sortBy === 'due_date'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'due_date'),
+                 'icon-up' : ((sortBy === 'due_date') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                    {{(sortBy === 'due_date') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                    'arrow_downward'}}
+                  </i>
+                </th>
+                <th width="9%">Notes
+                </th>
+                <th width="5%">Units</th>
+
+                <th width="9%" (click)="getSortData('status_id',
+            (sortBy === 'status_id') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Status
+                  <i *ngIf="sortBy === 'status_id'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'status_id'),
+                 'icon-up' : ((sortBy === 'status_id') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                    {{(sortBy === 'status_id') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                    'arrow_downward'}}
+                  </i>
+                </th>
+
+                <th width="11%">Staff
+                </th>
+                <th width="5%">Action</th>
+              </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="expand-grid__tbody expand-grid-scrollable">
+            <table *ngIf="worksheetListData.length">
+              <tbody [ngClass]="{'red-tr' : data | dateCompare}"
+                     *ngFor="let data of worksheetListData; let i = index;">
+              <tr [ngClass]="{'is-active-row' : trIndex === i}" class="row-data">
+                <td width="6%">
+                  <a class="open-inner-data" (click)="openRow(i)">
+                    <mat-icon [ngClass]="{'is-open' : trIndex === i}" class="material-icons">keyboard_arrow_down
+                    </mat-icon>
+                  </a>
+                  {{+pageSize * (pageIndex) + i + 1}}
+                  <mat-icon *ngIf="data?.discontinue_stage == 1" class="red-color v-align-middle"
+                            [matTooltip]="'Discontinue Process Initiated'">block
+                  </mat-icon>
+                </td>
+                <td width="12%" class="word-break">{{data?.parent_name}}
+                </td>
+                <td width="10%" class="word-break">{{data?.trading_name}}
+                </td>
+                <td width="10%" class="word-break">{{data?.task_id?.name}}</td>
+                <td width="5%" class="text-center">{{data?.frequency_name}}</td>
+                <td width="9%" class="date_no_border">
+                  <div>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="canChangePeriodStartEndDate">
+                      <input matInput [value]="data?.start_date" [matDatepicker]="pickerStart" placeholder="Select Date"
+                             (dateChange)="updateInlineFormDates({'key':'start_date', 'value': $event.target.value, 'id': data.id})">
+                      <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerStart></mat-datepicker>
+                    </mat-form-field>
+                    <span *ngIf="!canChangePeriodStartEndDate" class="readonly_date">{{data?.start_date | date : 'dd-MM-yyyy'}}</span>
+                  </div>
+                  <div>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="canChangePeriodStartEndDate">
+                      <input matInput [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" placeholder="Select Date"
+                             [value]="data.end_date"
+                             (dateChange)="updateInlineFormDates({'key':'end_date', 'value': $event.target.value, 'id': data.id})">
+                      <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerEnd></mat-datepicker>
+                    </mat-form-field>
+                    <span *ngIf="!canChangePeriodStartEndDate">{{data?.end_date | date : 'dd-MM-yyyy'}}</span>
+                  </div>
+                </td>
+                <td width="9%" class="date_no_border">
+                  <div>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="tabID['add_edit']">
+                      <input matInput [matDatepicker]="reminderDate" (click)="reminderDate.open()"
+                             [value]="data.reminder_date && data.reminder_date !== '0000-00-00' ? (data.reminder_date | date : 'dd-MM-yyyy') : ''" placeholder="Select Date"
+                             (dateChange)="updateInlineFormDates({'key':'reminder_date', 'value':$event.target.value, 'id': data.id})">
+                      <mat-datepicker-toggle matSuffix [for]="reminderDate"></mat-datepicker-toggle>
+                      <mat-datepicker #reminderDate></mat-datepicker>
+                    </mat-form-field>
+                    <span *ngIf="!tabID['add_edit']"
+                          class="readonly_date">{{data.reminder_date && data.reminder_date !== '0000-00-00' ? (data.reminder_date | date : 'dd-MM-yyyy') : ''}}</span>
+                  </div>
+                  <div>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="canChangeDueDate">
+                      <input matInput [matDatepicker]="dueDate" (click)="dueDate.open()" [value]="data.due_date"
+                             placeholder="Select Date"
+                             (dateChange)="updateInlineFormDates({'key':'due_date', 'value':$event.target.value, 'id': data.id})">
+                      <mat-datepicker-toggle matSuffix [for]="dueDate"></mat-datepicker-toggle>
+                      <mat-datepicker #dueDate></mat-datepicker>
+                    </mat-form-field>
+                    <span *ngIf="!canChangeDueDate">{{data.due_date | date : 'dd-MM-yyyy'}}</span>
+                  </div>
+                </td>
+                <td width="9%" class="word-break">
+                  <div ellipsis="Read More.." class="multiline-ellipsis" (click)="onWorksheetNotesDialog(data)"
+                       (ellipsis-click-more)="on()" *ngIf="data?.notes">
+                    {{data?.notes}}
+                  </div>
+                  <a (click)="onWorksheetNotesDialog(data)" *ngIf="!data?.notes" class="cursor-pointer">Add</a>
+                </td>
+                <td width="5%" class="text-center"><span
+                  class="label-gray-bg-color"> {{data?.timesheet_total_unit}}</span></td>
+                <td width="9%" class="no-float-label">
+                  <mat-form-field [floatLabel]="'never'">
+                    <mat-select placeholder="Status" [value]="data.status_id.id"
+                                (selectionChange)="updateInlineFormDates({'key':'status_id', 'value': $event.value, 'id': data.id})">
+                      <mat-option *ngFor="let status of worksheetStatusList;" [value]="status?.id"
+                                  disabled="{{status?.is_right === 1 ? false : true}}">
+                        {{status.status_name}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td width="11%">
+                  <div class="word-break">
+                    <div *ngFor="let userData of data.allocation | teamListFormate; let j = index">
+                      <div *ngIf="userData && (userData.key === 'TM' || userData.key === 'TAM')">
+                        <span class="fw-500">{{userData.key}}:</span>
+                        <span>{{userData.value}}</span>
+                      </div>
+                      <div *ngIf="!userData"> Not specify</div>
+                    </div>
+                    <div *ngIf="data.worksheet_additional_assignee">
+                      <span class="fw-500">Add. Assignee:</span>
+                      <span>{{data.worksheet_additional_assignee.userfullname}}</span>
+                    </div>
+                    <div *ngIf="data.worksheet_peerreviewer">
+                      <span class="fw-500">Peer Reviewer:</span>
+                      <span>{{data.worksheet_peerreviewer.created_by}}</span>
+                    </div>
+                  </div>
+                </td>
+                <td width="5%">
+                  <ul>
+                    <li>
+                      <a (click)="onEditTaskCheckList(data)" *ngIf="data?.taskchecklist === 1" class="red-color"
+                         [matTooltip]="'Task checklist'"><i
+                        class="material-icons">playlist_add_check</i></a>
+                      <a>
+                        <mat-icon [matMenuTriggerFor]="menuaction">more_vert</mat-icon>
+                        <mat-menu #menuaction="matMenu" class="column-menu">
+                          <button mat-menu-item class="menu-header">
+                            <h3>Action</h3>
+                          </button>
+                          <button mat-menu-item (click)="openWorksheetStatusLogDialog(data)">
+                            <mat-icon>history</mat-icon>
+                            Worksheet status log
+                          </button>
+                          <button mat-menu-item (click)="onAddTimeSheet(data)"
+                                  *ngIf="userInfo?.user_timesheet_fillup_flag === 1">
+                            <mat-icon>alarm_add</mat-icon>
+                            Add Timesheet
+                          </button>
+                          <button mat-menu-item (click)="onAddUsersTimeSheet(data)"
+                                  *ngIf="userInfo?.user_timesheet_fillup_flag === 1 && isAddUserTimeSheet">
+                            <mat-icon>person_add</mat-icon>
+                            Add User Timesheet
+                          </button>
+                          <button mat-menu-item (click)="onViewUserTimesheet(data)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                            View User Timesheet
+                          </button>
+                          <button mat-menu-item (click)="onAllocateAssigneeDialog(data)"
+                                  *ngIf="isAllocatereviewer">
+                            <mat-icon
+                              class="material-icons"><span
+                              *ngIf="data.worksheet_reviewer === null">person_outline</span>
+                              <span *ngIf="data.worksheet_reviewer !== null">how_to_reg</span>
+                            </mat-icon>
+                            Allocate Peer Reviewer
+                          </button>
+                        </mat-menu>
+                      </a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr *ngIf="trIndex === i" class="inner-data">
+                <div class="row PT-10">
+                  <div class="col-md-12">
+                    <div class="inner-data__view-notes">
+                      <div>Notes</div>
+                      <div>{{data.notes}}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="inner-data__view">
+                      <div>Category</div>
+                      <div>{{getCategoryName(data.category_id)}}</div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <span *ngFor="let userData of data.allocation | teamListFormate;">
+                    <span *ngIf="userData && (userData.key !== 'TM' && userData.key !== 'TAM')">
+                    <div class="inner-data__view">
+                        <div>{{userData.key}}</div>
+                        <div>{{userData.value}}</div>
+                    </div>
+                      </span>
+                      </span>
+                  </div>
+                </div>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="expand-grid__tfoot" *ngIf="worksheetListData.length">
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="worksheetListData.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- review on knock back worksheet html over-->
+</div>

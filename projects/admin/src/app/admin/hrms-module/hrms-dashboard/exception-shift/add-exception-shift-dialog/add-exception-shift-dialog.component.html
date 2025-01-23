@@ -1,0 +1,175 @@
+<!--  Start Add Exception Shift dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{((exceptionShiftDetail.id) && exceptionShiftDetail.id > 0)? 'Update' : 'Add'}}
+      Exception Shift
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addExceptionShiftListForm" (submit)="onSubmitForm(addExceptionShiftListForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MB-15"><mat-label class="orange-color">Note: If we need to assign all user then no need to select user for the exception shift.</mat-label></div>
+        <div class="col-md-6">
+          <ng-select
+            [items]="shiftList"
+            [multiple]="false"
+            bindLabel="shift_name"
+            [closeOnSelect]="true"
+            bindValue="id"
+            placeholder="Shift Name"
+            (change)="getShiftUsers()"
+            formControlName="shift_id" required>
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('shift_id'))"
+                            [errMsg]="validationMsg.SHIFT_NAME"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <ng-select
+            [items]="userList"
+            [closeOnSelect]="true"
+            bindLabel="userfullname"
+            bindValue="id"
+            placeholder="User"
+            formControlName="user_id"
+            [multiple]="true">
+          </ng-select>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput [matDatepicker]="dateRef" placeholder="Shift Date From"
+                   formControlName="start_date" required/>
+            <mat-datepicker-toggle matSuffix [for]="dateRef"></mat-datepicker-toggle>
+            <mat-datepicker #dateRef disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('start_date'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput [matDatepicker]="dateto" placeholder="Shift Date To"
+                   formControlName="end_date" required/>
+            <mat-datepicker-toggle matSuffix [for]="dateto"></mat-datepicker-toggle>
+            <mat-datepicker #dateto disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('end_date'))"
+                            [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="Shift Time From" aria-label="Shift Time" [ngxTimepicker]="shifttimefrom"
+                   [format]="24" formControlName="from_time"
+                   (ngModelChange)="finalcutoff(addExceptionShiftListForm); lateAllowedTime(addExceptionShiftListForm)"
+                   readonly required>
+            <ngx-material-timepicker #shifttimefrom></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('from_time'))"
+                            [errMsg]="validationMsg.SHIFT_TIME_FROM_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Shift Time To" aria-label="Shift Time To" [ngxTimepicker]="shifttimeto"
+                   [format]="24" formControlName="to_time" readonly required>
+            <ngx-material-timepicker #shifttimeto></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('to_time'))"
+                            [errMsg]="validationMsg.SHIFT_TIME_TO_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Grace Period" aria-label="Grace Period" [ngxTimepicker]="grace_period"
+                   [format]="24" formControlName="grace_period" (ngModelChange)="finalcutoff(addExceptionShiftListForm)"
+                   readonly required>
+            <ngx-material-timepicker #grace_period></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('grace_period'))"
+                            [errMsg]="validationMsg.GRACE_PERIOD_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Consider Late Period" aria-label="Consider Late Period"
+                   [ngxTimepicker]="consider_late_period" [format]="24" formControlName="late_period"
+                   (ngModelChange)="lateAllowedTime(addExceptionShiftListForm)" readonly required>
+            <ngx-material-timepicker #consider_late_period></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('late_period'))"
+                            [errMsg]="validationMsg.CONSIDER_LATE_PERIOD_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Late Coming Allowed Count" aria-label="Late Coming Allowed Count"
+                   formControlName="late_allowed_count"
+                   required type="number">
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('late_allowed_count'))"
+                            [errMsg]="validationMsg.LATE_COMING_ALLOWED_COUNT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Break Time" aria-label="Break Time" [ngxTimepicker]="break_time" [format]="24"
+                   formControlName="break_time" readonly required>
+            <ngx-material-timepicker #break_time></ngx-material-timepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addExceptionShiftListForm.get('break_time'))"
+                            [errMsg]="validationMsg.BREAK_TIME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10" *ngIf="finalCutOff !== ''">
+          <label class="fw-500">Final Cut Off:</label>
+          <span>{{finalCutOff}}</span>
+        </div>
+
+        <div class="col-md-6 MT-10" *ngIf="lateAllowTime !== ''">
+          <label class="fw-500">Late allowed Time:</label>
+          <span>{{lateAllowTime}}</span>
+        </div>
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <textarea matInput formControlName="description" rows="3" placeholder="Notes"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addExceptionShiftListForm.invalid">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

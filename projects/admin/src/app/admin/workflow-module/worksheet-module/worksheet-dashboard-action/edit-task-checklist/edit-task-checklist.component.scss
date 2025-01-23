@@ -1,0 +1,32 @@
+@import "../../../../../../assets/scss/main";
+
+.task-checklist-container {
+  /*checklist layout scss*/
+  .checklist-question {
+    &__left, &__right {
+      min-height: auto;
+    }
+  }
+
+  .mat-expansion-panel {
+    border-radius: 0 !important;
+    border-bottom: 5px solid lighten($light-gray-color, 20%);
+    .mat-expansion-panel-header {
+      padding: 0 15px;
+      .mat-expansion-panel-header-title {
+        display: inline-block;
+        mat-icon, i {
+          font-size: 20px;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+
+  .border_top-gray {
+    border-top: 0.7rem solid lighten($light-gray-color, 20%);
+  }
+  .border_bottom_gray {
+    border-bottom: 0.7rem solid lighten($light-gray-color, 20%);
+  }
+}

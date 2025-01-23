@@ -1,0 +1,48 @@
+<!--  Start contact view menu dialog  -->
+<div class="modal approve-reject-dialog">
+  <div class="modal__header">
+    <div class="modal__header__logo">
+      <span>Copy contact of {{contact?.trading_name}}</span>
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <form [formGroup]="copyContactForm" (submit)="onCopyContact(copyContactForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MB-15">
+          <span class="primary-color">Copy contact in related entity</span>
+        </div>
+      </div>
+      <div class="row" *ngIf="contactRelateEntityList.length">
+        <div class="col-md-12 MB-15" *ngFor="let relatedEntity of contactRelateEntityList; let i=index">
+          <mat-checkbox *ngIf="relatedEntity?.entity_id?.id > 0"
+                        (change)="CheckMinimumOneSelected($event.checked, relatedEntity)">
+            {{relatedEntity?.entity_id?.trading_name}}
+          </mat-checkbox>
+        </div>
+      </div>
+      <div *ngIf="contactRelateEntityList.length === 0" class="panel-title red-color">
+        No Records Found!
+      </div>
+    </div>
+    <div class="modal__footer" *ngIf="contactRelateEntityList.length">
+      <div class="row">
+        <div class="col-md-6">
+        </div>
+
+        <div class="col-md-6 text-right">
+          <button type="submit" class="btn-primary" [disabled]="contactRelateEntityListLength <=0 ">Submit</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End contact view menu dialog  -->
+
+<!--  Start dialog layer -->
+<div class="modal-layer" (click)="onCloseDialog()"></div>
+<!--  End dialog layer -->

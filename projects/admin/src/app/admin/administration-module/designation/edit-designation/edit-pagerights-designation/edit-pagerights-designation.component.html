@@ -1,0 +1,80 @@
+<!-- Start Table -->
+<form (submit)="changePageRights()">
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr. No.</th>
+          <th width="25%">
+            Page
+          </th>
+          <th width="10%">
+            <mat-checkbox [checked]="is_viewAll"
+                          (change)="assignPrivilegeToAll($event.checked,'view' , 'is_view')"></mat-checkbox>
+            View
+          </th>
+          <th width="10%">
+            <mat-checkbox [checked]="is_add_editAll"
+                          (change)="assignPrivilegeToAll($event.checked,'add_edit', 'is_add_edit')"></mat-checkbox>
+            Add / Edit
+          </th>
+          <th width="10%">
+            <mat-checkbox [checked]="is_deleteAll"
+                          (change)="assignPrivilegeToAll($event.checked, 'delete', 'is_delete')"></mat-checkbox>
+            Delete
+          </th>
+          <th width="10%">
+            <mat-checkbox [checked]="is_exportAll"
+                          (change)="assignPrivilegeToAll($event.checked,'export', 'is_export')"></mat-checkbox>
+            Export
+          </th>
+          <th width="10%">
+            <mat-checkbox [checked]="is_downloadAll"
+                          (change)="assignPrivilegeToAll($event.checked, 'download', 'is_download')"></mat-checkbox>
+            Download
+          </th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let privilege of privileges | filter:{tab_name: filterText} ; let i = index">
+            <td width="5%">{{i+ 1}}</td>
+            <td width="25%">{{privilege?.tab_name}}</td>
+            <td width="10%">
+              <mat-checkbox *ngIf="privilege?.is_view" (change)="changeIsViewPrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.view) ? true : false"></mat-checkbox>
+            </td>
+            <td width="10%">
+              <mat-checkbox *ngIf="privilege?.is_add_edit"
+                            (change)="changeIsAddEditPrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.add_edit) ? true : false"></mat-checkbox>
+            </td>
+            <td width="10%">
+              <mat-checkbox *ngIf="privilege?.is_delete" (change)="changeIsDeletePrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.delete) ? true : false"></mat-checkbox>
+            </td>
+            <td width="10%">
+              <mat-checkbox *ngIf="privilege?.is_export" (change)="changeIsExportPrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.export) ? true : false"></mat-checkbox>
+            </td>
+            <td width="10%">
+              <mat-checkbox *ngIf="privilege?.is_download"
+                            (change)="changeIsDownloadPrivilege($event.checked, privilege)"
+                            [checked]="(privilege?.download) ? true : false"></mat-checkbox>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-12 save-history-btns text-right MTB-10">
+        <button type="button" (click)="ngOnInit()"  class="btn-default MR-10">Cancel</button>
+        <button type="submit" class="btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+</form>
+<!-- End Table -->

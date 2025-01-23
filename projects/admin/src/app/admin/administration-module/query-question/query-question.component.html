@@ -1,0 +1,202 @@
+<!-- Admin (Administration) manager users html view -->
+<div class="admin-quote-question-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">QUERY QUESTION</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn" (click)="onAddQueryQuestionDialog(null)">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add Query Question
+          </button>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-7">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span>
+                <mat-icon>filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span>
+                <mat-icon>file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onToggleFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Question" formControlName="question_name"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="activeInactiveList"
+                         [closeOnSelect]="true"
+                         bindLabel="label"
+                         placeholder="Status"
+                         bindValue="key"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="is_active">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10 text-right">
+              <button type="reset" class="btn-cancel" (click)="resetForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="row">
+          <div class="tag" *ngIf="queryName.value">
+            <span class="tag__title">Question: </span>
+            <span>
+              <mat-form-field>
+                <input matInput placeholder="Question" formControlName="question_name"
+                       (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+              </mat-form-field>
+            </span>
+            <i class="material-icons tag__close" (click)="onClearTag('question_name')">close</i>
+          </div>
+          <div class="tag" *ngIf="isActive.value !== null">
+            <span class="tag__title">Status: </span>
+            <span>
+               <ng-select [items]="activeInactiveList"
+                          [closeOnSelect]="true"
+                          bindLabel="label"
+                          placeholder="Status"
+                          bindValue="key"
+                          [virtualScroll]="true"
+                          [searchable]="true"
+                          [hideSelected]="true"
+                          formControlName="is_active"
+                          (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+            </span>
+            <i class="material-icons tag__close" (click)="onClearTag('is_active')">close</i>
+          </div>
+          <div class="clearAll-tags"
+               *ngIf="queryName.value || isActive.value !== null">
+            <a (click)="resetForm()">Clear all</a>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr.No</th>
+
+            <th width="88%"
+                (click)="getSortData('question_name', sortBy === 'question_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Question
+              <i *ngIf="sortBy === 'question_name'" [ngClass]="{'material-icons': true,
+                 'active' : (sortBy === 'question_name'),
+                  'icon-up' : ((sortBy === 'question_name') && (sortOrder === 'asc')),
+                  'icon-down' : true}">
+                {{(sortBy === 'query') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th width="8%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let queryQuestionData of queryQuestionList; let i = index">
+              <td width="4%" class="text-center">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="88%">{{queryQuestionData?.question_name}}</td>
+              <td width="8%">
+                <mat-icon class="light-orange-color" (click)="onAddQueryQuestionDialog(queryQuestionData)"
+                          matTooltip="Edit">edit
+                </mat-icon>
+                <mat-slide-toggle matTooltip="Active"
+                                  *ngIf="queryQuestionData?.is_active === 1"
+                                  (click)="onConfirmationActiveInactiveDialog(queryQuestionData)"
+                                  [checked]="true"></mat-slide-toggle>
+                <mat-slide-toggle matTooltip="Inactive"
+                                  *ngIf="queryQuestionData?.is_active === 0"
+                                  (click)="onConfirmationActiveInactiveDialog(queryQuestionData)"
+                                  [checked]="false"></mat-slide-toggle>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+
+  <!-- <div class="panel-title red-color">
+     No Records Found!
+   </div>-->
+</div>

@@ -1,0 +1,69 @@
+<div class="billing-info-services-container">
+
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onBillingInformation()">BILLING INFORMATION</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">BASIC INFORMATION | {{billingBasic?.billing_name}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a (click)="onShowHistory()">
+                <label>View History</label>
+                <i class="material-icons">history</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <!--start tab menu-->
+  <div class="update-client">
+    <mat-tab-group class="demo-tab-group contact-tab" [selectedIndex]="selectedIndexData"
+                   (selectedTabChange)="onSelectTab($event)">
+      <mat-tab label="Basic Information">
+        <div>
+          <app-basic-information-services *ngIf="isActiveTabText=== 'Basic Information'"
+                                          [billingInformation]="billingBasic"
+                                          (onAddUpdate)="getBasicServices()"
+                                          [isEdit]="isEdit"></app-basic-information-services>
+        </div>
+      </mat-tab>
+      <mat-tab *ngFor="let serviceData of servicesAgreed; let i = index" label="{{serviceData['service_name']}}">
+        <app-bookkeeping-services
+          *ngIf="serviceData['service_id'] === 1 && isActiveTabText ===serviceData['service_name']"
+          [serviceInfo]="serviceData" [billingInformation]="billingBasic" [isEdit]="isEdit"></app-bookkeeping-services>
+        <app-payroll-services *ngIf="serviceData['service_id'] === 2 && isActiveTabText ===serviceData['service_name']"
+                              [isEdit]="isEdit" [serviceInfo]="serviceData"
+                              [billingInformation]="billingBasic"></app-payroll-services>
+        <app-taxation-services *ngIf="serviceData['service_id'] === 6 && isActiveTabText ===serviceData['service_name']"
+                               [isEdit]="isEdit" [serviceInfo]="serviceData"
+                               [billingInformation]="billingBasic"></app-taxation-services>
+        <app-smsf-services *ngIf="serviceData['service_id'] === 4 && isActiveTabText ===serviceData['service_name']"
+                           [isEdit]="isEdit" [serviceInfo]="serviceData"
+                           [billingInformation]="billingBasic"></app-smsf-services>
+        <app-hosting-services *ngIf="serviceData['service_id'] === 5 && isActiveTabText ===serviceData['service_name']"
+                              [isEdit]="isEdit" [serviceInfo]="serviceData"
+                              [billingInformation]="billingBasic"></app-hosting-services>
+        <app-subscription-services
+          *ngIf="serviceData['service_id'] === 7 && isActiveTabText ===serviceData['service_name']"
+          [isEdit]="isEdit" [serviceInfo]="serviceData" [billingInformation]="billingBasic"></app-subscription-services>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

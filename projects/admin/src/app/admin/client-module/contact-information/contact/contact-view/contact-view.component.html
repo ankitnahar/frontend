@@ -1,0 +1,217 @@
+<!--  Start contact view menu dialog  -->
+<div class="modal large-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">
+      <span>Created By: {{contact?.created_by?.created_by}} | Created On: <span>{{contact?.created_on | date : "dd-MM-yyyy HH:mm:ss"}}</span></span>
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Star user details -->
+        <div class="approve-reject-user-details">
+          <div class="row">
+            <div class="col-md-6 PL-0">
+              <div class="row">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Parent Trading Name</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.parent_name}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Trading Name</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.trading_name}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">TAM</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.tam_name}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">First Name</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.first_name}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Contact Person</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.contact_person}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">To</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.to}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Mobile</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.mobile_no}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Fax</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.fax_no}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 PR-0">
+              <div class="row">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Service</label>
+                </div>
+                <div class="col-md-6 PR-0 word-break">
+                  <span class="MR-5">{{contact?.service_name}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Position</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.contact_position_id > 0 ? getContactPosition(contact?.contact_position_id) : ''}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Is display in BK checklist</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.is_display_bk_checklist > 0 ? getIsBkChecklist(contact?.is_display_bk_checklist) : ''}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">CC</label>
+                </div>
+                <div class="col-md-6 PR-0 word-break">
+                  <span *ngFor="let tempDataCC of convertJsonStringToArray(contact?.cc)"
+                        class="MR-5">{{tempDataCC}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Office</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.office_no}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Is Feedback Contact?</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.is_feedback_contact > 0 ? getIsBkChecklist(contact?.is_feedback_contact) : ''}}</span>
+                </div>
+              </div>
+              <div class="row MT-20" *ngIf="contact?.is_feedback_contact > 0">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Feedback Email</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.feedback_email}}</span>
+                </div>
+              </div>
+              <div class="row MT-20" *ngIf="contact?.is_display_bk_checklist > 0">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">From Email</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.from_email}}</span>
+                </div>
+              </div>
+              <div class="row MT-20">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Is Client Login Access?</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.is_login > 0 ? getIsBkChecklist(contact?.is_login) : ''}}</span>
+                </div>
+              </div>
+              <div class="row MT-20" *ngIf="contact?.is_archived ===  1">
+                <div class="col-md-6 PL-0">
+                  <label class="fw-500">Archive Reason</label>
+                </div>
+                <div class="col-md-6 PR-0">
+                  <span>{{contact?.archived_reason}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End user details -->
+      </div>
+    </div>
+
+    <div class="row" *ngIf="contactRemark.length">
+      <div class="col-md-12">
+        <div class="table-container dialog-table-container">
+          <div class="table-block">
+            <table>
+              <thead>
+              <tr>
+                <th width="10%">Sr. No</th>
+                <th width="60%">Notes</th>
+                <th width="15%">Created By</th>
+                <th width="15%">Created on</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let contactRemarkData of contactRemark; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{contactRemarkData?.notes}}</td>
+                <td>{{contactRemarkData?.created_by?.userfullname}}</td>
+                <td>{{contactRemarkData?.created_on | date : "dd-MM-yyyy"}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal__footer">
+    <div class="row">
+      <div class="col-md-6">
+      </div>
+
+      <div class="col-md-6 text-right">
+        <!--<button type="button" class="btn-default" (click)="onCloseDialog()">Cancel</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+<!--  End contact view menu dialog  -->
+
+<!--  Start dialog layer -->
+<div class="modal-layer" (click)="onClose()"></div>
+<!--  End dialog layer -->

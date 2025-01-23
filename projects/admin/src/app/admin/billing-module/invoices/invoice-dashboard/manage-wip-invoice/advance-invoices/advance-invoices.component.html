@@ -1,0 +1,63 @@
+<!--  Invoice log Dialog  -->
+<div class="large-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">ADVANCE INVOICE
+      <mat-icon matTooltip="Please mension amount in WIP page to be adjusted as per below">info</mat-icon>
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <!-- Start Request Table -->
+    <div class="row">
+    </div>
+    <div class="table-container dialog-table-container" *ngIf="invoiceData.length">
+      <div class="table-block">
+        <table class="PT-0">
+          <thead>
+          <tr>
+            <th width="10%">Sr. No</th>
+            <th width="18%">Invoice No.
+            </th>
+            <th width="18%">Amount(Ex GST)
+            </th>
+            <th width="18%">Created By
+            </th>
+            <th width="18%">Created On
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let invoice of invoiceData; let i=index">
+            <td>{{i+1}}</td>
+            <td>{{invoice?.invoice_no}}</td>
+            <td>{{invoice?.net_amount}}</td>
+            <td>{{invoice?.created_by?.userfullname}}</td>
+            <td>{{invoice?.created_on}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row MT-10">
+      <div class="col-md-4 PL-0 totalAmount">
+        <label>Total Amount:</label>
+        <span>{{advanceFeesInfo['Total'] || 0}}</span>
+      </div>
+
+      <div class="col-md-4 totalAmount text-center">
+        <label>Adjusted Amount:</label>
+        <span>{{advanceFeesInfo['Adjust'] || 0}}</span>
+      </div>
+
+      <div class="col-md-4 totalAmount text-right">
+        <label>Balance Amount:</label>
+        <span>{{advanceFeesInfo['Balance'] || 0}}</span>
+      </div>
+    </div>
+    <!-- End Request Table -->
+  </div>
+</div>

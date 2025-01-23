@@ -1,0 +1,87 @@
+<div class="bookkeeping-container">
+  <div class="row">
+    <div class="col-md-10 PL-10">
+    </div>
+    <div class="col-md-2 inline-fields text-right">
+      <mat-radio-group [(ngModel)]="selectedType" (change)="onChangeNoteType()">
+        <mat-radio-button value="0">Archived</mat-radio-button>
+        <mat-radio-button value="1">Unarchived</mat-radio-button>
+      </mat-radio-group>
+
+      <mat-form-field *ngIf="tabChildData.length !== 0">
+        <mat-select placeholder="Account Receivable" [(ngModel)]="selectedChildOption"
+                    (selectionChange)="onChangeServices()">
+          <mat-option value="{{tabInformation.service_id}}">{{tabInformation.service_name}}
+          </mat-option>
+          <mat-option *ngFor="let service of tabChildData" value="{{service.service_id}}">{{service.service_name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="bookkeeping-body">
+    <div class="list-view" *ngFor="let note of specialNotesList">
+      <div class="row">
+        <div class="col-md-9">
+          <div class="list-view__left-content">
+            <h3>{{note.created_by?.userfullname}}</h3>
+            <p>{{note.note}}</p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="list-view__right-content">
+            <div *ngIf="note.modified_by">
+              <label>Updated By:</label>
+              <span>{{note.modified_by.userfullname}}</span>
+            </div>
+
+            <div *ngIf="note.modified_on">
+              <label>Updated On:</label>
+              <span>{{note.modified_on | date:'dd-MM-yyyy'}}</span>
+            </div>
+
+            <div *ngIf="(note.expiry_on) && (note.type !== 1)">
+              <label>Expire On:</label>
+              <span>{{note.expiry_on | date:'dd-MM-yyyy'}}</span>
+            </div>
+
+            <div>
+              <label>Type:</label>
+              <span>{{(note.type === 1) ? 'Permanent' : 'Temporary'}}</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="list-view__action-icons" *ngIf="note.is_active === 1">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="list-view__archived-list">
+            <div *ngIf="note.archive_by">
+              <label>Archived By:</label>
+              <span>{{note.archive_by?.archive_by?.userfullname}}</span>
+            </div>
+
+            <div *ngIf="note.archive_by">
+              <label>Archived On:</label>
+              <span>{{note.archive_by?.archive_on | date:'dd-MM-yyyy'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="specialNotesList['length'] === 0">
+  <span class="panel-title orange-color" *ngIf="specialNotesList['length'] <=0">
+      No Data found.
+  </span>
+</div>

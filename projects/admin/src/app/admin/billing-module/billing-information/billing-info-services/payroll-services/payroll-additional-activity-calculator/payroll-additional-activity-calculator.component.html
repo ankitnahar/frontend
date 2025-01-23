@@ -1,0 +1,130 @@
+<div class="bookkeeping-basic-container" *ngIf="isEdit">
+  <div *ngIf="(payrollData?.inc_in_ff === 1) && (ffAmountOfSubactivity != payrollData?.fixed_fee)" class="row">
+    <div class="col-md-12 panel-title red-color text-right MB-0">
+      Payroll fixed
+      fees({{payrollData?.fixed_fee}}) does not matches with FF bifurcation({{ffAmountOfSubactivity}}).
+    </div>
+  </div>
+  <form [formGroup]="formSubactvitiy" (submit)="onSumitSubActivity(formSubactvitiy)">
+    <div class="row">
+
+      <div class="col-md-12">
+        <div *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+          <span class="panel-title ML-0">{{filterGroup.value['sectionTitle']}}</span>
+          <div class="table-container">
+            <div class="table-block">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th *ngFor="let subactivityColumn of filterGroup.value['sectionColumn']"
+                      width="{{subactivityColumn['width']}}">
+                    {{subactivityColumn['label']}}
+                  </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let subactivityItem of getFilterFieldArrayData(i).controls; let k = index;">
+                  <td>{{k+1}}</td>
+                  <td [attr.colspan]="subactivityItem.value['colSpan'] > 0 ? subactivityItem.value['colSpan'] : null">
+                    {{subactivityItem.value['subactivity']}}
+                  </td>
+                  <td>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="subactivityItem.value['is_inc_in_ff']">
+                      <mat-select placeholder="No" [value]="subactivityItem.value['inc_in_ff']"
+                                  (selectionChange)="hideShowFields(i,k,subactivityItem.value['subactivity_code'],$event.value);onChangeUpdateDataValues('inc_in_ff',1,i,k,subactivityItem.value['subactivity_code'],$event.value)">
+                        <mat-option *ngFor="let payrollInc of payrollInCInFF" [value]="payrollInc?.key">
+                          {{ payrollInc?.label}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="subactivityItem.value['is_frequency']">
+                      <mat-select placeholder="Select Frequency" [value]="subactivityItem.value['frequency_id']"
+                                  (selectionChange)="onChangeUpdateDataValues('frequency_id',1,i,k,subactivityItem.value['subactivity_code'],$event.value)">
+                        <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                          {{ frequency?.frequency_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                   <span
+                     *ngFor="let subactivityItemField of getFilterFieldArrayDataFields(i,k).controls; let l = index;">
+                     <label class="PT-10 MR-5 fw-500">{{subactivityItemField.value['label']}}</label>
+                      <input type="number" value="{{subactivityItem.value[subactivityItemField.value['key']]}}"
+                             (change)="onChangeUpdateDataValues(subactivityItemField.value['key'],2,i,k,subactivityItem.value['subactivity_code'],$event.target.value)">
+                     <br><br>
+                  </span>
+                  </td>
+                  <td>
+                    <mat-form-field [floatLabel]="'never'" *ngIf="subactivityItem.value['is_no_of_employee']">
+                      <input matInput type="number" [value]="subactivityItem.value['no_of_value']"
+                             (change)="onChangeUpdateDataValues('no_of_value',1,i,k,subactivityItem.value['subactivity_code'],$event.target.value)">
+                    </mat-form-field>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 text-right MTB-20">
+        <button type="button" class="btn-default MR-5">Cancel</button>
+        <!--[disabled]="formSubactvitiy.invalid"-->
+        <button type="submit" class="btn-primary">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<div class="bookkeeping-basic-container" *ngIf="!isEdit">
+  <form [formGroup]="formSubactvitiy" (submit)="onSumitSubActivity(formSubactvitiy)">
+    <div class="row MB-20">
+
+      <div class="col-md-12">
+        <div *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+          <span class="panel-title ML-0">{{filterGroup.value['sectionTitle']}}</span>
+          <div class="table-container">
+            <div class="table-block">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th *ngFor="let subactivityColumn of filterGroup.value['sectionColumn']"
+                      width="{{subactivityColumn['width']}}">
+                    {{subactivityColumn['label']}}
+                  </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let subactivityItem of getFilterFieldArrayData(i).controls; let k = index;">
+                  <td>{{k+1}}</td>
+                  <td [attr.colspan]="subactivityItem.value['colSpan'] > 0 ? subactivityItem.value['colSpan'] : null">
+                    {{subactivityItem.value['subactivity']}}
+                  </td>
+                  <td> {{getYesNoStatus(subactivityItem.value['inc_in_ff'])}}</td>
+                  <td> {{getFrequencyName(subactivityItem.value['frequency_id'])}}</td>
+                  <td>
+                   <span
+                     *ngFor="let subactivityItemField of getFilterFieldArrayDataFields(i,k).controls; let l = index;">
+                     <span *ngIf="subactivityItemField.value['label'] !== ''"> {{subactivityItemField.value['label']}} : {{subactivityItem.value[subactivityItemField.value['key']]}}</span>
+                     <span *ngIf="subactivityItemField.value['label'] === ''"> {{subactivityItem.value[subactivityItemField.value['key']]}}</span>
+                     <br><br>
+                  </span>
+                  </td>
+                  <td> {{(subactivityItem.value['no_of_value'] > 0 ) ? subactivityItem.value['no_of_value'] : ''}}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

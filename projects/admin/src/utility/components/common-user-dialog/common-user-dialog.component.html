@@ -1,0 +1,20 @@
+<!--  Invoice log Dialog  -->
+<div class="large-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">{{title}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <!-- Start Request Table -->
+    <mat-chip-list>
+      <mat-chip *ngFor="let clientName of clientList">
+        {{clientName}}
+      </mat-chip>
+    </mat-chip-list>
+    <!-- End Request Table -->
+  </div>
+</div>

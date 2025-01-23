@@ -1,0 +1,11 @@
+@import "../../../../../../assets/scss/main";
+
+.email-parameters-details {
+  label {
+    color: darken($black-color, 10%);
+    font-weight: 500;
+  }
+  span {
+    color: darken($gray-color, 14%);
+  }
+}

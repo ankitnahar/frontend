@@ -1,0 +1,54 @@
+<!--  Invoice log Dialog  -->
+<div class="modal large-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">Related entity with separate invoice | {{entityName}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <!-- Start Request Table -->
+    <div class="table-container dialog-table-container">
+      <div class="table-block">
+        <table class="PT-0">
+          <thead>
+          <tr>
+            <th width="10%">Sr. No</th>
+            <th width="75%">Related Entity</th>
+            <th width="15%">Action</th>
+          </tr>
+          </thead>
+          <tbody *ngIf="seperateInvoicedialog.length">
+          <tr *ngFor="let seperateinvoice of seperateInvoicedialog; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{seperateinvoice?.billing_name}}</td>
+            <td><a class="orange-color" [matTooltip]="'Edit this Client'" (click)="onEditThisClient(seperateinvoice)">
+              <mat-icon>edit</mat-icon>
+            </a></td>
+          </tr>
+          </tbody>
+        </table>
+        <table *ngIf="seperateInvoicedialog.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <div *ngIf="seperateInvoicedialog.length === 0" class="panel-title red-color">
+      No Records Found!
+    </div>
+    <!-- End Request Table -->
+  </div>
+</div>

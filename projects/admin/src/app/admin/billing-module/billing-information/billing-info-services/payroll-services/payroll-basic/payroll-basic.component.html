@@ -1,0 +1,182 @@
+<div class="bookkeeping-basic-container" *ngIf="isEdit">
+  <span class="panel-title">Payroll Basic</span>
+  <form [formGroup]="payrollbasicForm" (submit)="onSubmitPayrollInfo(payrollbasicForm)">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Rate Per Hour" formControlName="ff_rph" type="number" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(payrollbasicForm.get('ff_rph'))"
+                          [errMsg]="validationMsg.RATE_PER_HOUR_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(payrollbasicForm.get('ff_rph'))"
+                          [errMsg]="validationMsg.RATE_PER_HOUR_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="inc_in_ff" placeholder="Inc. in FF"
+                      (selectionChange)="changeInFixedFee($event.value)">
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(payrollbasicForm.get('inc_in_ff'))"
+                          [errMsg]="validationMsg.INC_IN_FF_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4" *ngIf="isFixedFee">
+        <mat-form-field>
+          <input matInput placeholder="Payroll Fixed Price" formControlName="fixed_fee" type="number" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(payrollbasicForm.get('fixed_fee'))"
+                          [errMsg]="validationMsg.PAYROLL_FIXED_PRICE_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(payrollbasicForm.get('fixed_fee'))"
+                          [errMsg]="validationMsg.PAYROLL_FIXED_PRICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10" *ngIf="isFixedFee">
+        <mat-form-field>
+          <mat-select formControlName="payroll_frequency_id" placeholder="Payroll 404 Frequency" required>
+            <mat-option *ngFor="let frequency of payrollFrequencyList" [value]="frequency?.id">
+              {{ frequency?.frequency_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(payrollbasicForm.get('payroll_frequency_id'))"
+                          [errMsg]="validationMsg.PAYROLL_FREQUENCY_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="frequency_id" placeholder="Invoice frequency" required
+                      (selectionChange)="changeGetRecurringList(serviceInfo['service_id'], (payrollData.inc_in_ff > 0) ? payrollData.inc_in_ff : 1, $event.value)">
+            <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+              {{ frequency?.frequency_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(payrollbasicForm.get('frequency_id'))"
+                          [errMsg]="validationMsg.INVOICE_FREQUENCY_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select *ngIf="!isCalcReadOnly" formControlName="calc_id" placeholder="Additional Activity Calculator"
+                      required>
+            <mat-option *ngFor="let calc of calcList" [value]="calc?.id">
+              {{ calc?.name}}
+            </mat-option>
+          </mat-select>
+          <!--<label *ngIf="isCalcReadOnly">{{isCalcReadOnlyName}}</label>-->
+          <input *ngIf="isCalcReadOnly" matInput placeholder="Additional Activity Calculator"
+                 value="{{isCalcReadOnlyName}}"
+                 required readonly/>
+
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(payrollbasicForm.get('calc_id'))"
+                          [errMsg]="validationMsg.RATE_PER_HOUR_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="recurring_id" placeholder="Recurring"
+                      (selectionChange)="changeAutoInvoice($event.value)">
+            <mat-option value="">Please Select</mat-option>
+            <mat-option *ngFor="let recurring of recurringList" [value]="recurring?.id">
+              {{ recurring?.recurring_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="auto_invoice" placeholder="Auto invoice" required
+                      (selectionChange)="changeAutoInvoiceType($event.value)">
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(payrollbasicForm.get('auto_invoice'))"
+                          [errMsg]="validationMsg.AUTO_INVOICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <mat-form-field>
+          <textarea matInput placeholder="Payroll Notes" formControlName="notes"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 text-right MTB-20">
+        <button type="button" class="btn-default MR-5">Cancel</button>
+        <button [disabled]="payrollbasicForm.invalid" type="submit" class="btn-primary MR-5">Save & Next</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<div class="view-billing-info-container" *ngIf="!isEdit">
+  <div class="basic-details-border">
+    <span class="panel-title">Payroll Basic</span>
+    <form>
+      <div class="row">
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Rate Per Hour</label>
+            <span>{{payrollData?.ff_rph}}</span>
+          </div>
+          <div *ngIf="payrollData?.inc_in_ff > 0">
+            <label>Payroll Fixed Price</label>
+            <span>{{payrollData?.fixed_fee}}</span>
+          </div>
+          <div>
+            <label>Invoice Frequency</label>
+            <span>{{getFrequencyName(payrollData?.frequency_id)}}</span>
+          </div>
+          <div>
+            <label>Payroll notes</label>
+            <span>{{payrollData?.notes}}</span>
+          </div>
+        </div>
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Inc. In. FF</label>
+            <span>{{getYesNoStatus(payrollData?.inc_in_ff)}}</span>
+          </div>
+          <div *ngIf="payrollData?.inc_in_ff > 0">
+            <label>Payroll 404 Frequency</label>
+            <span>{{getPayrollFrequencyList(payrollData?.payroll_frequency_id)}}</span>
+          </div>
+          <div>
+            <label>Recurring</label>
+            <span>{{getRecurringName(payrollData?.recurring_id)}}</span>
+          </div>
+          <div>
+            <label>Auto invoice</label>
+            <span>{{getYesNoStatus(payrollData?.auto_invoice)}}</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<!--  Start Change InOut Time dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo" *ngIf="typeOfView === 0">Menu | {{foodMaster?.date | date : 'dd-MM-yyyy'}}</div>
+    <div class="modal__header__logo" *ngIf="typeOfView === 1">Menu Feedback | {{foodMaster?.date | date :
+      'dd-MM-yyyy'}}
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <div class="modal__body">
+    <!--<app-food-feedback-star-rating></app-food-feedback-star-rating>-->
+
+    <div class="row col-md-12" *ngIf="typeOfView === 0">
+      <div class="col-md-12" *ngFor="let item of foodMaster?.menu_name.split(',');">
+        <mat-label class="fw-500">{{item}}</mat-label>
+      </div>
+    </div>
+
+    <div class="row col-md-12" *ngIf="typeOfView === 1">
+      <div class="col-md-12" *ngFor="let item of itemArray; let j = index;">
+
+        <div class="row col-md-12">
+          <div class="col-md-4 MT-15 PL-0">
+            <mat-label class="fw-500">{{item.name}}</mat-label>
+          </div>
+          <div class="col-md-8 PL-0" *ngIf="foodMaster?.is_feedback === 0">
+
+            <button mat-icon-button [color]="color" *ngFor="let ratingId of ratingArr;let i = index" [id]="'star_'+i"
+                    (click)="onClick(i+1, j)" [matTooltip]="ratingId+1" matTooltipPosition="above">
+              <mat-icon>
+                {{showIcon(i, j)}}
+              </mat-icon>
+            </button>
+            <mat-error *ngIf="starCount == null || starCount == 0">
+              Star count is <strong>required</strong> and cannot be zero
+            </mat-error>
+          </div>
+          <div class="col-md-8 PL-0" *ngIf="foodMaster?.is_feedback === 1">
+
+            <button mat-icon-button [color]="color" *ngFor="let ratingId of ratingArr;let i = index" [id]="'star_'+i"
+                    [matTooltip]="ratingId+1" matTooltipPosition="above">
+              <mat-icon>
+                {{showIcon(i, j)}}
+              </mat-icon>
+            </button>
+            <mat-error *ngIf="starCount == null || starCount == 0">
+              Star count is <strong>required</strong> and cannot be zero
+            </mat-error>
+          </div>
+        </div>
+        <div class="row col-md-12">
+          <div class="col-md-4"></div>
+          <div class="col-md-8">
+            <mat-label class="fw-500" *ngIf="item.rating > 0">
+              Your rated <span class="body-2">{{item.rating}}</span> / <span class="body-2">{{starCount}}</span>
+            </mat-label>
+          </div>
+        </div>
+      </div>
+      <mat-form-field *ngIf="foodMaster?.is_feedback === 0">
+        <textarea matInput [formControl]="comment" rows="3" placeholder="Feedback"></textarea>
+      </mat-form-field>
+      <div class="row col-md-12 MT-15" *ngIf="foodMaster?.is_feedback === 1">
+        <div class="col-md-4"><mat-label class="fw-500">Feedback</mat-label></div>
+        <div class="col-md-8">{{foodMaster?.feedback}}</div>
+      </div>
+    </div>
+    <button *ngIf="foodMaster?.is_feedback === 0 && typeOfView === 1" type="submit" class="btn-success MR-5" (click)="onSubmit()" [disabled]="comment.invalid">Save</button>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<!-- Admin Header html View -->
+<div class="admin-hrms-dashboard-container" style="background: #ffffff">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>WORKFLOW</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">WORKSHEET</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+
+ <div class="row progress-bar-section MT-15">
+    <div class="col-md-12 PL-10 PR-0">
+      <mat-card class="request-counts-card">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-2 request-count">
+              <a (click)="onMyWorksheetList()">
+                <h3>103</h3>
+                <label>My Worksheet</label>
+              </a>
+            </div>
+
+            <div class="col-md-2 request-count">
+              <a>
+                <h3>2560</h3>
+                <label>View Incompleted Worksheet</label>
+              </a>
+            </div>
+
+            <div class="col-md-2 request-count">
+              <a>
+                <h3>3200</h3>
+                <label>View completed Worksheet</label>
+              </a>
+            </div>
+
+            <div class="col-md-2 request-count PL-0">
+              <a>
+                <h3>2</h3>
+                <label>Pending Worksheet</label>
+              </a>
+            </div>
+
+            <div class="col-md-2 request-count">
+              <a>
+                <h3>1023</h3>
+                <label>View Befree Worksheet</label>
+              </a>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+</div>

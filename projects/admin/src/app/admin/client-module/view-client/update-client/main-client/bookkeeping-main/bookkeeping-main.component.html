@@ -1,0 +1,137 @@
+<!--bookkeeping tab html start-->
+<div class="bookkeeping-main-tab-container">
+  <div class="row">
+    <div class="col-md-10 PL-0">
+      <span class="panel-title">Update {{currentTabName}}</span>
+    </div>
+    <div class="col-md-2" *ngIf="tabChildData.length > 0">
+      <mat-form-field>
+        <mat-select [(value)]="accountType" placeholder="Select Service" (selectionChange)="onChangeService($event)">
+          <mat-option [value]="tab.id">{{tab.group_name}}</mat-option>
+          <mat-option *ngFor="let childTabs of tabChildData" [value]="childTabs?.id">
+            {{ childTabs?.group_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div *ngIf="fieldList.length > 0">
+    <form [formGroup]="groupForm" (submit)="onSubmitGroupForm(groupForm.value)">
+      <div class="row">
+        <div class="col-md-4" *ngFor="let fieldData of fieldList">
+          <div
+            *ngIf="fieldData.field_type === fieldType.DROPDOWN || fieldData.field_type === fieldType.MULTIPLEVARIANT">
+            <mat-form-field>
+              <mat-select [multiple]="fieldData.field_type === fieldType.MULTIPLEVARIANT ? true : false"
+                          [placeholder]="fieldData?.field_title" [formControlName]="fieldData.id">
+                <mat-option *ngFor="let option of fieldData?.dataArray" [value]="option">
+                  {{option}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+            </div>
+          </div>
+
+          <div *ngIf="fieldData.field_type === fieldType.TEXTBOX">
+            <mat-form-field>
+              <input matInput [placeholder]="fieldData?.field_title" [formControlName]="fieldData.id"/>
+            </mat-form-field>
+            <div class="validation-msg">
+            </div>
+          </div>
+
+          <div *ngIf="fieldData.field_type === fieldType.TEXTAREA || fieldData.field_type === fieldType.EDITOR">
+            <mat-form-field>
+              <textarea matInput [placeholder]="fieldData?.field_title"
+                        [formControlName]="fieldData.id"></textarea>
+            </mat-form-field>
+            <div class="validation-msg">
+            </div>
+          </div>
+
+          <div *ngIf="fieldData.field_type === fieldType.CALENDER">
+            <mat-form-field>
+              <input matInput [placeholder]="fieldData?.field_title" [matDatepicker]="birthdayRef"
+                     placeholder="Birthdate" (mousedown)="birthdayRef.open()"
+                     [formControlName]="fieldData.id" required/>
+              <mat-datepicker-toggle matSuffix [for]="birthdayRef"></mat-datepicker-toggle>
+              <mat-datepicker #birthdayRef disabled="false"></mat-datepicker>
+            </mat-form-field><!---->
+            <div class="validation-msg">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="accountType === 2">
+        <div class="col-md-6">
+          <label class="fw-500">Version Notes</label>
+          <editor [formControl]="groupForm.controls['version_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+        <div class="col-md-6">
+          <label class="fw-500">Software Notes</label>
+          <editor [formControl]="groupForm.controls['software_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+      </div>
+      <div class="row" *ngIf="accountType === 3">
+        <div class="col-md-6">
+          <label class="fw-500">BK Notes</label>
+          <editor [formControl]="groupForm.controls['bk_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+        <div class="col-md-6">
+          <label class="fw-500">BK Review Notes</label>
+          <editor [formControl]="groupForm.controls['bk_review_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+      </div>
+      <div class="row" *ngIf="accountType === 4">
+        <div class="col-md-6">
+          <label class="fw-500">Payroll Notes</label>
+          <editor [formControl]="groupForm.controls['payroll_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+      </div>
+      <div class="row" *ngIf="accountType === 5">
+        <div class="col-md-6">
+          <label class="fw-500">AP Notes</label>
+          <editor [formControl]="groupForm.controls['ap_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+      </div>
+      <div class="row" *ngIf="accountType === 6">
+        <div class="col-md-6">
+          <label class="fw-500">AR Notes</label>
+          <editor [formControl]="groupForm.controls['ar_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+      </div>
+      <div class="row" *ngIf="accountType === 7">
+        <div class="col-md-6">
+          <label class="fw-500">DM Notes</label>
+          <editor [formControl]="groupForm.controls['dm_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+      </div>
+      <div class="row" *ngIf="accountType === 8">
+        <div class="col-md-6">
+          <label class="fw-500">Tax Notes</label>
+          <editor [formControl]="groupForm.controls['tax_notes']"
+                  [init]="{'menubar': 'false', 'height': 250}" class="MT-10"></editor>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 text-right MT-10">
+          <button type="button" class="btn-default MR-5">Cancel</button>
+          <button type="submit" class="btn-primary">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!--bookkeeping tab html over-->

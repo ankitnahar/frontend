@@ -1,0 +1,219 @@
+@import "../../../assets/scss/main";
+//
+// HRMS Dashboard
+//
+.admin-hrms-dashboard-container {
+  .mat-form-field-can-float.mat-form-field-should-float {
+    .mat-form-field-label {
+      display: none;
+    }
+  }
+  .mat-form-field-infix {
+    width: 12rem;
+  }
+  .mat-input-container {
+    position: relative;
+    top: -.8rem;
+  }
+  .progress-bar-section {
+    .mat-card {
+      padding: 2rem 2.4rem;
+      height: 8rem;
+      box-sizing: border-box;
+      .mat-card-title {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  .view_hrms {
+    background: $white-color;
+    h4 {
+      line-height: 3rem;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: $black-color;
+    }
+  }
+
+  .blink {
+    animation: blink 2s steps(5, start) infinite;
+    -webkit-animation: blink 1s steps(5, start) infinite;
+  }
+  @keyframes blink {
+    to {
+      visibility: hidden;
+    }
+  }
+  @-webkit-keyframes blink {
+    to {
+      visibility: hidden;
+    }
+  }
+}
+
+//
+// Progress Section
+//
+.progress-block-section {
+  .progress-section.mat-card {
+    padding: 0 !important;
+    margin-top: 2rem;
+    .mat-card-header {
+      .mat-card-header-text {
+        display: block;
+        width: 100%;
+        .mat-card-title {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: .1rem;
+          height: 3.5rem;
+          h4 {
+            font-weight: 400;
+            font-size: 1.4rem;
+            color: $light-orange-color;
+            i {
+              vertical-align: bottom;
+              color: $gray-color;
+              margin-right: 1rem;
+            }
+          }
+          .select-menu {
+            align-self: center;
+            i {
+              font-size: 3rem;
+              color: $orange-color;
+              cursor: default;
+            }
+            .mat-form-field-infix {
+              width: 6rem;
+              position: relative;
+              top: 5px;
+            }
+            .mat-select-value {
+              text-align: right;
+              position: relative;
+              top: -2px;
+            }
+            .mat-select-arrow {
+              border-top: 6px solid;
+            }
+            .mat-form-field-underline {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+    .mat-card-content {
+      .summary-section {
+        height: 36.7rem;
+        box-sizing: border-box;
+        padding: 2rem 0;
+      }
+      .min-oranage-section {
+        max-height: 17rem !important;
+        min-height: 17rem !important;
+      }
+      .list-parent-section {
+        max-height: 33rem;
+        min-height: 33rem;
+        overflow: auto;
+        // overflow-x: hidden;
+        padding: 1rem 1rem 0 1rem;
+        .leave-request-list {
+          padding: 1rem 0;
+          margin: 0;
+          display: flex;
+          flex-direction: row;
+          border-bottom: 1px solid lighten($light-gray-color, 17%);
+          li {
+            list-style-type: none;
+            display: inline-block;
+            .user-avtar {
+              display: inline-block;
+              vertical-align: bottom;
+              margin-right: .5rem;
+            }
+            &.user-details {
+              width: 100%;
+              line-height: 2.1rem;
+              h3 {
+                font-weight: 400;
+                font-size: 1.3rem;
+                line-height: 2rem;
+                @include elipsis(30rem);
+              }
+              p {
+              }
+              label {
+                font-size: 1.3rem;
+              }
+            }
+            &.view-link {
+              margin: auto;
+              a {
+                color: $dark-primary-color;
+                cursor: pointer;
+              }
+            }
+          }
+          &:last-child, &:nth-last-child(1) {
+            border-bottom: none;
+          }
+        }
+        &.birthDateFolksSection {
+          .leave-request-list {
+            width: 50%;
+            float: left;
+            li {
+              &.user-details {
+                h3 {
+                  @include elipsis(14rem);
+                  line-height: 1.5rem;
+                }
+              }
+            }
+          }
+        }
+        &.announcementSection {
+          .leave-request-list {
+            li {
+              &.user-details {
+                h3 {
+                  @include elipsis(24rem);
+                  line-height: 2.5rem !important;
+                  a {
+                    color: $black-color;
+                    text-decoration: none;
+                  }
+                }
+              }
+              &.view-link {
+                width: 14rem;
+                font-size: 1.2rem;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+
+      .view-more-link {
+        border-top: 1px solid lighten($light-gray-color, 17%);
+        text-align: right;
+        padding: 1rem;
+        a {
+          color: $dark-primary-color;
+          cursor: pointer;
+          text-decoration: none;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}

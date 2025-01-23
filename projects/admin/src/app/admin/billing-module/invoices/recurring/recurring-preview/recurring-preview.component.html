@@ -1,0 +1,82 @@
+<div class="add-on-off-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <i class="material-icons cursor-pointer">home</i>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span><a (click)="onInvoice()">INVOICE</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span><a (click)="onAddRecurring()">{{(selectedData && selectedData['id'] > 0) ? 'EDIT RECURRING' : 'ADD RECURRING'}}</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">RECURRING PREVIEW</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <span class="panel-title ML-0">Client :</span>
+          <span *ngFor="let client of clientList; let i = index" class="MB-10">
+            {{i+1}} . {{client}} |
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="30%">Invoice Frequency</th>
+            <th width="35%">Invoice Period</th>
+            <th width="30%">Invoice Date</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let previewreview of previewreviewList; let j = index">
+              <td width="5%">{{j+1}}</td>
+              <td width="30%">{{previewreview['frequency']}}</td>
+              <td width="35%">{{previewreview['startDate'] | date : 'dd-MM-yyyy'}} - {{previewreview['endDate'] | date :
+                'dd-MM-yyyy'}}
+              </td>
+              <td width="30%">{{previewreview['InvoiceDate'] | date : 'dd-MM-yyyy'}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 MB-20">
+      <div class="row MT-30">
+        <div class="col-md-6 PL-0">
+        </div>
+        <div class="col-md-6 text-right PR-0">
+          <button (click)="onAddRecurring()" type="button" class="btn-default MR-5">Back For Change</button>
+          <button (click)="onSubmitForm()" type="submit" class="btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+</div>

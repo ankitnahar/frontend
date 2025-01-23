@@ -1,0 +1,86 @@
+<!-- Start Data Grid -->
+<div class="with-filter-grid-container">
+
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header MT-5">
+    <div class="row">
+      <div class="col-md-6 inner-header-title">
+        <h3>Worksheet Report</h3>
+      </div>
+      <div class="col-md-6">
+
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+
+  <!--my worksheet container html start-->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="25%">Service</th>
+          <th width="20%">Master Activity</th>
+          <th width="10%">Task</th>
+          <th width="10%">Frequency</th>
+          <th width="10%">Start Date</th>
+          <th width="10%">End Date</th>
+          <th width="10%">Status</th>
+          <th width="5%">Action</th>
+        </tr>
+        </thead>
+      </table>
+
+
+      <div class="table-body">
+        <table *ngIf="worksheetDetails.length">
+          <tbody *ngFor="let worksheetdetails of worksheetDetails; let i = index">
+          <tr>
+            <td width="25%">{{worksheetdetails?.service_name}}
+            </td>
+            <td width="20%">{{worksheetdetails?.master_name}}
+            </td>
+            <td width="10%">{{worksheetdetails?.task_name}}
+            </td>
+            <td width="10%">{{worksheetdetails?.frequency_name}}
+            </td>
+            <td width="10%">{{worksheetdetails?.start_date}}
+            </td>
+            <td width="10%">{{worksheetdetails?.end_date}}
+            </td>
+            <td width="10%"><span class="text-truncate h6 pl-4 pr-4">
+                  {{worksheetdetails?.status_name}}</span>
+            </td>
+            <td width="5%">
+              <mat-icon matTooltip="View"
+                        (click)="onViewComments()">remove_red_eye
+              </mat-icon>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <table>
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="worksheetDetails.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- View completed worksheet html over-->
+</div>

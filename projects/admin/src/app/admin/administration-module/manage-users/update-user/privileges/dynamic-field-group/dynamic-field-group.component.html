@@ -1,0 +1,63 @@
+<div class="row grid-search">
+  <div class="add-one">
+    <input placeholder="Search" type="text" [value]="filterText"
+           [formControl]="filterInput">
+    <span class="prefix">
+                <i class="material-icons">search</i>
+              </span>
+  </div>
+  <div class="clearfix"></div>
+</div>
+<div>
+  <!-- Start Table -->
+  <form (submit)="changePageRights()">
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No.</th>
+            <th width="25%">Field Group</th>
+            <th width="35%">Field Name</th>
+            <th width="15%">
+              <mat-checkbox [checked]="is_viewAll" [disabled]="disableSelectAll"
+                            (change)="assignPrivilegeToAll($event.checked,'view')"></mat-checkbox>
+              View
+            </th>
+            <th width="20%">
+              <mat-checkbox [checked]="is_add_editAll" [disabled]="disableSelectAll"
+                            (change)="assignPrivilegeToAll($event.checked,'add_edit')"></mat-checkbox>
+              Add / Edit
+            </th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr
+              *ngFor="let privilege of privileges | filter:{field_title: filterText, group_name: filterText} ; let i = index">
+              <td width="5%">{{i+1}}</td>
+              <td width="25%">{{privilege?.group_name}}</td>
+              <td width="35%">{{privilege?.field_title}}</td>
+              <td width="15%">
+                <mat-checkbox (change)="changeIsViewPrivilege($event.checked, privilege)"
+                              [checked]="(privilege?.view) ? true : false"></mat-checkbox>
+              </td>
+              <td width="20%">
+                <mat-checkbox (change)="changeIsAddPrivilege($event.checked, privilege)"
+                              [checked]="(privilege?.add_edit) ? true : false"></mat-checkbox>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="col-md-12 save-history-btns">
+            <button type="button" class="btn-default MR-10">Cancel</button>
+            <button type="submit" class="btn-primary">Update</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- End Table -->
+  </form>
+</div>

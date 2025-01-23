@@ -1,0 +1,267 @@
+<div class="bookkeeping-basic-container" *ngIf="isEdit">
+  <span class="panel-title">Bookkeeping Basic</span>
+  <form [formGroup]="bookkeepingbasicForm" (submit)="onSubmitBookkeepingInfo(bookkeepingbasicForm)">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="frequency_id" placeholder="Invoice frequency"
+                      (selectionChange)="changeGetRecurringList(serviceInfo['service_id'], bookkeepingData ? bookkeepingData['bk_in_ff'] : 1, $event.value)"
+                      required>
+            <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+              {{ frequency?.frequency_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(bookkeepingbasicForm.get('frequency_id'))"
+                          [errMsg]="validationMsg.FREQUENCY_REQUIRED"></app-validation>
+        </div>
+        <!--  <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(bookkeepingbasicForm.get('frequency_id'))"
+                            [errMsg]="validationMsg.FREQUENCY_REQUIRED"></app-validation>
+          </div>-->
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input formControlName="default_rph" matInput placeholder="Default RPH" type="number" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(bookkeepingbasicForm.get('default_rph'))"
+                          [errMsg]="validationMsg.DEFAULT_RPH_REQUIRED"></app-validation>
+          <app-validation *ngIf="isValidField(bookkeepingbasicForm.get('default_rph'))"
+                          [errMsg]="validationMsg.DEFAULT_RPH_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="recurring_id" placeholder="Recurring"
+                      (selectionChange)="changeAutoInvoice($event.value)">
+            <mat-option value="">Please Select</mat-option>
+            <mat-option *ngFor="let recurring of recurringList" [value]="recurring?.id">
+              {{ recurring?.recurring_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-15">
+        <mat-form-field>
+          <mat-select formControlName="auto_invoice" placeholder="Auto invoice" required
+                      (selectionChange)="changeAutoInvoiceType($event.value)">
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(bookkeepingbasicForm.get('auto_invoice'))"
+                          [errMsg]="validationMsg.AUTO_INVOICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <mat-form-field>
+          <textarea matInput placeholder="BK Notes" formControlName="notes"></textarea>
+        </mat-form-field>
+      </div>
+
+
+      <div class="col-md-12 MT-20 ng-star-inserted">
+        <div class="table-container">
+          <div class="table-block">
+            <table class="table">
+              <thead>
+              <tr>
+                <th colspan="7">
+                  <span class="MT-5 orange-color">Fee Structure</span>
+                  <a (click)="viewFeesStructureInformationHistory(bookkeepingData.id);" [matTooltip]="'View History'"
+                     class="cursor-pointer on-right primary-color">
+                    <i class="material-icons v-align-middle">history</i> View History</a></th>
+              </tr>
+              <tr>
+                <th width="15%">Services</th>
+                <th width="20%">Service Start Date</th>
+                <th width="9%">RPH</th>
+                <th width="11%">Inc. In FF</th>
+                <th width="15%">FF Amount($)</th>
+                <th width="15%">Fixed Units</th>
+                <th width="15%">FF Start Date</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+                <td width="15%">{{filterGroup.value['service_name']}}</td>
+                <td width="15%">
+                  <mat-form-field>
+                    <input matInput placeholder="Service Start Date" [matDatepicker]="contractSignedDateRef"
+                           (dateChange)="updateContractSignedDate(i, $event.value)"
+                           value="{{filterGroup.value['contract_signed_date']}}" [disabled]="i === 0 ? true : false"/>
+                    <mat-datepicker-toggle matSuffix [for]="contractSignedDateRef"></mat-datepicker-toggle>
+                    <mat-datepicker #contractSignedDateRef disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                  <div class="validation-msg">
+                    <app-validation *ngIf="isRequiredField(filterGroup.get('contract_signed_date'))"
+                                    [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+                  </div>
+                </td>
+                <td width="9%">
+                  <mat-form-field appearance="outline" floatLabel="never">
+                    <input matInput type="number" value="{{filterGroup.value['rph']}}"
+                           (change)="updateRPHValue(i, $event.target.value)"/>
+                  </mat-form-field>
+                  <div class="validation-msg MT-5">
+                    <app-validation *ngIf="isValidField(filterGroup.get('rph'))"
+                                    [errMsg]="validationMsg.AMOUNT_VALID"></app-validation>
+                  </div>
+                </td>
+                <td width="11%">
+                  <mat-form-field>
+                    <mat-select placeholder="Inc. In FF" (selectionChange)="updateIncFF(i, $event.value)"
+                                [value]="filterGroup.value['inc_in_ff']">
+                      <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                        {{ yesNo?.label}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td width="15%">
+                  <mat-form-field appearance="outline" floatLabel="never" *ngIf="filterGroup.value['inc_in_ff'] === 1">
+                    <input matInput type="number" value="{{filterGroup.value['fixed_fee']}}"
+                           (change)="updateFFAmount(i, $event.target.value)" required/>
+                  </mat-form-field>
+                  <div class="validation-msg MT-5">
+                    <app-validation *ngIf="isRequiredField(filterGroup.get('fixed_fee'))"
+                                    [errMsg]="validationMsg.AMOUNT_VALID"></app-validation>
+                    <app-validation *ngIf="isValidField(filterGroup.get('fixed_fee'))"
+                                    [errMsg]="validationMsg.AMOUNT_VALID"></app-validation>
+                  </div>
+                </td>
+                <td width="15%">{{filterGroup.value['fixed_unit']}}</td>
+                <td width="15%">
+                  <mat-form-field *ngIf="filterGroup.value['inc_in_ff'] === 1">
+                    <input matInput placeholder="Start Date" [matDatepicker]="startDateRef"
+                           (dateChange)="updateFFStartDate(i, $event.value)"
+                           value="{{filterGroup.value['ff_start_date']}}" (mousedown)="startDateRef.open()"/>
+                    <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+                    <mat-datepicker #startDateRef disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                  <div class="validation-msg">
+                    <app-validation *ngIf="isRequiredField(filterGroup.get('ff_start_date'))"
+                                    [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+                  </div>
+                </td>
+              </tr>
+              <tr class="fw-600">
+                <td colspan="4">TOTAL</td>
+                <td>{{bookkeepingData?.fixed_total_amount}}</td>
+                <td>{{bookkeepingData?.fixed_total_unit}}</td>
+                <td>&nbsp;</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 text-right MTB-20">
+        <button type="button" class="btn-default MR-5">Cancel</button>
+        <button [disabled]="bookkeepingbasicForm.invalid" type="submit" class="btn-primary MR-5">Save & Next</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="view-billing-info-container" *ngIf="!isEdit">
+  <div class="basic-details-border">
+    <span class="panel-title">Bookkeeping Basic</span>
+    <form>
+      <div class="row">
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Invoice frequency</label>
+            <span>{{getFrequencyName(bookkeepingData?.frequency_id)}}</span>
+          </div>
+          <div>
+            <label>Auto invoice</label>
+            <span>{{getYesNoStatus(bookkeepingData?.auto_invoice)}}</span>
+          </div>
+          <div>
+            <label>Bk notes</label>
+            <span>{{bookkeepingData?.notes}}</span>
+          </div>
+        </div>
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Default RPH</label>
+            <span>{{bookkeepingData?.default_rph}}</span>
+          </div>
+          <div>
+            <label>Recurring</label>
+            <span>{{getRecurringName(bookkeepingData?.recurring_id)}}</span>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="col-md-12 MT-20 ng-star-inserted MTB-20">
+      <div class="table-container">
+        <div class="table-block">
+          <table class="table">
+            <thead>
+            <tr>
+              <th colspan="7">
+                <span class="MT-5 orange-color">Fee Structure</span>
+                <a (click)="viewFeesStructureInformationHistory(bookkeepingData.id);" [matTooltip]="'View History'"
+                   class="cursor-pointer on-right primary-color">
+                  <i class="material-icons v-align-middle">history</i> View History</a></th>
+            </tr>
+            <tr>
+              <th width="15%">Services</th>
+              <th width="20%">Service Start Date</th>
+              <th width="9%">RPH</th>
+              <th width="11%">Inc. In FF</th>
+              <th width="15%">FF Amount($)</th>
+              <th width="15%">Fixed Units</th>
+              <th width="15%">FF Start Date</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+              <td width="15%">{{filterGroup.value['service_name']}}</td>
+              <td width="15%">{{filterGroup.value['contract_signed_date'] | date : 'dd-MM-yyyy'}}
+              </td>
+              <td width="9%">{{filterGroup.value['rph']}}
+              </td>
+              <td width="11%">{{getYesNoStatus(filterGroup.value['inc_in_ff'])}}
+              </td>
+              <td width="15%"><span
+                *ngIf="filterGroup.value['inc_in_ff'] === 1">{{filterGroup.value['fixed_fee']}}</span>
+              </td>
+              <td width="15%"><span
+                *ngIf="filterGroup.value['inc_in_ff'] === 1">{{filterGroup.value['fixed_unit']}}</span></td>
+              <td width="15%"><span
+                *ngIf="filterGroup.value['inc_in_ff'] === 1">{{filterGroup.value['ff_start_date']  | date : 'dd-MM-yyyy'}}</span>
+              </td>
+            </tr>
+            <tr class="fw-600">
+              <td colspan="4">TOTAL</td>
+              <td>{{bookkeepingData?.fixed_total_amount}}</td>
+              <td>{{bookkeepingData?.fixed_total_unit}}</td>
+              <td>&nbsp;</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Start History modal-->
+<div *ngIf="isOpenHistoryDialog">
+  <app-history-dialog (close)="isOpenHistoryDialog = false"></app-history-dialog>
+</div>
+<!-- End History modal-->

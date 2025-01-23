@@ -1,0 +1,137 @@
+<div class="">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onContact()">CONTACT INFORMATION</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span
+            class="active">{{address ? 'UPDATE ADDRESS | ' : 'ADD ADDRESS'}} {{address?.entity_id?.trading_name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add contact form-->
+  <div class="add-address-container">
+    <span class="panel-title orange-color">{{address ? 'Update' : 'Add'}} Address</span>
+    <form [formGroup]="addAddressForm" (submit)="onAddAddress(addAddressForm)">
+      <div class="row">
+        <div class="col-md-3">
+          <ng-select [items]="parentClientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Parent Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="onChangeParentEntity($event)"
+                     formControlName="parent_id">
+          </ng-select>
+
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAddressForm.get('parent_id'))"
+                            [errMsg]="validationMsg.TRADING_NAME"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="entity_id">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAddressForm.get('entity_id'))"
+                            [errMsg]="validationMsg.TRADING_NAME"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-select placeholder="Address Type" formControlName="type" required>
+              <mat-option *ngFor="let addressTypeData of addressType" [value]="addressTypeData.key">
+                {{addressTypeData.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAddressForm.get('type'))"
+                            [errMsg]="validationMsg.ADDRESS_TYPE"></app-validation>
+          </div>
+        </div>
+      </div>
+
+      <div class="row MT-10">
+        <div class="col-md-6">
+          <mat-form-field>
+            <textarea formControlName="street_address" matInput placeholder="Street address" required></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAddressForm.get('street_address'))"
+                            [errMsg]="validationMsg.ADDRESS_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field>
+            <textarea formControlName="suburb" matInput placeholder="Suburb"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+          </div>
+        </div>
+      </div>
+
+      <div class="row MT-10">
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-select placeholder="State" formControlName="state_id" required>
+              <mat-option *ngFor="let addressStateData of addressState" [value]="addressStateData.key">
+                {{addressStateData.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAddressForm.get('state_id'))"
+                            [errMsg]="validationMsg.STATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <input formControlName="postcode" matInput type="text" placeholder="Postcode"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addAddressForm.get('postcode'))"
+                            [errMsg]="validationMsg.NUMBER_VALID"></app-validation>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 MB-20">
+        <div class="row MT-30">
+          <div class="col-md-6 PL-0">
+          </div>
+          <div class="col-md-6 text-right PR-0">
+            <button (click)="onContact()" type="button" class="btn-default MR-5">Cancel</button>
+            <button [disabled]="addAddressForm.invalid" type="submit" class="btn-primary">{{address ? 'Update' :
+              'Add'}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,199 @@
+<div class="bookkeeping-basic-container" *ngIf="isEdit">
+  <span class="panel-title">SMSF Basic</span>
+  <form [formGroup]="smsfbasicForm" (submit)="onSubmitSMSFInfo(smsfbasicForm)">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="befree_invoice" placeholder="Generate invoice from Befree" required>
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(smsfbasicForm.get('befree_invoice'))"
+                          [errMsg]="validationMsg.GENERATE_INVOICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="frequency_id" placeholder="Invoice frequency" required
+                      (selectionChange)="changeGetRecurringList(serviceInfo['service_id'], 1, $event.value)">
+            <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+              {{ frequency?.frequency_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(smsfbasicForm.get('frequency_id'))"
+                          [errMsg]="validationMsg.INVOICE_FREQUENCY_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput readonly placeholder="FF start date" [matDatepicker]="startDateRef"
+                 formControlName="ff_start_date" (dateChange)="updateFixedFee($event.value)"
+                 (mousedown)="startDateRef.open()" required/>
+          <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+          <mat-datepicker #startDateRef disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(smsfbasicForm.get('ff_start_date'))"
+                          [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput placeholder="Yearly FF(Ex. GST)" formControlName="fixed_fee" required
+                 (change)="updateFixedFeeAmount($event.target.value)"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(smsfbasicForm.get('fixed_fee'))"
+                          [errMsg]="validationMsg.YEAR_FF_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(smsfbasicForm.get('fixed_fee'))"
+                          [errMsg]="validationMsg.YEAR_FF_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput placeholder="Monthly amount" formControlName="monthly_amount" readonly/>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <input matInput placeholder="Balance amount in June {{balanceYear}}" formControlName="balance_amount"
+                 readonly/>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="audit_fee_inc" placeholder="Audit fees included in FF"
+                      (selectionChange)="changeAuditFeesType($event.value)">
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10" *ngIf="isAuditFees">
+        <mat-form-field>
+          <input matInput placeholder="Audit fees" formControlName="audit_fee"/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(smsfbasicForm.get('audit_fee'))"
+                          [errMsg]="validationMsg.AUDIT_FEE_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(smsfbasicForm.get('audit_fee'))"
+                          [errMsg]="validationMsg.AUDIT_FEE_INVALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="recurring_id" placeholder="Recurring"
+                      (selectionChange)="changeAutoInvoice($event.value)">
+            <mat-option value="">Please Select</mat-option>
+            <mat-option *ngFor="let recurring of recurringList" [value]="recurring?.id">
+              {{ recurring?.recurring_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-15">
+        <mat-form-field>
+          <mat-select formControlName="auto_invoice" placeholder="Auto invoice"
+                      (selectionChange)="changeAutoInvoiceType($event.value)" required>
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(smsfbasicForm.get('auto_invoice'))"
+                          [errMsg]="validationMsg.AUTO_INVOICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <mat-form-field>
+          <textarea matInput placeholder="SMSF Notes" formControlName="notes"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 text-right MTB-20">
+        <button type="button" class="btn-default MR-5">Cancel</button>
+        <button [disabled]="smsfbasicForm.invalid" type="submit" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<div class="view-billing-info-container" *ngIf="!isEdit">
+  <div class="basic-details-border">
+    <span class="panel-title">SMSF Basic</span>
+    <form>
+      <div class="row">
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Generate Invoice From Befree</label>
+            <span>{{getYesNoStatus(smsfData?.befree_invoice)}}</span>
+          </div>
+          <div>
+            <label>FF Start Date</label>
+            <span>{{(smsfData?.ff_start_date !== '' && smsfData?.ff_start_date !== '0000-00-00') ? (smsfData?.ff_start_date | date: 'dd-MM-yyyy') : ''}}</span>
+          </div>
+          <div>
+            <label>Monthly Amount</label>
+            <span>{{smsfData?.monthly_amount}}</span>
+          </div>
+          <div>
+            <label>Audit Fees Included in FF</label>
+            <span>{{getYesNoStatus(smsfData?.audit_fee_inc)}}</span>
+          </div>
+          <div *ngIf="smsfData?.audit_fee_inc === 0">
+            <label>Audit Fee</label>
+            <span>{{smsfData?.audit_fee}}</span>
+          </div>
+          <div>
+            <label>Recurring</label>
+            <span>{{getRecurringName(subscriptionData?.recurring_id)}}</span>
+          </div>
+        </div>
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Invoice frequency</label>
+            <span>{{getFrequencyName(smsfData?.frequency_id)}}</span>
+          </div>
+          <div>
+            <label>Yearly FF</label>
+            <span>{{smsfData.fixed_fee}}</span>
+          </div>
+          <div>
+            <label>Balance amount in June {{balanceYear}}</label>
+            <span>{{smsfData?.balance_amount}}</span>
+          </div>
+          <div>
+            <label>Auto Invoice</label>
+            <span>{{getYesNoStatus(smsfData?.auto_invoice)}}</span>
+          </div>
+          <div>
+            <label>Notes</label>
+            <span>{{smsfData?.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

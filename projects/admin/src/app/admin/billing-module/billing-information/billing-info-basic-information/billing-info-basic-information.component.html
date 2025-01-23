@@ -1,0 +1,492 @@
+<!--Start Basic details form-->
+<!-- Admin Billing Basic Information Container -->
+<div class="billing-basic-info-container" *ngIf="isEdit">
+  <div>
+    <span class="panel-title">CLIENT'S BASIC DETAILS</span>
+    <div>
+      <form [formGroup]="clientBasicInfoForm" (submit)="submitBasicInformationForm(clientBasicInfoForm)">
+        <div class="col-md-12 PLR-0">
+          <div class="row MT-10">
+            <div class="col-md-6">
+              <mat-form-field>
+                <input matInput placeholder="Billing Name" readonly formControlName="billing_name">
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field>
+                <input matInput placeholder="Contact person" formControlName="contact_person" required>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('contact_person'))"
+                                [errMsg]="validationMsg.CONTACT_PERSON_REQUIRED"></app-validation>
+                <app-validation *ngIf="isValidField(clientBasicInfoForm.get('contact_person'))"
+                                [errMsg]="validationMsg.CONTACT_PERSON_VALID"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-12 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="To" formControlName="to_email" required>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('to_email'))"
+                                [errMsg]="validationMsg.TO_REQUIRED"></app-validation>
+                <app-validation *ngIf="isValidField(clientBasicInfoForm.get('to_email'))"
+                                [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-12 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="CC" formControlName="cc_email">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <textarea matInput placeholder="Address" formControlName="address" required></textarea>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('address'))"
+                                [errMsg]="validationMsg.ADDRESS_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Notice Period" formControlName="notice_period" required>
+                  <mat-option *ngFor="let noticeperiod of noticeperiodList" [value]="noticeperiod?.key">
+                    {{ noticeperiod?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('notice_period'))"
+                                [errMsg]="validationMsg.NOTICE_PERIOD_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Category" formControlName="category_id" required>
+                  <mat-option *ngFor="let category of categoryList" [value]="category?.key">
+                    {{ category?.label}}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Largest - A+: Fees > 30K ,
+                  Large - A: Fees between 15K to 30K,
+                  Medium - B+: Fees between 10K to 15K,
+                  Medium - B: Fees between 5K to 10K,
+                  Small - C+ Fees between 2K to 5K,
+                  Small - C Fees between 0 to 2 K.
+                </mat-hint>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('category_id'))"
+                                [errMsg]="validationMsg.CATEGORY_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <!--<div class="col-md-6 MT-10">
+              {{(billingInformation.parent_entity > 0) ? 'Related Entity' : ''}}
+            </div>-->
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Agreed for resource model" formControlName="full_time_resource">
+                  <mat-option *ngFor="let resource of fulltimeResourceList" [value]="resource?.key">
+                    {{ resource?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Debtors follow up" formControlName="debtor_followup">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Merge invoice (Sent manually)" formControlName="merge_invoice" required>
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('merge_invoice'))"
+                                [errMsg]="validationMsg.MERGE_INVOICE_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Merge Fixed Fee" formControlName="merge_ff" required>
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('merge_ff'))"
+                                [errMsg]="validationMsg.MERGE_FF_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-5 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Client belongs to" formControlName="entity_grouptype_id" required>
+                  <mat-option *ngFor="let ClientBelongsToResponseData of ClientBelongsToResponse"
+                              [value]="ClientBelongsToResponseData['id']">
+                    {{ClientBelongsToResponseData['name']}}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>IF Internal entity then this will show checklist like accounts,compliance.
+                  Update entity belongs to which group
+                </mat-hint>
+              </mat-form-field>
+              <div class="validation-msg MT-5">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('entity_grouptype_id'))"
+                                [errMsg]="validationMsg.CLIENT_BELONGS_REQUIRED"></app-validation>
+              </div>
+            </div>
+            <div class="col-md-1 PL-0 PR-0 MT-20">
+              <a class="cursor-pointer orange-color" (click)="onAddMoreClientType()"> Add More</a>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Job" formControlName="state_id" required>
+                  <mat-option *ngFor="let state of stateList" [value]="state['state_id']">
+                    {{state['state_name']}}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>job based on city</mat-hint>
+              </mat-form-field>
+              <div class="validation-msg MT-5">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('state_id'))"
+                                [errMsg]="validationMsg.JOB_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Payment type" formControlName="payment_id" required
+                            (selectionChange)="checkIsCreditCard($event.value)">
+                  <mat-option *ngFor="let payment of paymentList" [value]="payment?.key">
+                    {{ payment?.label}}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>clients payment method 1. Net transfer (client will pay us ) 2. ED- We will debit clients Acc.
+                  3.
+                  CC- put last 4 digit
+                </mat-hint>
+              </mat-form-field>
+              <div class="validation-msg MT-5">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('payment_id'))"
+                                [errMsg]="validationMsg.PAYMENT_TYPE_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-6 MT-10">
+              <ng-select class="custom" [items]="clientList"
+                         [multiple]="true"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Related entity for common invoice"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="related_entity">
+              </ng-select>
+              <mat-hint>Select Entities name for which we will raise 1 invoice Ex.(Main Entity- ABC ; related entity-
+                X,Y,Z= invoice will be raise for ABC including charge of X,Y,Z)
+              </mat-hint>
+            </div>
+            <div class="col-md-6 MT-15" *ngIf="isEziDebit">
+              <mat-form-field>
+                <mat-select placeholder="DDR Recieved" formControlName="ddr_rec" required>
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg MT-5">
+                <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('ddr_rec'))"
+                                [errMsg]="validationMsg.MERGE_INVOICE_REQUIRED"></app-validation>
+              </div>
+            </div>
+            <!--<div class="col-md-6 MT-15" *ngIf="isNetTransfer">-->
+            <!--<mat-form-field>-->
+            <!--<mat-select placeholder="DDR Followup" formControlName="ddr_followup" required>-->
+            <!--<mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">-->
+            <!--{{ yesNo?.label}}-->
+            <!--</mat-option>-->
+            <!--</mat-select>-->
+            <!--</mat-form-field>-->
+            <!--<div class="validation-msg">-->
+            <!--<app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('ddr_followup'))"-->
+            <!--[errMsg]="validationMsg.MERGE_INVOICE_REQUIRED"></app-validation>-->
+            <!--</div>-->
+            <!--</div>-->
+            <div class="col-md-12 MT-15" *ngIf="isCreditCard">
+              <div class="row">
+                <div class="col-md-2 MT-10 PLR-0">
+                  <mat-form-field>
+                    <mat-select placeholder="Card Type" formControlName="card_id" required
+                                (selectionChange)="getSurcharge($event.value)">
+                      <mat-option *ngFor="let card of billingCard" [value]="card['id']">
+                        {{ card['name']}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div class="validation-msg">
+                    <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('card_id'))"
+                                    [errMsg]="validationMsg.CARD_TYPE_REQUIRED"></app-validation>
+                  </div>
+                </div>
+                <div class="col-md-2 MT-5">
+                  <mat-form-field>
+                    <input matInput placeholder="Surcharge" formControlName="surcharge" required>
+                  </mat-form-field>
+                  <div class="validation-msg">
+                    <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('surcharge'))"
+                                    [errMsg]="validationMsg.PAYMENT_TYPE_REQUIRED"></app-validation>
+                  </div>
+                </div>
+                <div class="row col-md-8 MT-5">
+                  <div class="col-md-3">
+                    <mat-form-field floatLabel="never">
+                      <input matInput placeholder="XXXX" value="XXXX" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field floatLabel="never">
+                      <input matInput placeholder="XXXX" value="XXXX" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field floatLabel="never">
+                      <input matInput placeholder="XXXX" value="XXXX" readonly>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Card Number" formControlName="card_number" required>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(clientBasicInfoForm.get('card_number'))"
+                                      [errMsg]="validationMsg.CARD_NUMBER_REQUIRED"></app-validation>
+                      <app-validation *ngIf="isValidField(clientBasicInfoForm.get('card_number'))"
+                                      [errMsg]="validationMsg.CARD_NUMBER_VALID"></app-validation>
+                      <app-validation *ngIf="isValidLength(clientBasicInfoForm.get('card_number'))"
+                                      [errMsg]="validationMsg.CARD_NUMBER_LENGTH"></app-validation>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 PLR-10 MTB-40">
+              <mat-accordion>
+                <mat-expansion-panel [expanded]="true">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>SERVICES AGREED</mat-panel-title>
+                  </mat-expansion-panel-header>
+
+                  <div class="table-container table-no-striped">
+                    <div class="table-block">
+                      <table>
+                        <thead>
+                        <tr>
+                          <th width="50%">Services</th>
+                          <th width="20%">Agreed</th>
+                          <th width="30%">Service Start Date</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+                          <td width="50%">{{filterGroup.value['service_name']}}</td>
+                          <td width="20%">
+                            <mat-checkbox [checked]="(filterGroup.value['is_active'] === 1) ? true : false"
+                                          (change)="changeServiceAgreedData($event.checked, filterGroup, i)"></mat-checkbox>
+                          </td>
+                          <td width="30%">
+                            <mat-form-field *ngIf="filterGroup.value['is_active'] === 1">
+                              <input matInput readonly placeholder="Start Date" [matDatepicker]="startDateRef"
+                                     value="{{filterGroup.value['contract_signed_date']}}"
+                                     (mousedown)="startDateRef.open()"
+                                     (dateChange)="changeServiceAgreedDateValue(i, $event.value)"/>
+                              <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+                              <mat-datepicker #startDateRef disabled="false"></mat-datepicker>
+                            </mat-form-field>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+
+            <div class="col-md-12">
+              <mat-form-field>
+                <textarea matInput placeholder="Notes" formControlName="notes"></textarea>
+              </mat-form-field>
+            </div>
+
+
+            <div class="col-md-12 MTB-20">
+              <div class="row">
+                <div class="col-md-12 text-right PR-0">
+                  <button type="button" class="btn btn-default MR-5">Cancel</button>
+                  <button type="submit" class="btn-primary" [disabled]="clientBasicInfoForm.invalid">Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="view-billing-info-container" *ngIf="!isEdit">
+  <div class="basic-details-border">
+    <span class="panel-title">Basic Details</span>
+    <form>
+      <div class="row">
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Billing Name</label>
+            <span>{{billingInformation.billing_name}}</span>
+          </div>
+          <div>
+            <label>Contact Person</label>
+            <span>{{billingInformation.contact_person}}</span>
+          </div>
+          <div>
+            <label>To</label>
+            <span>{{billingInformation.to_email}}</span>
+          </div>
+          <div>
+            <label>CC</label>
+            <span>{{billingInformation.cc_email}}</span>
+          </div>
+          <div>
+            <label>Address</label>
+            <span>{{billingInformation.address}}</span>
+          </div>
+          <div>
+            <label>Notice Period</label>
+            <span>{{billingInformation.notice_period}}</span>
+          </div>
+          <div>
+            <label>Category</label>
+            <span>{{getCategoryName(billingInformation.category_id)}}</span>
+          </div>
+          <div>
+            <label>Agreed for resource model</label>
+            <span>{{getFullTimeResource(billingInformation.full_time_resource)}}</span>
+          </div>
+          <div>
+            <label>Debtors follow up</label>
+            <span>{{getYesNoStatus(billingInformation.ddr_followup)}}</span>
+          </div>
+          <div>
+            <label>Merge Invoice (Sent manually)</label>
+            <span>{{getYesNoStatus(billingInformation.merge_invoice)}}</span>
+          </div>
+        </div>
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Merge Fixed Fee</label>
+            <span>{{getYesNoStatus(billingInformation.merge_ff)}}</span>
+          </div>
+          <div>
+            <label>Client belongs to</label>
+            <span>{{getClientBelongsToName(billingInformation.entity_grouptype_id)}}</span>
+          </div>
+          <div>
+            <label>Job</label>
+            <span>{{getJobName(billingInformation.state_id)}}</span>
+          </div>
+          <div>
+            <label>Payment Type</label>
+            <span>{{getPaymentStatus(billingInformation.payment_id)}}</span>
+          </div>
+          <div>
+            <label>DDR Received</label>
+            <span>{{getYesNoStatus(billingInformation.ddr_rec)}}</span>
+          </div>
+          <!--<div>-->
+          <!--<label>DDR Followup</label>-->
+          <!--<span>{{getYesNoStatus(billingInformation.ddr_followup)}}</span>-->
+          <!--</div>-->
+          <div>
+            <label>Card Type</label>
+            <span>{{getCardName(billingInformation.card_id)}}</span>
+          </div>
+          <div *ngIf="billingInformation.card_id > 0">
+            <label>Card Surcharge</label>
+            <span>{{billingInformation.surcharge}}</span>
+          </div>
+          <div *ngIf="billingInformation.card_id > 0">
+            <label>Card No</label>
+            <span>{{billingInformation.card_number}}</span>
+          </div>
+          <div>
+            <label>Related entity for common invoice</label>
+            <span>{{getClientName(relatedEntityList)}}</span>
+          </div>
+          <div>
+            <label>Notes</label>
+            <span>{{billingInformation.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="col-md-12 PLR-10 MTB-20">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>SERVICES AGREED</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="table-container table-no-striped">
+            <div class="table-block">
+              <table>
+                <thead>
+                <tr>
+                  <th width="50%">Services</th>
+                  <th width="20%">Agreed</th>
+                  <th width="30%">Service Start Date</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index;">
+                  <td width="50%">{{filterGroup.value['service_name']}}</td>
+                  <td width="20%">{{filterGroup.value['is_active'] === 1 ? 'Yes':'No'}}</td>
+                  <td width="30%"><span *ngIf="filterGroup.value['is_active'] === 1">{{filterGroup.value['contract_signed_date'] !== '' ?
+                    (filterGroup.value['contract_signed_date'] | date :'dd-MM-yyyy') :''}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>

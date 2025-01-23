@@ -1,0 +1,157 @@
+<div class="admin-debtors-management-template-edit-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>BILLING</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onDebtorsManagement()">DEBTORS MANAGEMENT</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">DEBTORS MANAGEMENT EMAIL TEMPLATE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+  <div class="dm-template-edit-container">
+    <h2 class="orange-color">REMINDER EMAIL</h2>
+    <div>
+      <form [formGroup]="emailParametersForm" (submit)="submitDebtorsForm(emailParametersForm)"
+            class="row col-md-12 PLR-0">
+        <div class="col-md-6">
+          <div class="email-parameters__block">
+            <div class="row">
+              <div class="col-md-12 MB-10 PL-0">
+                <span class="primary-color fw-500">Email Parameters</span>
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>Client</label>
+                  </div>
+                  <div class="col-md-10">
+                    <span><mat-label>{{debtorsManagement?.billing_name}}</mat-label></span>
+                  </div>
+                </div>
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>From</label>
+                  </div>
+                  <div class="col-md-10">
+                    <span>{{billingID}}</span>
+                  </div>
+                </div>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>To</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <input matInput placeholder="To" readonly formControlName="to"
+                             value="{{debtorsManagement?.to_email}}">
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>CC</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <input matInput placeholder="CC" readonly formControlName="cc"
+                             value="{{debtorsManagement?.cc_email}}">
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>BCC</label>
+                  </div>
+                  <div class="col-md-10">
+                    <span>{{billingID}}</span>
+                    <ng-select [multiple]="true" [items]="userList" [virtualScroll]="true"
+                               bindLabel="userfullname"
+                               bindValue="email"
+                               placeholder="Please Select User"
+                               [searchable]="true"
+                               class="MT-10"
+                               [(ngModel)]="selectedUser" [ngModelOptions]="{standalone: true}"
+                               [hideSelected]="true">
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>Template</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field>
+                      <mat-select placeholder="Template" formControlName="template_type"
+                                  (selectionChange)="OnChangeGetDebtorsTemplateData($event.value)" required>
+                        <mat-option *ngFor="let debtorsEmail of debtorsTemplate" [value]="debtorsEmail?.id">
+                          {{ debtorsEmail?.template_name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(emailParametersForm.get('template_type'))"
+                                      [errMsg]="validationMsg.TEMPLATE_DB_REQUIRED"></app-validation>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="row MT-20">
+                  <div class="col-md-2">
+                    <label>Subject</label>
+                  </div>
+                  <div class="col-md-10">
+                    <mat-form-field [floatLabel]="'never'">
+                      <textarea matInput formControlName="subject" [matTextareaAutosize]
+                                matAutosizeMinRows="3"></textarea>
+                    </mat-form-field>
+                    <div class="validation-msg">
+                      <app-validation *ngIf="isRequiredField(emailParametersForm.get('subject'))"
+                                      [errMsg]="validationMsg.SUBJECT_REQUIRED"></app-validation>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 PL-0">
+          <div class="email-parameters__block">
+            <div class="row">
+              <div class="col-md-12 MB-10 PLR-0">
+                <div class=" MB-10">
+                  <span class="primary-color fw-500">View Body</span>
+                  <span class="primary-color fw-500 on-right cursor-pointer" (click)="onPreviewDialog()">Preview</span>
+                </div>
+                <!--<angular-editor formControlName="content" [config]="config"></angular-editor>-->
+                <editor formControlName="content"
+                        [init]="{'menubar': 'false', 'height': 460, 'relative_urls': false, 'remove_script_host': false, 'convert_urls': true}"></editor>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12 MTB-20">
+          <div class="row">
+            <div class="col-md-12 text-right PR-0">
+              <button type="submit" class="btn-primary" [disabled]="emailParametersForm.invalid">Submit</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

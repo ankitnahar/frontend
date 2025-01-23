@@ -1,0 +1,18 @@
+<div>
+  <mat-tab-group class="demo-tab-group contact-tab" (selectedTabChange)="onSelectTab($event)">
+    <mat-tab label="Basic">
+      <div>
+        <app-bookkeeping-basic *ngIf="isActiveTab === 0" [billingInformation]="billingInformation"
+                               [serviceInfo]="serviceInfo" [isEdit]="isEdit"
+                               (onAddUpdate)="getBookkeepingDataInfo();"></app-bookkeeping-basic>
+      </div>
+    </mat-tab>
+    <mat-tab label="Sub Activity" *ngIf="isUpdated===1">
+      <div>
+        <app-bookkeeping-sub-activity *ngIf="isActiveTab === 1" [isEdit]="isEdit"
+                                      [billingInformation]="billingInformation"
+                                      [serviceInfo]="serviceInfo"></app-bookkeeping-sub-activity>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

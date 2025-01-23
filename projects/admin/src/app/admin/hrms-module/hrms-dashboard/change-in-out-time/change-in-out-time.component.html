@@ -1,0 +1,279 @@
+<div class="change-in-out-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">CHANGE IN OUT TIME</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-3 inner-header-title">
+          <button class="open-dialog-btn" (click)="openAddInOutTimeDialog(null)"
+                  *ngIf="tabData['add_edit']">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add In-Out Time
+          </button>
+        </div>
+        <div class="col-md-6 inner-header-title text-center">
+          <div class="red-color fw-500 MT-10">Changes Allowed Only For Last 3 Days</div>
+        </div>
+        <div class=" col-md-3">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()" *ngIf="tabData['export']">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <mat-icon
+          class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="changeInOutFilterForm" (submit)="setAdvanceFilter(changeInOutFilterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="User Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="fromdate" placeholder="From Date" formControlName="from_date">
+                <mat-datepicker-toggle matSuffix [for]="fromdate"></mat-datepicker-toggle>
+                <mat-datepicker #fromdate></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="todate" placeholder="To Date" formControlName="to_date">
+                <mat-datepicker-toggle matSuffix [for]="todate"></mat-datepicker-toggle>
+                <mat-datepicker #todate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Changed By Staff" formControlName="is_manually_change">
+                  <mat-option *ngFor="let yesNo of yesNoDropDown.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="filterChangeInOutForm">
+        <div class="tag" *ngIf="userId.value">
+          <span class="tag__title">User Name :</span>
+          <span>
+             <ng-select [items]="userList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="User Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="user_id"
+                        (change)="setAdvanceFilterKeyUp($event, filterChangeInOutForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('user_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="fromDateField.value">
+          <span class="tag__title">From Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="fromdate1" placeholder="Date" #dateRef formControlName="from_date"
+                     (dateChange)="setAdvanceFilterKeyUp($event, filterChangeInOutForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="fromdate1"></mat-datepicker-toggle>
+              <mat-datepicker #fromdate1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('from_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="toDateField.value">
+          <span class="tag__title">To Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="todate1" placeholder="Date" #dateRef formControlName="to_date"
+                     (dateChange)="setAdvanceFilterKeyUp($event, filterChangeInOutForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="todate1"></mat-datepicker-toggle>
+              <mat-datepicker #todate1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('to_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="changedByStaff.value !== null">
+          <span class="tag__title">Changed By Staff:</span>
+          <span>
+            <mat-form-field>
+            <mat-select placeholder="Changed By Staff" formControlName="is_manually_change"
+                        (selectionChange)="setAdvanceFilterKeyUp($event, filterChangeInOutForm, true)">
+              <mat-option *ngFor="let yesNo of yesNoDropDown.slice(1)" [value]="yesNo?.key">
+                {{ yesNo?.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('is_manually_change')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="userId.value || fromDateField.value || toDateField.value || changedByStaff.value !== null">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+
+            <th width="25%"
+                (click)="getSortData('user_id', sortBy === 'user_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              User Name
+              <i *ngIf="sortBy === 'user_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'user_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'user_id' && sortOrder === 'desc'}">
+                {{sortBy === 'user_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="20%"
+                (click)="getSortData('date', sortBy === 'date' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Date
+              <i *ngIf="sortBy === 'date'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'date' && sortOrder === 'asc', 'icon-down' :  sortBy === 'date' && sortOrder === 'desc'}">
+                {{sortBy === 'date' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="15%"
+                (click)="getSortData('punch_type', sortBy === 'punch_type' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              In / Out
+              <i *ngIf="sortBy === 'punch_type'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'punch_type' && sortOrder === 'asc', 'icon-down' :  sortBy === 'punch_type' && sortOrder === 'desc'}">
+                {{sortBy === 'punch_type' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="15%">Punch Time</th>
+            <th width="10%">Changed By Staff</th>
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="changeInOutList.length">
+            <tr *ngFor="let changein of changeInOutList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="25%">{{changein?.user_id?.userfullname}}</td>
+              <td width="20%">{{changein?.date | date:"dd-MM-yyyy"}}</td>
+              <td width="15%"><span class="turquoise-color fw-500" *ngIf="changein?.punch_type === 1"><mat-icon
+                class="grid_icon_trip_origin">trip_origin</mat-icon>In</span>
+                <span class="red-color" *ngIf="changein?.punch_type === 0"><mat-icon class="grid_icon_trip_origin">trip_origin</mat-icon>Out</span>
+              </td>
+              <td width="15%">{{changein?.punch_time}}</td>
+              <td width="10%">
+                <span class="red-color fw-500" *ngIf="changein?.is_manually_change === 1">Yes</span>
+                <span class="turquoise-color fw-500" *ngIf="changein?.is_manually_change === 0">No</span>
+              </td>
+              <td width="10%">
+                <mat-icon class="light-orange-color" [matTooltip]="'Edit'" (click)="openAddInOutTimeDialog(changein)"
+                          *ngIf="compareDate(changein?.newDate) !== -1 && isToday(changein?.date) === 0">
+                  edit
+                </mat-icon>
+                <mat-icon class="red-color v-align-middle" [matTooltip]="'Not Allow'"
+                          *ngIf="compareDate(changein?.newDate) === -1 || isToday(changein?.date) === 1">
+                  block
+                </mat-icon>
+                <mat-icon class="light-orange-color" [matTooltip]="'Delete'" (click)="openInOutDeleteDialog(changein)"
+                          *ngIf="compareDate(changein?.newDate) !== -1 && isToday(changein?.date) === 0">
+                  delete
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="changeInOutList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    <div *ngIf="changeInOutList.length === 0" class="panel-title red-color">
+      No Records Found!
+    </div>
+  </div>
+  <!-- End Data Grid -->
+</div>

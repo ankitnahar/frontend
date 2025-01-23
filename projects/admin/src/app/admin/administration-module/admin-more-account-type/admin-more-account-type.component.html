@@ -1,0 +1,114 @@
+<!-- Admin (Administration) manager users html view -->
+<div class="admin-manage-users-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">ADD MORE ACCOUNT TYPE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <form [formGroup]="addAccountForm" #addAccountTypeForm="ngForm"
+                (submit)="onAddAccountType(addAccountForm.value, addAccountForm.valid, null)" *ngIf="tabDataType['add_edit']">
+            <div class="row">
+              <div class="col-md-6 PL-0">
+                <mat-form-field>
+                  <input formControlName="type_name" matInput type="text" autocomplete="off" placeholder="Type of account"
+                         required/>
+                </mat-form-field>
+                <div class="validation-msg">
+                  <app-validation *ngIf="isRequiredField(addAccountForm.get('type_name'))"
+                                  [errMsg]="validationMsg.ACCOUNT_TYPE_REQUIRED"></app-validation>
+                </div>
+              </div>
+              <div class="col-md-4 MT-5">
+                <button [disabled]="addAccountForm.invalid" class="btn-primary" type="submit">Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <div class="grid-search">
+          <form [formGroup]="filterForm">
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput placeholder="Search" formControlName="type_name"
+                     (keyup)="setAdvanceFilter(filterForm)">
+            </mat-form-field>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="10%">Sr. no.</th>
+            <th width="35%">Type of account</th>
+            <th width="20%">Last Modified on</th>
+            <th width="20%">Last Modified by</th>
+            <th width="20%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let accountTypeData of accountType; let i = index">
+              <td width="10%">{{i+1}}</td>
+              <td width="35%">
+                <a *ngIf="!isBankUpdate" (click)="isBankUpdate = true">{{accountTypeData?.type_name}}</a>
+                <input *ngIf="isBankUpdate" type="text" value={{accountTypeData?.type_name}}
+                       (blur)="onAccountTypeNameUpdate($event.target.value,accountTypeData);isBankUpdate = false"/>
+              </td>
+              <td width="20%">{{accountTypeData?.modified_on | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+              <td width="20%">{{accountTypeData?.modified_by?.modified_by}}</td>
+              <td width="20%">
+                <mat-slide-toggle *ngIf="tabDataType['add_edit']" [checked]="(accountTypeData?.is_active) ? true : false"
+                                  (change)="activeInactiveAccountType($event.checked,accountTypeData)"></mat-slide-toggle>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>  <!-- End Table -->
+  <div *ngIf="accountType.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Grid Inner Header -->
+</div>

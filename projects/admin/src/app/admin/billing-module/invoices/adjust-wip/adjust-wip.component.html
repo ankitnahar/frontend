@@ -1,0 +1,91 @@
+<div class="add-on-off-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onInvoice()">INVOICE</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">ADD ADJUST WIP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add adjust WIP invoice form-->
+  <div>
+    <span class="panel-title orange-color">Add Adjust WIP</span>
+    <!--<span class="panel-title on-right back-color">You have selected <span class="primary-color">4</span> clients.</span>-->
+    <form [formGroup]="addAdjustWIPForm" (submit)="onSubmitAdjustWIPForm(addAdjustWIPForm)">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput [matDatepicker]="fromdateRef" placeholder="From Date" formControlName="from_date"
+                   (dateChange)="setToDate($event.value)">
+            <mat-datepicker-toggle matSuffix [for]="fromdateRef"></mat-datepicker-toggle>
+            <mat-datepicker #fromdateRef></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput [min]="from_date" [matDatepicker]="todateRef" placeholder="To Date"
+                   formControlName="to_date" required>
+            <mat-datepicker-toggle matSuffix [for]="todateRef"></mat-datepicker-toggle>
+            <mat-datepicker #todateRef></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAdjustWIPForm.get('to_date'))"
+                            [errMsg]="validationMsg.ADJUST_WIP_TO_DATE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="service_id" placeholder="Service" required
+                        (selectionChange)="getClientList($event.value)">
+              <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                {{ service?.service_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAdjustWIPForm.get('service_id'))"
+                            [errMsg]="validationMsg.ONE_OFF_SERVICE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-5">
+          <ng-select [items]="clientList"
+                     bindLabel="billing_name"
+                     [hideSelected]="true"
+                     bindValue="entity_id"
+                     placeholder="Select Client"
+                     formControlName="entity_id"
+                     [closeOnSelect]="true">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addAdjustWIPForm.get('entity_id'))"
+                            [errMsg]="validationMsg.ONE_OFF_CLIENT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="col-md-12 text-right PR-0 MT-10">
+            <button (click)="onInvoice()" type="button" class="btn-default MR-5">Cancel</button>
+            <button [disabled]="addAdjustWIPForm.invalid" type="submit" class="btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--End add adjust WIP invoice form-->
+</div>

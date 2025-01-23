@@ -1,0 +1,231 @@
+<!--  Start Early leaving dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo" *ngIf="attendanceSummaryDetail?.remark === 4">EARLY LEAVING APPROVAL</div>
+    <div class="modal__header__logo" *ngIf="attendanceSummaryDetail?.remark === 3">LATE COMING APPROVAL</div>
+  </div>
+
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="approvalForm" (submit)="onSubmit(approvalForm)">
+    <div class="modal__body admin-hrms-attendance-summary-container">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-label class="fw-500">Name</mat-label>
+        </div>
+
+        <div class="col-md-8">
+          <p>{{attendanceSummaryDetail?.assignee?.userfullname}}</p>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">First Approval Name</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-label class="MT-20">{{attendanceSummaryDetail?.assignee?.first_approval?.userfullname}}</mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="MT-20 fw-500">Second Approval Name</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <mat-label class="MT-20">
+            {{(attendanceSummaryDetail?.assignee?.second_approval?.userfullname)?attendanceSummaryDetail?.assignee?.second_approval?.userfullname:'-'}}
+          </mat-label>
+        </div>
+
+        <div class="col-md-4 MT-35">
+          <mat-label class="fw-500">Notify Other Staff</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-35">
+          <ng-select [items]="userDetail"
+                     [closeOnSelect]="true"
+                     bindLabel="userfullname"
+                     placeholder="Staff Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="notify_staff">
+          </ng-select>
+        </div>
+
+        <div class="col-md-4 MT-10">
+          <mat-label class="MT-20 fw-500">Reason for Early Leaving</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-10">
+          <mat-form-field *ngIf="attendanceSummaryDetail?.status === 2">
+          <textarea matInput placeholder="Enter your comment" rows="3" required
+                    formControlName="reason"></textarea>
+          </mat-form-field>
+          <p *ngIf="attendanceSummaryDetail?.status !== 2">{{attendanceSummaryDetail?.reason
+            !==null?attendanceSummaryDetail?.reason:'-'}}</p>
+        </div>
+
+        <div class="col-md-4 MT-35"
+             *ngIf="attendanceSummaryDetail?.status === 3 || attendanceSummaryDetail?.status === 4">
+          <mat-label class="MT-20 fw-500">First Approval User Comment</mat-label>
+        </div>
+        <div class="col-md-8 MT-35">
+          <span *ngIf="attendanceSummaryDetail?.status === 3 && userData?.designation_id?.designation_id != 7">
+          <mat-form-field>
+        <textarea matInput placeholder="Enter your comment" rows="3" required
+                  formControlName="comment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approvalForm.get('comment'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+            </span>
+          <mat-label class="MT-20"
+                     *ngIf="attendanceSummaryDetail?.status === 4 || userData?.designation_id?.designation_id == 7">
+            {{attendanceSummaryDetail?.first_approval?.comment}}
+          </mat-label>
+        </div>
+
+
+        <div class="col-md-4 MT-35"
+             *ngIf="(attendanceSummaryDetail?.status === 4 && userData?.designation_id?.designation_id != 7)">
+          <mat-label class="MT-20 fw-500">Second Approval User Comment</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-10"
+             *ngIf="(attendanceSummaryDetail?.status === 4 && userData?.designation_id?.designation_id != 7)">
+          <mat-form-field>
+              <textarea matInput placeholder="Enter your comment" rows="3" required
+                        formControlName="comment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approvalForm.get('comment'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-35" *ngIf="(userData?.designation_id?.designation_id === 7)">
+          <mat-label class="MT-20 fw-500">Super Admin Comment</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-10" *ngIf="(userData?.designation_id?.designation_id === 7)">
+          <mat-form-field>
+              <textarea matInput placeholder="Enter your comment" rows="3" required
+                        formControlName="comment"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approvalForm.get('comment'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-35" *ngIf="(userData?.designation_id?.designation_id === 7)">
+          <mat-label class="MT-20 fw-500">Mark As Present</mat-label>
+        </div>
+
+        <div class="col-md-8 MT-10" *ngIf="(userData?.designation_id?.designation_id === 7)">
+          <mat-form-field>
+            <mat-select placeholder="Mark As Present" formControlName="finalremark">
+              <mat-option value="1">Half Day</mat-option>
+              <mat-option value="2">Full Day</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(approvalForm.get('finalremark'))"
+                            [errMsg]="validationMsg.COMMENTS"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4 MT-20 PLR-0">
+          <mat-form-field>
+            <mat-select placeholder="Leave Request" [value]="leaveRequest[0]['key']"
+                        (selectionChange)="getAttendanceSummaryForLastMonth(attendanceSummaryDetail, $event.value)">
+              <mat-option *ngFor="let month of leaveRequest" value="{{month.key}}">{{month.label}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Start Request Table -->
+        <div class="col-md-12">
+          <div class="table-container dialog-table-container">
+            <div class="table-block">
+              <table class="P-0">
+                <thead>
+                <tr>
+                  <th width="5%">Sr. No</th>
+                  <th width="12%">Date</th>
+                  <th width="25%">Reason</th>
+                  <th width="20%">First approval Comment</th>
+                  <th width="20%">Status</th>
+                  <th width="18%">Final Remark</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let attendanceData of attendanceSummaryList; let i=index">
+                  <td>{{i+1}}</td>
+                  <td>{{attendanceData?.date | date: "dd-MM-yyyy"}}</td>
+                  <td>{{attendanceData?.reason !== ''?attendanceData?.reason:'-'}}</td>
+                  <td>{{attendanceData?.first_approval?.comment}}</td>
+                  <td>
+                    <div *ngFor="let status of hrStatus">
+                      <span *ngIf="status.key === attendanceData?.status">{{status.label}}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngFor="let finalRemark of hrfinalRemark">
+                      <span *ngIf="finalRemark.key === attendanceData?.final_remark">{{finalRemark.label}}</span>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- End Request Table -->
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-6 text-left approval-name user-approved-request-details">
+          <span *ngIf="attendanceSummaryDetail?.assignee?.first_approval_user !==0"
+                class="{{attendanceSummaryDetail?.status === 2 ? 'orange-color' : attendanceSummaryDetail?.status === 3 ? '' : attendanceSummaryDetail?.status === 4 ? 'green-color' : attendanceSummaryDetail?.status === 5 ? 'green-color' : attendanceSummaryDetail?.status === 6 ? 'red-color' : ''}}">
+            <img *ngIf="attendanceSummaryDetail?.assignee?.first_approval?.user_image"
+                 matTooltip="{{attendanceSummaryDetail?.assignee?.first_approval?.userfullname}}"
+                 src="{{url+attendanceSummaryDetail?.assignee?.first_approval?.user_image}}" width="30"/>
+            <img *ngIf="!attendanceSummaryDetail?.assignee?.first_approval?.user_image"
+                 matTooltip="{{attendanceSummaryDetail?.assignee?.first_approval?.userfullname}}"
+                 src="assets/images/profile_placeholder.png"
+                 width="30"/>
+          </span>
+          <span><mat-icon class="v-align-middle">arrow_forward</mat-icon></span>
+          <span *ngIf="attendanceSummaryDetail?.assignee?.second_approval_user !==0"
+                class="{{attendanceSummaryDetail?.status === 4 ? '' :  attendanceSummaryDetail?.status === 5 ? 'green-color' : attendanceSummaryDetail?.status === 6 ? 'red-color' : ''}}">
+            <img *ngIf="attendanceSummaryDetail?.assignee?.second_approval?.user_image"
+                 matTooltip="{{attendanceSummaryDetail?.assignee?.second_approval?.userfullname}}"
+                 src="{{url+attendanceSummaryDetail?.assignee?.second_approval?.user_image}}"
+                 width="30"/>
+          <img *ngIf="!attendanceSummaryDetail?.assignee?.second_approval?.user_image"
+               matTooltip="{{attendanceSummaryDetail?.assignee?.second_approval?.userfullname}}"
+               src="assets/images/profile_placeholder.png"
+               width="30"/>
+          </span>
+        </div>
+        <div class="col-md-6 text-right">
+          <button type="submit" class="btn-default MR-5" (click)="checkButtonBeheviour(0)"
+                  *ngIf="attendanceSummaryDetail?.status == 3 || attendanceSummaryDetail?.status == 4">Rejected
+          </button>
+          <button type="submit" class="btn-primary" (click)="checkButtonBeheviour(1)" [disabled]="approvalForm.invalid">
+            {{(attendanceSummaryDetail?.status === 2)?'Request send':'Approved'}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

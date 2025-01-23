@@ -1,0 +1,159 @@
+<!-- Start BreadCrumb Top Header -->
+<div class="breadcrumb-top-header">
+  <div class="row">
+    <div class="col-md-9 PL-0">
+      <div class="breadcrumb-top-header__breadcrumbs">
+        <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+        <i class="material-icons">keyboard_arrow_right</i>
+        <span>WORKFLOW</span>
+
+        <i class="material-icons">keyboard_arrow_right</i>
+        <span class="active">
+            <a (click)="onWorksheet()">WORKSHEET</a>
+          </span>
+
+        <i class="material-icons">keyboard_arrow_right</i>
+        <span class="active">PREPARE QUERY</span>
+      </div>
+    </div>
+    <div class="col-md-3 PR-0">
+      <div class="breadcrumb-top-header__right-menu">
+        <ul>
+          <li>
+            <a>
+              <label class="black-color">Quick actions</label>
+              <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+              <mat-menu #menu="matMenu" class="column-menu">
+                <button mat-menu-item class="menu-header">
+                  <h3>Quick Action</h3>
+                </button>
+                <!--    <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                            *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                    </button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                            *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                    </button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                            *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                    </button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                            *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                    </button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                            *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                    </button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                            *ngIf="tabDataWorksheetTraining['view']">Training List
+                    </button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                            *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                      Worksheet
+                    </button>
+                    <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                            *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                      Listing
+                    </button>-->
+              </mat-menu>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End BreadCrumb Top Header -->
+
+
+<!--Edit Queries header -->
+<div class="with-filter-grid-container">
+  <form [formGroup]="addPrepareQueryForm" (submit)="onSubmit(addPrepareQueryForm)">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3>Client : {{worksheetData.trading_name}} | Period {{worksheetData.start_date | date : 'dd-MM-yyyy'}} To
+            {{worksheetData.end_date | date : 'dd-MM-yyyy'}}</h3>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+    <ng-container *ngIf="getFilterBankArray().controls.length > 0">
+      <mat-accordion [multi]="true" *ngFor="let bankData of getFilterBankArray().controls; let b = index;" class="prepare_query_panel">
+        <mat-expansion-panel [expanded]="bankData.get('is_checked').value === 1"
+                             (opened)="bankData.get('is_checked').value === 1 ? true : false"
+                             (closed)="bankData.get('is_checked').value === 0 ? true : false">
+          <mat-expansion-panel-header class="PLR-10">
+            <mat-panel-title>
+              <span class="bank_name">
+              <mat-checkbox [checked]="bankData.get('is_checked').value === 1 ? true : false"
+                            (change)="onCheckBankData(b,'is_checked',$event,bankData.get('is_checked').value)" class="MR-15">&nbsp;</mat-checkbox>
+              {{bankData.get('bank_name').value}} - {{bankData.get('account_no').value}}</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div>
+
+            <div class="row col-md-12">
+              <div class="col-md-2">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="fromdateRef" placeholder="From Date"
+                         [formControl]="bankData.get('start_date')" (dateChange)="setToDate($event.value, b)">
+                  <mat-datepicker-toggle matSuffix [for]="fromdateRef"></mat-datepicker-toggle>
+                  <mat-datepicker #fromdateRef></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2">
+                <mat-form-field>
+                  <input matInput [min]="from_date[b]" [matDatepicker]="fromdateRef1" placeholder="To Date"
+                         [formControl]="bankData.get('end_date')">
+                  <mat-datepicker-toggle matSuffix [for]="fromdateRef1"></mat-datepicker-toggle>
+                  <mat-datepicker #fromdateRef1></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-md-2">
+                <mat-radio-group>
+                  <mat-radio-button value="0" (change)="onSelectQueryType($event, b)">Upload CSV File</mat-radio-button>
+                  <mat-radio-button value="1" (change)="onSelectQueryType($event, b)">Add Manual Row</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div class="col-md-4" *ngIf="bankData.get('queryType').value === 0">
+                <mat-form-field>
+                  <input matInput placeholder="Uploaded CSV File" type="text" name="uploadDocument"
+                         [formControl]="bankData.get('upload')" readonly>
+                  <mat-icon matSuffix (click)="onClear(b)" *ngIf="bankData.get('upload').value">close</mat-icon>
+                  <mat-icon matSuffix (click)="onFileSelect('addDocument_'+b)">attach_file</mat-icon>
+                  <input type="file" id="{{'addDocument_'+b}}" (change)="onFileChange($event, b)" [hidden]="true"
+                         accept=".csv"/>
+                </mat-form-field>
+              </div>
+              <div class="col-md-1 MT-15 PLR-0" *ngIf="bankData.get('queryType').value === 0">
+                <a href="{{url+'docs/querysample.csv'}}" class="primary-color cursor-pointer">
+                  <mat-icon class="primary-color v-align-middle" [matTooltip]="'Download Supported Format'">
+                  </mat-icon>
+                  Download Sample Format
+                </a>
+              </div>
+              <div class="col-md-1" *ngIf="bankData.get('queryType').value === 1">
+                <mat-form-field>
+                  <input matInput type="number" placeholder="Rows" [formControl]="bankData.get('rows')"/>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <!-- Start Table -->
+
+      <div class="col-md-12 MT-10 text-right">
+        <button type="submit" class="btn-primary MR-5" [disabled]="addPrepareQueryForm.invalid">Save & Next</button>
+        <button class="btn-default" type="button" (click)="onWorksheet()">Cancel</button>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="getFilterBankArray().controls.length <= 0">
+      Please add bank first.!
+    </ng-container>
+  </form>
+</div>
+

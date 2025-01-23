@@ -1,0 +1,491 @@
+<!--Start Add Ticket form-->
+<div class="add-tickets">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>WORKFLOW</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onPendingTicket()">PENDING TICKET</a></span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">{{(ticketData?.id > 0) ? 'UPDATE TICKET | ' + ticketData?.code: 'ADD TICKET'}}</span>
+          <!--<span class="active" *ngIf="ticketData && ticketData.id && ticketData.id > 0">{{countDown | async | formatTime}}</span>-->
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a (click)="onShowHistory()">
+                <label>View History</label>
+                <mat-icon>history</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <span class="panel-title orange-color">{{(ticketData && ticketData.id && ticketData.id > 0) ? 'Update' : 'Add'}} Ticket</span>
+  <span class="panel-title on-right" *ngIf="(ticketData && ticketData.id && ticketData.id > 0)">
+    <span *ngIf="isTicketReadOnly"><label>Ticket Open By:</label> {{ticketData?.opened_by?.userfullname}} <a
+      (click)="reloadTicketData()" class="cursor-pointer">Click Here</a> to reload page.</span>
+    <span *ngIf="!isTicketReadOnly"><label>Time escaped:</label>  <countdown #countdown
+                                                                             [config]="{leftTime: 900}"
+                                                                             (finished)="updateFlagForEditOtherUser()">$!m!:$!s!</countdown></span>
+
+  </span>
+  <form [formGroup]="addTicketForm" (submit)="onSubmitTicketForm(addTicketForm)">
+    <div class="row MB-15">
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="type_id" placeholder="Ticket type" [disabled]="isTicketReadOnly ? true : false"
+                      (selectionChange)="checkTicketType($event.value); onRPAProcessRequestChangeSubject(addTicketForm.get('type_id').value,addTicketForm.get('severity').value, addTicketForm.get('department_id').value)"
+                      required>
+            <mat-option *ngFor="let tickettype of ticketTypeList" [value]="tickettype?.id">
+              {{tickettype?.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('type_id'))"
+                          [errMsg]="validationMsg.TICKET_TYPE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="departmentField">
+        <mat-form-field>
+          <mat-select formControlName="department_id" placeholder="Department" required
+                      [disabled]="isTicketReadOnly ? true : false"
+                      (selectionChange)="onRPAProcessRequestChangeSubject(addTicketForm.get('type_id').value,addTicketForm.get('severity').value, addTicketForm.get('department_id').value)">
+            <mat-option *ngFor="let department of departmentList" [value]="department.id">
+              {{department.department_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('department_id'))"
+                          [errMsg]="validationMsg.TICKET_DEPARTMENT_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="priorityField">
+        <mat-form-field>
+          <mat-select formControlName="priority" placeholder="Ticket Priority" required
+                      [disabled]="isTicketReadOnly ? true : false">
+            <mat-option *ngFor="let priority of priorityList" [value]="priority.key">
+              {{ priority.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('priority'))"
+                          [errMsg]="validationMsg.TICKET_PRIORITY_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+
+      <div class="col-md-4" *ngIf="severityField">
+        <mat-form-field>
+          <mat-select formControlName="severity" placeholder="Ticket Tracker" required
+                      [disabled]="isTicketReadOnly ? true : false"
+                      (selectionChange)="checkSeverity($event.value); onRPAProcessRequestChangeSubject(addTicketForm.get('type_id').value,addTicketForm.get('severity').value, addTicketForm.get('department_id').value)">
+            <mat-option *ngFor="let severity of severityList" [value]="severity.key">
+              {{severity.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('severity'))"
+                          [errMsg]="validationMsg.TICKET_TRACKER_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-12" *ngIf="addTicketForm.get('type_id').value === 26">
+        <mat-label><strong>Subject : </strong>{{addTicketForm.get('subject').value}}</mat-label>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('subject'))"
+                          [errMsg]="validationMsg.SUBJECT_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-12" *ngIf="addTicketForm.get('type_id').value !== 26">
+        <mat-form-field>
+          <textarea matInput placeholder="Subject" formControlName="subject" required
+                    [disabled]="isTicketReadOnly ? true : false"
+                    [readonly]="isTicketReadOnly ? true : false" [matTextareaAutosize]
+                    matAutosizeMinRows="2"></textarea>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('subject'))"
+                          [errMsg]="validationMsg.SUBJECT_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-12" *ngIf="processField">
+        <mat-form-field>
+          <textarea matInput placeholder="Process" formControlName="process"
+                    [disabled]="isTicketReadOnly ? true : false"
+                    [readonly]="isTicketReadOnly ? true : false" [matTextareaAutosize]
+                    matAutosizeMinRows="2"></textarea>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('process'))"
+                          [errMsg]="validationMsg.PROCESS_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-12" *ngIf="subProcessField">
+        <mat-form-field>
+          <textarea matInput placeholder="Sub-Process" formControlName="sub_process"
+                    [disabled]="isTicketReadOnly ? true : false"
+                    [readonly]="isTicketReadOnly ? true : false" [matTextareaAutosize]
+                    matAutosizeMinRows="2"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12">
+        <mat-form-field>
+          <textarea matInput placeholder="Description" formControlName="issue_detail"
+                    [disabled]="isTicketReadOnly ? true : false"
+                    [readonly]="isTicketReadOnly ? true : false" [matTextareaAutosize]
+                    matAutosizeMinRows="2"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4" *ngIf="headCountField">
+        <mat-form-field>
+          <input matInput type="number" placeholder="Head Count working on the Sub-Process"
+                 formControlName="head_count"/>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4" *ngIf="saveHourField">
+        <mat-form-field>
+          <input matInput type="number" placeholder="ROI (man hours saved yearly)" formControlName="save_hour"/>
+        </mat-form-field>
+      </div>
+      <div class="col-md-12" *ngIf="reasonWhyField">
+        <mat-form-field>
+          <textarea matInput placeholder="Explain why this has occurred"
+                    formControlName="reason_why_this_has_occurred" [disabled]="isTicketReadOnly ? true : false"
+                    [readonly]="isTicketReadOnly ? true : false" [matTextareaAutosize]
+                    matAutosizeMinRows="2"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="status_id" placeholder="Status" required
+                      [disabled]="isTicketReadOnly ? true : false"
+                      (selectionChange)="checkStatus($event.value)">
+            <mat-option *ngFor="let status of ticketStatusList" [value]="status?.id"
+                        [disabled]="(status?.id == 5 && (!isCompletedStatusEnable && !isCompleteTicketButtonRights))">
+              {{status?.status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('status_id'))"
+                          [errMsg]="validationMsg.STATUS_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4" *ngIf="entityField">
+        <ng-select [items]="clientList"
+                   [closeOnSelect]="true"
+                   bindLabel="trading_name"
+                   placeholder="Parent Trading Name"
+                   bindValue="id"
+                   [virtualScroll]="true"
+                   [disableControl]="isTicketReadOnly ? true : false"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   (change)="onChangeParentEntity($event)"
+                   formControlName="parent_id">
+        </ng-select>
+        <div class="validation-msg MT-10">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('parent_id'))"
+                          [errMsg]="validationMsg.CLIENT_NAME_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4" *ngIf="entityField">
+        <ng-select [items]="clientList"
+                   [closeOnSelect]="true"
+                   bindLabel="trading_name"
+                   placeholder="Client Name"
+                   bindValue="id"
+                   [virtualScroll]="true"
+                   [disableControl]="isTicketReadOnly ? true : false"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="entity_id">
+        </ng-select>
+        <div class="validation-msg MT-10">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('entity_id'))"
+                          [errMsg]="validationMsg.CLIENT_NAME_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4" *ngIf="teamField">
+        <mat-form-field>
+          <mat-select formControlName="team_id" placeholder="Team" [disabled]="isTicketReadOnly ? true : false"
+                      required>
+            <mat-option *ngFor="let team of teamList" [value]="team?.id">
+              {{ team?.team_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('team_id'))"
+                          [errMsg]="validationMsg.TEAM_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4" *ngIf="practiceField">
+        <mat-form-field>
+          <textarea matInput placeholder="Practice Name" formControlName="sr_practice_id"
+                    [disabled]="isTicketReadOnly ? true : false"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4" *ngIf="srTopicField">
+        <mat-form-field>
+          <textarea matInput placeholder="SR Topic" formControlName="sr_topic"
+                    [disabled]="isTicketReadOnly ? true : false"
+                    [readonly]="isTicketReadOnly ? true : false"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4" *ngIf="ticketTopicField">
+        <mat-form-field>
+          <mat-select formControlName="ticket_topic" placeholder="Ticket Topic"
+                      [disabled]="isTicketReadOnly ? true : false">
+            <mat-option *ngFor="let topic of topicList" [value]="topic.key">
+              {{topic.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4" *ngIf="tamField">
+        <ng-select [items]="tamList"
+                   [closeOnSelect]="true"
+                   bindLabel="userfullname"
+                   placeholder="Division Head"
+                   bindValue="id"
+                   [disableControl]="isTicketReadOnly ? true : false"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="technical_account_manager">
+        </ng-select>
+        <div class="validation-msg MT-10">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('technical_account_manager'))"
+                          [errMsg]="validationMsg.DIVISION_HEAD_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <div class="col-md-4" *ngIf="thField">
+        <ng-select [multiple]="true" [items]="thList"
+                   [closeOnSelect]="true"
+                   bindLabel="userfullname"
+                   placeholder="TAM / TL / ATL / TH"
+                   bindValue="id"
+                   [disableControl]="isTicketReadOnly ? true : false"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="technical_head">
+        </ng-select>
+      </div>
+      <div class="col-md-4" *ngIf="staffField">
+        <ng-select [items]="userList"
+                   [closeOnSelect]="true"
+                   bindLabel="userfullname"
+                   placeholder="Staff incharge"
+                   bindValue="id"
+                   [disableControl]="isTicketReadOnly ? true : false"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="staff_incharge">
+        </ng-select>
+        <div class="validation-msg MT-10">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('staff_incharge'))"
+                          [errMsg]="validationMsg.STAFF_INVOLVED_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="problemOurSideField">
+        <mat-form-field>
+          <mat-select formControlName="problem_our_side" placeholder="Is this problem on our side"
+                      [disabled]="isTicketReadOnly ? true : false"
+                      (selectionChange)="checkStaffInvovledIssue($event.value)">
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4" *ngIf="staffinvolvedField">
+        <ng-select [items]="userList"
+                   [closeOnSelect]="true"
+                   bindLabel="userfullname"
+                   placeholder="Staff involved in issue"
+                   bindValue="id"
+                   [disableControl]="isTicketReadOnly ? true : false"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   formControlName="staff_involved_issue">
+        </ng-select>
+        <div class="validation-msg MT-10">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('staff_involved_issue'))"
+                          [errMsg]="validationMsg.STAFF_INCHARGE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10" *ngIf="typeMistakeField">
+        <mat-form-field>
+          <mat-select formControlName="type_of_mistake" placeholder="Type of mistake"
+                      [disabled]="isTicketReadOnly ? true : false">
+            <mat-option *ngFor="let type of typeOfMistakeList" [value]="type.key">
+              {{type.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addTicketForm.get('type_of_mistake'))"
+                          [errMsg]="validationMsg.TYPE_MISTAKE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Document Attachment" type="text" name="uploadDocument"
+                 formControlName="document_file" readonly [disabled]="ticketData?.flag_open ? true : false">
+          <mat-icon matSuffix (click)="onClear()" *ngIf="document_file">close</mat-icon>
+          <mat-icon matSuffix (click)="onChooseDocument()">attach_file</mat-icon>
+          <input type="file" [hidden]="true" id="uploadDocument" (change)="onUploadDocument($event)" [multiple]="true"/>
+        </mat-form-field>
+        <div *ngFor="let document of ticketDocument" class="MB-20">
+          <a class="primary-color" [matTooltip]="'Download'" (click)="downloadDocument(document.id)">
+            <mat-icon class="v-align-middle">file_download</mat-icon>
+          </a>
+          {{document.document_name}}
+          <a *ngIf="userInfo.id === ticketData.created_by.id" (click)="removeDocument(document.id)"
+             class="red-color cursor-pointer on-right">
+            <mat-icon class="v-align-middle">delete</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!--Start add filter field-->
+    <div class="section-sepration PB-30">
+      <span class="panel-title">Action required details</span>
+      <span class="on-right PLR-10 PT-10  primary-color cursor-pointer">
+        <mat-icon
+          matTooltip="To add Action Required - Both Action required details & Assign staff fields are mandatory.&#13;&#13;Only Assignee can edit his or her Action taken details and marked as complete"
+          [matTooltipClass]="'my-tooltip'" class="v-align-middle">info</mat-icon>
+        </span>
+      <div>
+        <div class="row PLR-0 bg-gray">
+          <div class="col-md-3">Action required details
+          </div>
+
+          <div class="col-md-3">Assign staff
+          </div>
+
+          <div class="col-md-3">Action taken details
+          </div>
+
+          <div class="col-md-2">Completion date
+          </div>
+
+          <div class="col-md-1">Action
+          </div>
+        </div>
+        <div class="row col-md-12 PLR-0" *ngFor="let assigneeGroup of getTicketAssigneeArray().controls; let i=index">
+          <div class="col-md-3">
+            <mat-form-field [floatLabel]="'never'">
+              <textarea matInput placeholder="Action Required Details" [disabled]="isTicketReadOnly ? true : false"
+                        (change)="updateChangeValues('action_require_details',i, $event.target.value)"
+                        [matTextareaAutosize]
+                        matAutosizeMinRows="2">{{assigneeGroup.value['action_require_details']}}</textarea>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(assigneeGroup.get('action_require_details'))"
+                              [errMsg]="validationMsg.DATE_REQUIRED"></app-validation>
+            </div>
+          </div>
+          <div class="col-md-3 MT-20">
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Assign Staff"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [disableControl]="isTicketReadOnly ? true : false"
+                       (change)="updateChangeValues('ticket_assignee',i, $event)"
+                       [hideSelected]="true" [(ngModel)]="assigneeGroup.value['ticket_assignee']"
+                       [ngModelOptions]="{standalone: true}">
+            </ng-select>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field [floatLabel]="'never'">
+              <textarea matInput placeholder="Action Taken Details" [disabled]="isTicketReadOnly ? true : false"
+                        (change)="updateChangeValues('action_taken_details',i, $event.target.value)"
+                        [matTextareaAutosize]
+                        matAutosizeMinRows="2">{{assigneeGroup.value['action_taken_details']}}</textarea>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2 MT-30">
+            <mat-checkbox [disabled]="isTicketReadOnly ? true : false"
+                          *ngIf="((userInfo.id === assigneeGroup.value['ticket_assignee'] || this.userInfo.designation_id.designation_id===7))"
+                          [checked]="assigneeGroup.value['mark_as_complete'] === '1' ? true : false"
+                          (change)="changeCompleteData($event.checked, i)"></mat-checkbox>
+            <span class="ML-5">
+              <label *ngIf="assigneeGroup.value['mark_as_complete'] === '1'">{{assigneeGroup.value['complete_date'] | date : 'dd-MM-yyyy'}}</label></span>
+          </div>
+          <div class="col-md-1 MT-20" *ngIf="i === 0 && !ticketData?.flag_open">
+            <mat-icon class="mat-icon cursor-pointer orange-color" (click)="addNewAssignee(i)">add
+            </mat-icon>
+          </div>
+          <div class="col-md-1 MT-15"
+               *ngIf="(!ticketData?.flag_open) && ((i !== 0 && this.userInfo.designation_id.designation_id===7) || (i !== 0 && assigneeGroup.value['ticket_assignee'] ===''))">
+            <mat-icon class="mat-icon material-icons cursor-pointer red-color" (click)="removeFilter(i)">
+              indeterminate_check_box
+            </mat-icon>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!--Start add filter field-->
+    <div class="section-sepration PB-30">
+      <span class="panel-title">Comments</span>
+      <div class="row col-md-12 PLR-0">
+        <div class="col-md-8">
+          <mat-form-field>
+              <textarea matInput placeholder="Resolution / Comments"
+                        formControlName="resolution" [disabled]="isTicketReadOnly ? true : false"
+                        [readonly]="isTicketReadOnly ? true : false" [matTextareaAutosize]
+                        matAutosizeMinRows="2"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <div class="MT-30" *ngIf="!isTicketReadOnly">
+            <button (click)="onTicketList()" type="button" class="btn-default MR-10">Cancel</button>
+            <button [disabled]="addTicketForm.invalid" type="submit" class="btn-primary">{{(ticketData && ticketData.id
+              && ticketData.id > 0) ? 'Update' : 'Add'}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--End add ticket form-->

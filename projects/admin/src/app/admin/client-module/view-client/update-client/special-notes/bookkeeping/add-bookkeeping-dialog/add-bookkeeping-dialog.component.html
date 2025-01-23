@@ -1,0 +1,66 @@
+<!--  Start Bookkeeping dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{noteData ? 'UPDATE' : 'ADD'}} SPECIAL NOTES</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onCloseDialog()">close</i></a>
+  </div>
+
+  <form [formGroup]="addBookkeepingForm" (submit)="onSubmitBookkeepingForm(addBookkeepingForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <textarea matInput placeholder="Special note" formControlName="note" required></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBookkeepingForm.get('note'))"
+                            [errMsg]="validationMsg.SPECIAL_NOTES"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <mat-select placeholder="Note Type" formControlName="type" required
+                        (selectionChange)="onCheckNoteType($event.value)">
+              <mat-option value="1">Permanent</mat-option>
+              <mat-option value="0">Temporary</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBookkeepingForm.get('type'))"
+                            [errMsg]="validationMsg.NOTE_TYPE"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <input matInput [min]="currentDate" [matDatepicker]="expiryDateRef" placeholder="Expiry Date"
+                   formControlName="expiry_on" required/>
+            <mat-datepicker-toggle matSuffix [for]="expiryDateRef"></mat-datepicker-toggle>
+            <mat-datepicker #expiryDateRef disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addBookkeepingForm.get('expiry_on'))"
+                            [errMsg]="validationMsg.EXPIRY_DATE"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-20">
+          <p class="red-color">This notes will display while filling Checklist</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-35">
+          <button class="btn-primary" [disabled]="addBookkeepingForm.invalid">{{noteData ? 'UPDATE' : 'Create'}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Bookkeeping dialog  -->

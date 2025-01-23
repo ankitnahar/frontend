@@ -1,0 +1,70 @@
+<div class="other-information-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>CLIENT</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onClient()">VIEW CLIENT</a></span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">TRIGGER INFORMATION</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <div class="with-filter-grid-container">
+    <div class="MT-10"></div>
+    <!--start other information grid-->
+    <span class="panel-title orange-color">Trigger Information</span>
+
+    <!-- Start grid -->
+    <div class="table-container dialog-table-container">
+      <div class="table-block">
+        <table class="PT-0">
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="35%">Frequency</th>
+            <th width="30%">Period</th>
+            <th width="%">Date</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let triggerinformationlist of triggerInformationList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{triggerinformationlist?.frequency}}</td>
+            <td>{{triggerinformationlist?.period}}</td>
+            <td>{{triggerinformationlist?.date}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!--end bank information grid-->
+  </div>
+  <div *ngIf="triggerInformationList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

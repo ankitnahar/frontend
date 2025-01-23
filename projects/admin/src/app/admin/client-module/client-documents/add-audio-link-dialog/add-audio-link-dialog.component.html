@@ -1,0 +1,117 @@
+<!--  Start Add Audio Link dialog  -->
+<div class="modal large-modal history-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">{{audioVideo ? 'Update' : 'Add'}} Audio Link</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+  <div class="modal__body">
+
+    <div class="view-history-container">
+      <div class="MB-10">
+        <form [formGroup]="createAddAudioLinkForm" (submit)="onSubmit(createAddAudioLinkForm)">
+          <div class="row MT-5">
+
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Document Name" type="text"
+                       formControlName="document_name" required>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(createAddAudioLinkForm.get('document_name'))"
+                                [errMsg]="validationMsg.DOC_NAME_REQUIRED"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Link" type="text"
+                       formControlName="document_link" required>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(createAddAudioLinkForm.get('document_link'))"
+                                [errMsg]="validationMsg.DOC_LINK_REQUIRED"></app-validation>
+              </div>
+              <div class="validation-msg">
+                <app-validation *ngIf="isValidField(createAddAudioLinkForm.get('document_link'))"
+                                [errMsg]="validationMsg.DOC_LINK_INVALID"></app-validation>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <mat-form-field>
+                <mat-select placeholder="Document Type" formControlName="document_type">
+                  <mat-option *ngFor="let fileType of audioTypeList;" [value]="fileType?.key">
+                    {{fileType?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(createAddAudioLinkForm.get('document_type'))"
+                                [errMsg]="validationMsg.DOC_TYPE_REQUIRED"></app-validation>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+            </div>
+
+            <div class="col-md-4 text-right">
+              <button class="btn-primary MR-5" [disabled]="createAddAudioLinkForm.invalid">{{audioVideo ? 'Save' :
+                'Add'}}
+              </button>
+              <button class="btn-default" type="reset" (click)="clearForm()">Clear</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="row">
+        <div class="col-md-12 table-container">
+          <div class="table-block">
+            <table>
+              <thead>
+              <tr>
+                <th width="5%">Sr.No</th>
+                <th width="40%">Document Name</th>
+                <th width="20%">Document Type</th>
+                <th width="35%">Document Link</th>
+                <th width="5%">Action</th>
+              </tr>
+              </thead>
+            </table>
+
+            <div class="table-body col-md-12">
+              <table>
+                <tbody>
+                <tr *ngFor="let audiolinklist of audioLinkList; let i = index">
+                  <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+                  <td width="40%" class="word-break">{{audiolinklist?.document_name}}</td>
+                  <td width="20%">{{getFileTypeName(audiolinklist?.document_type)}}</td>
+                  <td width="35%">{{audiolinklist?.document_link}}</td>
+                  <td width="5%">
+                    <mat-icon class="edit-icon" (click)="onUpdate(audiolinklist)">edit</mat-icon>
+                    <mat-icon class="edit-icon" (click)="onDelete(audiolinklist)">delete</mat-icon>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-paginator [length]="totalRecords"
+                 [pageSize]="pageSize"
+                 [pageIndex]="pageIndex"
+                 [pageSizeOptions]="pageArray"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+  <!-- end Table -->
+
+</div>
+<!--  End Audio  Link Dialog -->

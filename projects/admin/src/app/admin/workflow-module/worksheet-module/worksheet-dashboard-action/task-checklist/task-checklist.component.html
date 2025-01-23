@@ -1,0 +1,620 @@
+<div class="task-checklist-container PB-10">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">
+            <a (click)="onWorksheet()">WORKSHEET</a>
+          </span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">TASK CHECKLIST</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                          *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                          *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                          *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                          *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                          *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                          *ngIf="tabDataWorksheetTraining['view']">Training List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                          *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                    Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                          *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                    Listing
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+
+  <form [formGroup]="checklistForm" (submit)="submitChecklist(checklistForm)">
+    <!--task checklist data html-->
+    <div class="row">
+      <div class="col-md-6 MT-15">
+        <span class="orange-color">Task checklist |
+          <span class="orange-color" *ngIf="worksheetData?.parent_id > 0"> Parent Client : {{worksheetData?.parent_name}} | </span>
+          <span class="dark-primary-color">{{headerData?.entity_id?.trading_name}}</span>
+        </span>
+      </div>
+    </div>
+    <div class="task-checklist-data">
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Master Activity:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.master_activity_id?.name}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Task:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.task_id?.name}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Period:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{worksheetData?.start_date | date : 'dd-MM-yyyy'}} To {{worksheetData?.end_date | date : 'dd-MM-yyyy'}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Category:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{getCategoryName(worksheetData?.category_id)}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Bk Tickets:</span>
+            </div>
+            <div class="col-md-6">
+              <span>
+                <span class="red-tag">{{ticketData?.problemOurSideBk}}</span> out of
+                <span class="blue-tag">{{ticketData?.bkTicket}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Payroll:</span>
+            </div>
+            <div class="col-md-6">
+              <span>
+                <span class="red-tag">{{ticketData?.problemOurSidePayroll}}</span> out of
+                <span class="blue-tag">{{ticketData?.payrollTicket}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Worksheet Status:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.status_name}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Fixed Unit:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.fixed_unit}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Software:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.entity_id?.dynamic_json}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Reviewer Budgeted Unit:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.entity_id?.reviewer_budgeted_unit}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>TAM:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.technical_account_manager}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <span>TL:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.team_lead}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 PL-0">
+          <div class="row">
+            <div class="col-md-6">
+              <span>Process By:</span>
+            </div>
+            <div class="col-md-6">
+              <span>{{headerData?.process_by}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!--client special notes html-->
+    <div class="checklist-question">
+      <div class="row">
+        <!-- </div> -->
+        <div class="col-md-12">
+          <div class="checklist-question__right">
+            <!--  <div class="row MTB-10">
+                <div class="col-md-9 PL-0">
+                  <a (click)="onSpecialNotes(worksheetData)" class="primary-color cursor-pointer">
+                    <i class="material-icons">add</i> Add Special Notes
+                  </a>
+                </div>
+                <div class="col-md-3 PR-0 text-right">
+                  <a class="black-color">
+                    View client special email
+                  </a>
+                  <a class="cursor-pointer black-color ML-15">
+                    &lt;!&ndash;//allExpandState = !allExpandState&ndash;&gt;
+                    {{allExpandState ? 'Collapse All' : 'Expand All'}}
+                  </a>
+                </div>
+              </div>-->
+
+            <mat-accordion [multi]="true" *ngFor="let groupData of getFilterGroupArray().controls; let g = index;">
+              <!-- [expanded]="allExpandState" -->
+              <mat-expansion-panel [expanded]="groupData.value['is_checked'] === 1"
+                                   (opened)="panelOpenState = true"
+                                   (closed)="panelOpenState = false">
+                <mat-expansion-panel-header class="PLR-10">
+                  <mat-panel-title>
+                    <mat-icon *ngIf="groupData.value['is_checked'] === 0" class="red-color v-align-middle">clear
+                    </mat-icon>
+                    <mat-icon *ngIf="groupData.value['is_checked'] === 1" class="orange-color v-align-middle">done
+                    </mat-icon>
+                    <!--<mat-checkbox disabled="true"-->
+                    <!--[checked]="groupData.value['is_checked'] === 1 ? true : false"-->
+                    <!--(change)="$event.stopPropagation(); onCheckGroup(g,'is_checked',$event.checked)"></mat-checkbox>-->
+                    <span class="v-align-middle">{{groupData.value['name']}}</span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="table-container">
+                  <div class="table-block">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th width="30%">Questions</th>
+                        <th width="10%">Account Action</th>
+                        <th width="15%">Account Comment</th>
+                        <th width="10%">Reviewer Action</th>
+                        <th width="15%">Reviewer Comment</th>
+                        <th width="15%" *ngIf="worksheetData.service_id === 1">TH Action</th>
+                        <th width="20%" *ngIf="worksheetData.service_id === 1">TH Comment</th>
+                      </tr>
+                      </thead>
+
+                      <tbody>
+                      <tr *ngFor="let questionData of getFilterGroupArrayData(g).controls; let q = index;">
+                        <td>
+                          {{questionData.value['question_name']}}
+                        </td>
+                        <td>
+                          {{getTeamMemberAction(questionData.value['team_member_action'])}}
+                        </td>
+                        <td>
+                          <span *ngFor="let accountantComment of questionData.value['accountantComment']">
+                              <span>Comment : {{accountantComment['comment']}}</span> <br>
+                              <span>Date : {{accountantComment['created_on'] | date :'dd-MM-yyyy HH:mm:ss'}}</span><br>
+                              <span>Created By : {{accountantComment['created_by']['userfullname']}}</span>
+                          </span>
+                        </td>
+                        <td>
+                          {{getReviewerAction(questionData.value['reviewer_action'])}}
+                        </td>
+                        <td>
+                           <span *ngFor="let reviewerComment of questionData.value['reviewerComment']">
+                            <span>Comment : {{reviewerComment['comment']}}</span> <br>
+                             <span>Tag : {{getReviewerTag(reviewerComment['review_tag_id'])}}</span> <br>
+                             <span *ngIf="+reviewerComment['review_tag_id'] === 2">Topic : {{getReviewerTraining(reviewerComment['training_id'])}}<br></span>
+                            <span>Date : {{reviewerComment['created_on'] | date :'dd-MM-yyyy HH:mm:ss'}}</span><br>
+                            <span>Created By : {{reviewerComment['created_by']['userfullname']}}</span>
+                          </span>
+                        </td>
+                        <td *ngIf="worksheetData.service_id === 1">
+                          {{getTechnicalHeadAction(questionData.value['technical_head_action'])}}
+                        </td>
+                        <td *ngIf="worksheetData.service_id === 1">
+                          <span *ngFor="let thComment of questionData.value['technicalHeadComment']">
+                            <span>Comment : {{thComment['comment']}}</span> <br>
+                            <span>Date : {{thComment['created_on'] | date :'dd-MM-yyyy HH:mm:ss'}}</span><br>
+                            <span>Created By : {{thComment['created_by']['userfullname']}}</span>
+                          </span>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--Uploaded image section html-->
+    <div class="uploaded-documents MB-15 border_top-gray border_bottom_gray">
+      <div class="row MT-15">
+        <div class="col-md-6">
+          <div class="orange-color">Uploaded Documents</div>
+        </div>
+      </div>
+      <div class="row MB-15">
+        <div class="col-md-6">
+          <div class="uploaded-documents__block">
+            <div class="row">
+              <div class="col-md-6 MB-10 PL-0">
+                <span class="black-color">SEND TO CLIENT</span>
+                <span class="label-turquoise-bg-color ML-5">{{worksheetClientDocument.length}}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div *ngIf="worksheetClientDocument.length <=0">
+                No Document Found
+              </div>
+              <div class="uploaded-documents__block__input" *ngFor="let clientDoc of worksheetClientDocument;">
+                <input [readonly]="true" type="text" value="{{clientDoc.document_title}}"
+                       (click)="onFileSelect('uploadDocument')"/>
+                <input [hidden]="true" id="uploadDocument"/>
+                <mat-icon class="img_ico_doc">image</mat-icon>
+
+                <div class="uploaded-documents__block__action">
+                  <a (click)="onOpenDocumentFile(clientDoc)" *ngIf="clientDoc?.is_drive === 1" class="cursor-pointer">
+                    <mat-icon>remove_red_eye</mat-icon>
+                  </a>
+                  <a (click)="downloadDocument(clientDoc)" *ngIf="clientDoc?.is_drive === 0" class="cursor-pointer">
+                    <mat-icon>get_app</mat-icon>
+                  </a>
+                  <!--<a (click)="onConfirmationDialog(clientDoc)" class="red-color cursor-pointer">-->
+                  <!--<mat-icon>delete</mat-icon>-->
+                  <!--</a>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 PL-0">
+          <div class="uploaded-documents__block">
+            <div class="row">
+              <div class="col-md-6 MB-10 PL-0">
+                <span class="black-color">INTERNAL WORKING DOCUMENTS</span>
+                <span class="label-turquoise-bg-color ML-5">{{worksheetInternalDocument.length}}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div *ngIf="worksheetInternalDocument.length <=0">
+                No Document Found
+              </div>
+              <div class="uploaded-documents__block__input" *ngFor="let internalDoc of worksheetInternalDocument;">
+                <input [readonly]="true" type="text" value="{{internalDoc.document_title}}"
+                       (click)="onFileSelect('internalWorkingDocument')"
+                />
+                <input [hidden]="true" id="internalWorkingDocument"/>
+                <mat-icon class="img_ico_doc">image</mat-icon>
+
+                <div class="uploaded-documents__block__action">
+                  <a (click)="onOpenDocumentFile(internalDoc)" *ngIf="internalDoc?.is_drive === 1"
+                     class="cursor-pointer">
+                    <mat-icon>remove_red_eye</mat-icon>
+                  </a>
+                  <a (click)="downloadDocument(internalDoc)" *ngIf="internalDoc?.is_drive === 0" class="cursor-pointer">
+                    <mat-icon>get_app</mat-icon>
+                  </a>
+                  <!--<a (click)="onConfirmationDialog(internalDoc)" class="red-color cursor-pointer">-->
+                  <!--<mat-icon>delete</mat-icon>-->
+                  <!--</a>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12 PLR-0">
+      <div class="row">
+        <div class="col-md-6 PR-0 MB-15" *ngIf="worksheetNotes.length">
+          <span class="orange-color">Additional Notes</span>
+          <div class="table-container MT-15">
+            <div class="table-block">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th width="10%">Sr. No.</th>
+                  <th width="50%">Notes</th>
+                  <th width="40%">Created</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let note of worksheetNotes; let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>
+                    {{note.notes}}
+                  </td>
+                  <td>
+                    {{note?.created_on | date: 'dd-MM-yyyy HH:mm:ss'}} by <span class="primary-color">{{note?.created_by?.userfullname}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 PR-0 MB-15" *ngIf="worksheetRevieweNotes.length">
+          <span class="orange-color">Reviewer Notes</span>
+          <div class="table-container MT-15">
+            <div class="table-block">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th width="10%">Sr. No.</th>
+                  <th width="50%">Notes</th>
+                  <th width="40%">Created</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let rnote of worksheetRevieweNotes; let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>
+                    {{rnote.notes}}
+                  </td>
+                  <td>
+                    {{rnote?.created_on | date: 'dd-MM-yyyy HH:mm:ss'}} by <span class="primary-color">{{rnote?.created_by?.userfullname}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 MB-15" *ngIf="specialNotesList.length">
+          <span class="orange-color">Client Special Notes</span>
+          <div class="table-container MT-15">
+            <div class="table-block">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th width="10%">Sr. No.</th>
+                  <th width="50%">Notes</th>
+                  <th width="20%">Type</th>
+                  <th width="20%">Created</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let snote of specialNotesList; let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>
+                    {{snote.note}}
+                  </td>
+                  <td>
+                    {{(snote.type === 1) ? 'Permanent' : 'Temporary'}}
+                    <span *ngIf="(snote.expiry_on) && (snote.type !== 1)">
+                      <label>Expire On:</label>
+                      <span>{{snote.expiry_on | date:'dd-MM-yyyy'}}</span>
+                    </span>
+                  </td>
+                  <td>
+                    {{snote?.created_on | date: 'dd-MM-yyyy HH:mm:ss'}} by <span class="primary-color">{{snote?.created_by?.userfullname}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 PL-0 MB-15" *ngIf="worksheetTAMNotes.length">
+          <span class="orange-color">TAM Notes</span>
+          <div class="table-container MT-15">
+            <div class="table-block">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th width="10%">Sr. No.</th>
+                  <th width="50%">Notes</th>
+                  <th width="40%">Created</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let tnote of worksheetTAMNotes; let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>
+                    {{tnote.notes}}
+                  </td>
+                  <td>
+                    {{tnote?.created_on | date: 'dd-MM-yyyy HH:mm:ss'}} by <span class="primary-color">{{tnote?.created_by?.userfullname}}</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row border_top-gray">
+      <div class="col-md-12">
+        <div class="MT-15">
+          <div class="row">
+            <div class="col-md-6 PL-0">
+              <span class="orange-color">Timesheet</span>
+            </div>
+          </div>
+          <div class="expand-grid" *ngIf="timesheetListing.length">
+            <div class="expand-grid__thead">
+              <table class="table MT-15">
+                <thead>
+                <tr>
+                  <th width="4%">Sr.No</th>
+                  <th width="11%">Username</th>
+                  <th width="15%">Task</th>
+                  <th width="25%">Subactivity</th>
+                  <th width="15%">Period</th>
+                  <th width="15%">Timesheet Date</th>
+                  <th width="15%">Units/Billing</th>
+                </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="expand-grid__tbody">
+              <table>
+                <tbody *ngFor="let timesheet of timesheetListing; let i=index">
+                <tr [ngClass]="{'is-active-row' : trIndex === i}" class="row-data">
+                  <td width="4%">
+                    <a class="open-inner-data">
+                      <mat-icon [ngClass]="{'is-open' : trIndex === i}" (click)="openRow(i)" class="material-icons">
+                        keyboard_arrow_down
+                      </mat-icon>
+                    </a>
+                    {{i+1}}
+                  </td>
+                  <td width="11%">{{timesheet?.userfullname}}</td>
+                  <td width="15%" class="word-break">{{timesheet?.master}}</td>
+                  <td width="25%" class="word-break">{{timesheet?.subactivity_full_name}}</td>
+                  <td width="15%">{{worksheetData?.start_date | date : 'dd-MM-yyyy'}} To {{worksheetData?.end_date |
+                    date :
+                    'dd-MM-yyyy'}}
+                  </td>
+                  <td width="15%">{{timesheet?.date | date : 'dd-MM-yyyy'}}</td>
+                  <td width="15%"><span class="label-turquoise-bg-color">{{timesheet?.units}}</span>
+                    {{getBillingStatusName(timesheet?.billing_status)}}
+                  </td>
+                </tr>
+                <tr *ngIf="trIndex === i" class="inner-data">
+                  <div class="row PT-10">
+                    <div class="col-md-4">
+                      <div class="inner-data__view">
+                        <div>Notes</div>
+                        <div>{{timesheet?.notes}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

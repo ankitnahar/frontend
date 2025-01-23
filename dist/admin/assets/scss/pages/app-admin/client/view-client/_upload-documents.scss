@@ -1,0 +1,31 @@
+// -----------------------------------------------------------------------------------------------
+// ================================ Admin (View Client) Upload Documents scss ========================
+// -----------------------------------------------------------------------------------------------
+.upload-document-container {
+  .upload-document-form {
+    hidden {
+      opacity: 0;
+    }
+  }
+
+  .grid-inner-header {
+    border-top: 1.8rem solid #f4f4f4;
+    margin-top: 2rem;
+    .panel-title {
+      mat-icon {
+        vertical-align: middle;
+      }
+    }
+  }
+
+  table {
+    tr {
+      td {
+        mat-icon {
+          font-size: 2rem;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

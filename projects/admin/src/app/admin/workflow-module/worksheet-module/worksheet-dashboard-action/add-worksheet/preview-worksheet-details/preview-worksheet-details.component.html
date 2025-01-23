@@ -1,0 +1,129 @@
+<div class="preview-worksheet">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onWorkflow()">WORKSHEET</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onAddNewWorksheet()">ADD NEW WORKSHEET</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">WORKSHEET PREVIEW</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--Start worksheet preview details-->
+  <div>
+    <span class="panel-title">Worksheet Preview Details</span>
+    <mat-hint class="red-color row col-md-12 MB-10">Note:- If client discontinue process initiated, Worksheet rule will not be create for those clients</mat-hint>
+    <form [formGroup]="viewWorksheetPreview"
+          (submit)="onViewWorksheetPreview(viewWorksheetPreview.value,viewWorksheetPreview.valid)">
+      <div class="row">
+        <div class="col-md-3 label-span-color">
+          <div>
+            <label>Master Activity:</label>
+            <span>{{basicInfo?.master_activity_name}}</span>
+          </div>
+        </div>
+
+        <div class="col-md-3 label-span-color">
+          <div>
+            <label>Task:</label>
+            <span>{{basicInfo?.task_name}}</span>
+          </div>
+        </div>
+
+        <div class="col-md-3 label-span-color">
+          <div>
+            <label>Notes:</label>
+            <span>{{basicInfo?.note}}</span>
+          </div>
+        </div>
+        <div class="col-md-3 label-span-color">
+          <div>
+            <label>Parent Trading Name:</label>
+            <span>{{dataOfStoreDetails?.parent_name}}</span>
+          </div>
+        </div>
+        <div class="col-md-12 label-span-color MT-10">
+          <div>
+            <label>Client Name:</label>
+            <span>
+              <mat-chip-list *ngFor="let data of clientArray; let i = index;">
+                <mat-chip>{{data}}</mat-chip>
+              </mat-chip-list>
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!--preview details table html-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="MT-25">
+          <div class="table-container">
+            <div class="table-block">
+              <table class="table MT-15">
+                <thead>
+                <tr>
+                  <th>Sr. No</th>
+                  <th>Frequency</th>
+                  <th>Period</th>
+                  <th>Due Date</th>
+                  <th>Critical Task?</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of otherData; let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>{{data.freq}}</td>
+                  <td>{{data.start | date : 'dd-MM-yyyy'}} - {{data.end | date : 'dd-MM-yyyy'}}</td>
+                  <td>{{data.due | date : 'dd-MM-yyyy'}}</td>
+                  <td>{{getYesNoStatus(dataOfStoreDetails?.critical_task)}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 MB-20">
+      <div class="row MT-30">
+        <div class="col-md-6 PL-0">
+          <button class="btn-primary btn-bordered" (click)="onAddNewWorksheet()" type="button">Back for Change</button>
+        </div>
+        <div class="col-md-6 text-right PR-0">
+          <!--<button [disabled]="viewWorksheetPreview.invalid" type="submit" class="btn-primary MR-5" (click)="saveWorkSheet()">-->
+            <!--<span *ngIf="dataOfStoreDetails?.button_type === 1">Create Worksheet Only</span>-->
+            <!--<span *ngIf="dataOfStoreDetails?.button_type === 2">Set Rule Only</span>-->
+            <!--<span *ngIf="dataOfStoreDetails?.button_type === 3">Set Rule & Create Worksheet</span>-->
+          <!--</button>-->
+
+          <button type="submit" class="btn-primary MR-5" (click)="saveWorkSheet(2)"
+          [disabled]="viewWorksheetPreview.invalid">Set Rule Only
+          </button>
+          <button type="submit" class="btn-primary MR-5" (click)="saveWorkSheet(3)"
+          [disabled]="viewWorksheetPreview.invalid">Set Rule & Create Worksheet
+          </button>
+          <button type="submit" class="btn-primary MR-5" (click)="saveWorkSheet(1)"
+                  [disabled]="viewWorksheetPreview.invalid">Create Worksheet Only
+          </button>
+          <button (click)="onAddNewWorksheet()" type="button" class="btn-default MR-5">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

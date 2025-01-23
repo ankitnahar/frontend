@@ -1,0 +1,37 @@
+
+.min_width_query {
+  .mat-form-field {
+    width: 120px !important;
+  }
+}
+
+.min_width_query {
+  .mat-form-field {
+    width: 120px !important;
+  }
+}
+
+.query-module {
+  .mat-expansion-panel-header {
+    background: #f9f9f9 !important;
+    height: 40px !important;
+  }
+
+  .mat-expansion-panel {
+    border-bottom: 1px solid #e6e6e6 !important;
+    border-radius: 0 !important;
+    margin-bottom: 5px;
+    box-shadow: none;
+  }
+  .mat-card {
+    border: 1px solid #dcdcdc;
+    box-shadow: none;
+  }
+
+  .inner-data{
+    mat-icon {
+      font-size: 20px;
+    }
+  }
+
+}

@@ -1,0 +1,165 @@
+<!-- View Ticket Details Container -->
+<div class="view-ticket-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>WORKFLOW</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onPendingTicket()">PENDING TICKET</a></span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">VIEW TICKETS | {{ticketDetail?.code}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div>
+    <span class="panel-title">View Tickets</span>
+
+    <div class="row">
+      <div class="col-md-6 label-span-color">
+        <div>
+          <label>Ticket code:</label>
+          <span>{{ticketDetail?.code}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.priority">
+          <label>Ticket Priority:</label>
+          <span>{{getPriority(ticketDetail?.priority)}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.type_id === 26">
+          <label>Department:</label>
+          <span>{{getDepartmentName(ticketDetail?.department_id)}}</span>
+        </div>
+        <div>
+          <label>Subject:</label>
+          <span>{{ticketDetail?.subject}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.type_id === 26">
+          <label>Process:</label>
+          <span>{{ticketDetail?.process}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.type_id === 26">
+          <label>Sub-Process:</label>
+          <span>{{ticketDetail?.sub_process}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.type_id === 26">
+          <label>Head Count working on the Sub-Process:</label>
+          <span>{{ticketDetail?.head_count}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.type_id === 26">
+          <label>ROI (man hours saved yearly):</label>
+          <span>{{ticketDetail?.save_hour}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.type_id !== 26">
+          <label>Explain why this has occurred:</label>
+          <span>{{ticketDetail?.reason_why_this_has_occurred}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.type_id !== 26">
+          <label>Is this problem on our side:</label>
+          <span class="dark-primary-color">{{ticketDetail?.problem_our_side == 1 ? 'Yes' :'No'}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.trading_name && ticketDetail?.type_id !== 26">
+          <label>Parent Client Name:</label>
+          <span>{{ticketDetail?.parent_name}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.trading_name && ticketDetail?.type_id !== 26">
+          <label>Client Name:</label>
+          <span>{{ticketDetail?.trading_name}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.doc_upload_path !=='' && ticketDetail?.doc_upload_path !== null">
+          <label>Attachment:</label>
+          <span class="primary-color fw-500">
+          <a (click)="downloadAllDocument(ticketDetail.id)">
+            <mat-icon class="material-icons primary-color v-align-middle">file_download</mat-icon>
+            Download Attachment </a></span>
+        </div>
+      </div>
+
+      <div class="col-md-6 label-span-color">
+        <div>
+          <label>Ticket type:</label>
+          <span>{{ticketDetail?.ticket_type}}</span>
+        </div>
+
+        <div *ngIf="ticketDetail?.severity !== 0">
+          <label>Ticket Tracker:</label>
+          <span>{{getSeverity(ticketDetail?.severity)}}</span>
+        </div>
+
+        <div>
+          <label>Description:</label>
+          <span>{{ticketDetail?.issue_detail}}</span>
+        </div>
+
+        <div>
+          <label>Status:</label>
+          <span class="dark-primary-color">{{getStatusName(ticketDetail?.status_id)}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.team_id">
+          <label>Team:</label>
+          <span>{{getTeamName(ticketDetail?.team_id)}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.tam">
+          <label>Division Head / TAM:</label>
+          <span>{{ticketDetail?.tam}}</span>
+        </div>
+        <div *ngIf="ticketDetail?.TH">
+          <label>TH / TL / ATL:</label>
+          <span>{{ticketDetail?.TH}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="section-sepration PB-30">
+    <span class="panel-title">ACTION REQUIRED</span>
+    <div class="table-container dialog-table-container PLR-10">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="25%">Action required details</th>
+            <th width="20">Assign staff</th>
+            <th width="25%">Action taken details</th>
+            <th width="10%">Complete</th>
+            <th width="20%">Completion date</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let ticketAssigneeDetail of ticketAssignee; let i = index">
+            <td width="25%">{{ticketAssigneeDetail?.action_require_details}}</td>
+            <td width="20%">{{ticketAssigneeDetail?.userfullname}}</td>
+            <td width="25%">{{ticketAssigneeDetail?.action_taken_details}}</td>
+            <td width="10%">{{ticketAssigneeDetail?.mark_as_complete == 1 ? 'Yes' : 'No'}}</td>
+            <td width="20%">{{(ticketAssigneeDetail?.complete_date !== '' && ticketAssigneeDetail?.complete_date !==
+              null && ticketAssigneeDetail?.complete_date !== '0000-00-00' && ticketAssigneeDetail?.complete_date !==
+              '1899-11-30' && ticketAssigneeDetail?.complete_date !== '1970-01-01') ?
+              (ticketAssigneeDetail?.complete_date | date : 'dd-MM-yyyy') : '' }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-sepration PB-30">
+    <span class="panel-title">COMMENTS</span>
+    <div class="row">
+      <div class="col-md-12 label-span-color">
+        <div>
+          <label>Resolution / Comments:</label>
+          <span>{{ticketDetail?.resolution}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

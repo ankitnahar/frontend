@@ -1,0 +1,53 @@
+<!--  Start Add Query Question Group dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{queryQuestionDetail && queryQuestionDetail.id > 0 ? 'Update' : 'Add'}} Query
+      Question
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose(false)">close</i></a>
+  </div>
+
+  <form [formGroup]="addQueryQuestionForm" (submit)="onSubmit(addQueryQuestionForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MT-5">
+          <mat-form-field>
+            <textarea matInput placeholder="Question" formControlName="question_name" required [matTextareaAutosize]
+                      matAutosizeMinRows="2"></textarea>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addQueryQuestionForm.get('question_name'))"
+                            [errMsg]="validationMsg.QUESTION_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-12 MT-5">
+          <ng-select [items]="activeInactiveList"
+                     [closeOnSelect]="true"
+                     bindLabel="label"
+                     placeholder="Status"
+                     bindValue="key"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="is_active">
+          </ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addQueryQuestionForm.get('is_active'))"
+                            [errMsg]="validationMsg.STATUS_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button type="submit" [disabled]="addQueryQuestionForm.invalid" class="btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Add Query Question Group dialog  -->

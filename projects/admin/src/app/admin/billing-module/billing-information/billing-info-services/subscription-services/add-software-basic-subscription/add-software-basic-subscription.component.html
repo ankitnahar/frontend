@@ -1,0 +1,79 @@
+<!-- Start add more bank modal -->
+<div class="modal large-modal bank-dialog">
+  <div class="modal__header">
+    <div class="modal__header__logo">Add More Software</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <form [formGroup]="addSoftwareForm" #addMoreSoftwareForm="ngForm" (submit)="onSoftwareSubmit(addSoftwareForm)">
+      <div class="row">
+        <div class="col-md-6 PL-0">
+          <mat-form-field>
+            <input formControlName="software_plan" matInput type="text" placeholder="Software" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSoftwareForm.get('software_plan'))"
+                            [errMsg]="validationMsg.SOFTWARE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <button [disabled]="addSoftwareForm.invalid" class="btn-primary" type="submit">Save</button>
+        </div>
+      </div>
+    </form>
+    <div class="table-container dialog-table-container MT-10">
+      <div class="table-block">
+        <!--
+        <div class="row">
+          <div class="col-md-4 PL-0">
+            <div class="position-relative search-bank-information">
+              <i class="material-icons">search</i>
+              <input placeholder="Search" type="text" />
+            </div>
+          </div>
+          <div class="col-md-8 PR-0">
+          </div>
+        </div>-->
+        <table>
+          <thead>
+          <tr>
+            <th width="10%">Sr. no.</th>
+            <th width="30%">Software</th>
+            <th width="20%">Modified by</th>
+            <th width="20%">Modified on</th>
+            <th width="20%">Action</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let softwaretype of softwareList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{softwaretype?.software_plan}}
+              <!--<input type="text" />-->
+            </td>
+            <td>{{softwaretype?.modified_by?.modified_by}}</td>
+            <td>{{softwaretype?.modified_on | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+            <td>
+              <a class="orange-color ML-10 MR-10" [matTooltip]="'Edit'" (click)="onEditSoftwareData(softwaretype)">
+                <mat-icon class="material-icons">edit</mat-icon>
+              </a>
+              <mat-slide-toggle *ngIf="slideActiveInactive[i]" [(ngModel)]="slideActiveInactive[i]"
+                                (change)="openToggleConfirmationDialog($event, softwaretype, i)"></mat-slide-toggle>
+              <mat-slide-toggle *ngIf="!slideActiveInactive[i]" [checked]="(softwaretype['is_active']) ? true : false"
+                                (change)="openToggleConfirmationDialog($event, softwaretype, i)"></mat-slide-toggle>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-layer" (click)="onClose()"></div>
+<!-- End add more bank  modal -->

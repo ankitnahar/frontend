@@ -1,0 +1,343 @@
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header">
+    <div class="row">
+      <div class="col-md-6 inner-header-title">
+        <button class="open-dialog-btn" *ngIf="tabData['add_edit']" (click)="onAddAddress()">
+          <mat-icon class="material-icons">add</mat-icon>
+          Add Address
+        </button>
+      </div>
+      <div class="col-md-6">
+        <ul class="download-icon">
+          <li>
+            <a (click)="onToggleFilter()">
+              <span>Filter</span> <i class="material-icons">filter_list</i>
+            </a>
+          </li>
+
+          <li *ngIf="tabData['export']">
+            <a (click)="downloadExcel()">
+              <span>Excel</span> <i class="material-icons">file_download</i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!-- Start Grid Filter -->
+  <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+    <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+    </div>
+    <div class="grid-filter-container">
+      <div class="filter-title">
+        <h3>Advance Filter</h3>
+      </div>
+      <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+        <div class="row">
+          <div class="col-md-3 MT-10">
+            <ng-select [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Parent Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       (change)="onChangeParentEntity($event)"
+                       formControlName="parent_id">
+            </ng-select>
+          </div>
+
+          <div class="col-md-3 MT-10">
+            <ng-select [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id">
+            </ng-select>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Address Type" formControlName="type">
+                <mat-option *ngFor="let addressTypeData of addressType" [value]="addressTypeData.key">
+                  {{addressTypeData.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Address" formControlName="street_address"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Suburb" formControlName="suburb"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="State" formControlName="state_id">
+                <mat-option *ngFor="let addressStateData of addressState" [value]="addressStateData.key">
+                  {{addressStateData.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 MT-10">
+            <mat-form-field>
+              <input matInput placeholder="Post Code" formControlName="postcode"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 MT-10 text-right">
+            <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+            <button type="submit" class="btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Filter -->
+
+  <!-- Start Filter Tags -->
+  <div class="filter-tags">
+    <form [formGroup]="advanceFilterForm">
+      <div class="tag" *ngIf="parentIdField.value">
+        <span class="tag__title">Parent Trading Name:</span>
+        <span>
+            <ng-select class="custom" [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="parent_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+        <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+      </div>
+
+      <div class="tag" *ngIf="entityIdField.value">
+        <span class="tag__title">Trading Name :</span>
+        <span>
+           <ng-select [items]="clientList"
+                      [closeOnSelect]="true"
+                      bindLabel="trading_name"
+                      placeholder="Trading Name"
+                      bindValue="id"
+                      [virtualScroll]="true"
+                      [searchable]="true"
+                      [hideSelected]="true"
+                      formControlName="entity_id"
+                      (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </ng-select>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('entity_id', 'entity_id')">close</i>
+      </div>
+      <div class="tag" *ngIf="addressTypeField.value">
+        <span class="tag__title">Address Type :</span>
+        <span>
+            <mat-form-field>
+              <mat-select placeholder="Address Type" readonly
+                          formControlName="type"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                          #addressTypeRef>
+                <mat-option *ngFor="let addressTypeData of addressType" [value]="addressTypeData.key">{{addressTypeData.label}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('type')">close</i>
+      </div>
+      <div class="tag" *ngIf="addressField.value">
+        <span class="tag__title">Address :</span>
+        <span>
+            <mat-form-field>
+              <input matInput placeholder="Address" formControlName="street_address"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('street_address')">close</i>
+      </div>
+      <div class="tag" *ngIf="suburbField.value">
+        <span class="tag__title">Suburb :</span>
+        <span>
+           <mat-form-field>
+              <input matInput placeholder="Suburb" formControlName="suburb"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('suburb')">close</i>
+      </div>
+      <div class="tag" *ngIf="stateField.value">
+        <span class="tag__title">State :</span>
+        <span>
+          <mat-form-field>
+              <mat-select placeholder="State"
+                          readonly
+                          formControlName="state_id"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                          #addressStateRef>
+                <mat-option *ngFor="let addressStateData of addressState" [value]="addressStateData.key">{{addressStateData.label}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('state_id')">close</i>
+      </div>
+      <div class="tag" *ngIf="postcodeField.value">
+        <span class="tag__title">Post Code :</span>
+        <span>
+            <mat-form-field>
+              <input matInput placeholder="Post Code" formControlName="postcode"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+        <i class="material-icons tag__close" (click)="onClearTag('postcode')">close</i>
+      </div>
+      <div class="clearAll-tags"
+           *ngIf="parentIdField.value || entityIdField.value || addressTypeField.value || addressField.value || suburbField.value || stateField.value || postcodeField.value">
+        <a (click)="resetFilterForm()">Clear all</a>
+      </div>
+    </form>
+  </div>
+  <!-- End Filter Tags -->
+  <!-- End Filter Tags -->
+
+  <!--start table-->
+  <div class="address-container">
+    <div class="table-container table-no-striped">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr. No</th>
+            <th width="12%">Parent Trading Name</th>
+            <th width="15%"
+                (click)="getSortData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Trading Name
+              <i *ngIf="sortBy === 'trading_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+                {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="8%">TAM</th>
+            <th width="8%"
+                (click)="getSortData('type', sortBy === 'type' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Address Type
+              <i *ngIf="sortBy === 'type'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'type' && sortOrder === 'asc', 'icon-down' :  sortBy === 'type' && sortOrder === 'desc'}">
+                {{sortBy === 'type' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="18%"
+                (click)="getSortData('street_address', sortBy === 'street_address' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Address
+              <i *ngIf="sortBy === 'street_address'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'street_address' && sortOrder === 'asc', 'icon-down' :  sortBy === 'street_address' && sortOrder === 'desc'}">
+                {{sortBy === 'street_address' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="11%"
+                (click)="getSortData('suburb', sortBy === 'suburb' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Suburb
+              <i *ngIf="sortBy === 'suburb'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'suburb' && sortOrder === 'asc', 'icon-down' :  sortBy === 'suburb' && sortOrder === 'desc'}">
+                {{sortBy === 'suburb' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="8%"
+                (click)="getSortData('state_id', sortBy === 'state_id' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              State
+              <i *ngIf="sortBy === 'state_id'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'state_id' && sortOrder === 'asc', 'icon-down' :  sortBy === 'state_id' && sortOrder === 'desc'}">
+                {{sortBy === 'state_id' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+            <th width="8%"
+                (click)="getSortData('postcode', sortBy === 'postcode' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Post Code
+              <i *ngIf="sortBy === 'postcode'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'postcode' && sortOrder === 'asc', 'icon-down' :  sortBy === 'postcode' && sortOrder === 'desc'}">
+                {{sortBy === 'postcode' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+            <th width="8%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="addressList.length">
+            <tr *ngFor="let addressData of addressList; let i = index;">
+              <td width="4%">{{i+1}}
+                <mat-icon class="red-color v-align-middle" [matTooltip]="'Discontinue Process Initialized'"
+                          *ngIf="addressData?.discontinue_stage === 1">block
+                </mat-icon>
+              </td>
+              <td width="12%">{{addressData?.parent_name}}</td>
+              <td width="15%" class="word-break">{{addressData?.entity_id?.trading_name}}
+              </td>
+              <td width="8%">{{addressData?.created_by?.userfullname}}
+              </td>
+              <td width="8%"><span class="orange-color"><mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon></span>
+                {{addressData?.type > 0 ? getAddressType(addressData?.type) : ''}}
+              </td>
+              <td width="18%">
+                <div [matTooltip]="addressData?.street_address" class="text-overflow-elipsis-20">
+                  {{addressData?.street_address}}
+                </div>
+              </td>
+              <td width="11%">{{addressData?.suburb}}</td>
+              <td width="8%">{{addressData?.state_id > 0 ? getAddressState(addressData?.state_id) : ''}}</td>
+              <td width="8%">{{addressData?.postcode}}</td>
+              <td width="8%">
+                <a *ngIf="tabData['add_edit']" class="orange-color ML-10" [matTooltip]="'Edit'"
+                   (click)="onEditAddress(addressData)"><i class="material-icons">edit</i></a>
+                <a (click)="onViewAddress(addressData)" class="wet-asphalt-color" [matTooltip]="'View'"><i
+                  class="material-icons">remove_red_eye</i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="addressList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="addressList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!--end table-->
+</div>
+
+<!--item view modal-->
+<div *ngIf="activeView == enumView.VIEW_MODAL">
+  <app-view-address [addressRecord]="selectedAddressRecord"
+                    [popupStatus]="isViewAddress" (close)="activeView = null"></app-view-address>
+</div>

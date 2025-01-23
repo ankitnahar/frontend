@@ -1,0 +1,23 @@
+<!--main tab client html start-->
+<div class="special-note-container">
+  <mat-tab-group class="demo-tab-group" (selectedTabChange)="onSelectTab($event)">
+    <mat-tab label="Basic">
+      <div *ngIf="isActiveTab === 0">
+        <app-basic-main></app-basic-main>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Software">
+      <div *ngIf="isActiveTab === 1">
+        <app-bookkeeping-main [tab]="softwareTab"></app-bookkeeping-main>
+      </div>
+    </mat-tab>
+
+    <mat-tab *ngFor="let tab of mainClientResponse;let i=index" [label]="tab.group_name">
+      <div *ngIf="isActiveTab === (i + 2)">
+        <app-bookkeeping-main [tab]="tab"></app-bookkeeping-main>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<!--main tab client html over-->

@@ -1,0 +1,361 @@
+<div class="">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">
+            <a (click)="onContact()">CONTACT INFORMATION</a>
+          </span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">{{contact ? 'UPDATE CONTACT | ' : 'ADD CONTACT'}} {{contact?.trading_name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add contact form-->
+  <div>
+    <span class="panel-title orange-color">{{contact ? 'Update' : 'Add'}} Contact</span>
+    <form [formGroup]="addContactForm" #addEditContactForm="ngForm" (submit)="onAddContact(addContactForm)">
+      <div class="row">
+        <div class="col-md-4">
+          <ng-select [items]="parentClientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Parent Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     (change)="onChangeParentEntity($event)"
+                     formControlName="parent_id">
+          </ng-select>
+
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('parent_id'))"
+                            [errMsg]="validationMsg.TRADING_NAME"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="entity_id">
+          </ng-select>
+
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('entity_id'))"
+                            [errMsg]="validationMsg.TRADING_NAME"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select [multiple]="true" placeholder="Service" formControlName="service_id" required>
+              <mat-option *ngFor="let team of teamList" [value]="team?.id">{{team?.service_name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('service_id'))"
+                            [errMsg]="validationMsg.SERVICE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select placeholder="Position" formControlName="contact_position_id" required>
+              <mat-option *ngFor="let contactPositionData of contactPosition" [value]="contactPositionData.key">
+                {{contactPositionData.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('contact_position_id'))"
+                            [errMsg]="validationMsg.POSITION"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4" *ngIf="addContactForm.get('contact_position_id').value && addContactForm.get('contact_position_id').value === 1">
+          <mat-form-field>
+            <input matInput type="number" placeholder="Director Number" formControlName="director_number"/>
+          </mat-form-field>
+          <div class="validation-msg">
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="First Name" formControlName="first_name" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('first_name'))"
+                            [errMsg]="validationMsg.FIRST_NAME"></app-validation>
+            <app-validation *ngIf="isValidField(addContactForm.get('first_name'))"
+                            [errMsg]="validationMsg.FIRST_NAME_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Contact person" formControlName="contact_person" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('contact_person'))"
+                            [errMsg]="validationMsg.PERSON_NAME_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addContactForm.get('contact_person'))"
+                            [errMsg]="validationMsg.PERSON_NAME_VALID"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <mat-select placeholder="Is display in BK checklist" formControlName="is_display_bk_checklist" required (selectionChange)="updateFromEmailValidation($event.value)">
+              <mat-option *ngFor="let bkChecklistData of bkChecklist.slice(1)" [value]="bkChecklistData.key">
+                {{bkChecklistData.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('is_display_bk_checklist'))"
+                            [errMsg]="validationMsg.DISPLAY_INBK_CHECKLIST"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <mat-select placeholder="Send Newsletter" formControlName="send_newsletter" required>
+              <mat-option *ngFor="let bkChecklistData of bkChecklist.slice(1)" [value]="bkChecklistData.key">
+                {{bkChecklistData.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('send_newsletter'))"
+                            [errMsg]="validationMsg.SEND_NEWSLETTER"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Email Address" formControlName="to" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <!-- <div *ngIf="!addContactForm.controls['to'].value"> -->
+            <app-validation *ngIf="isRequiredField(addContactForm.get('to'))"
+                            [errMsg]="validationMsg.TO_REQUIRED"></app-validation>
+            <!-- </div> -->
+            <app-validation *ngIf="isValidField(addContactForm.get('to'))"
+                            [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="CC Email Address" formControlName="cc"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addContactForm.get('cc'))"
+                            [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="BCC Email Address" formControlName="bcc"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addContactForm.get('bcc'))"
+                            [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Other Email Address" formControlName="other_email"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addContactForm.get('other_email'))"
+                            [errMsg]="validationMsg.EMAIL_ADDRESS_VALID"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" formControlName="mobile_no" placeholder="Mobile"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addContactForm.get('mobile_no'))"
+                            [errMsg]="validationMsg.MOBILE_NUMBER_VALID"></app-validation>
+            <app-validation *ngIf="isValidLength(addContactForm.get('mobile_no'))"
+                            [errMsg]="validationMsg.MOBILE_NUMBER_VALID_LENGTH"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput type="text" formControlName="office_no" placeholder="Office"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addContactForm.get('office_no'))"
+                            [errMsg]="validationMsg.OFFICE_NUMBER_VALID"></app-validation>
+            <app-validation *ngIf="isValidLength(addContactForm.get('office_no'))"
+                            [errMsg]="validationMsg.OFFICE_NUMBER_VALID_LENGTH"></app-validation>
+          </div>
+        </div>
+
+
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <input matInput formControlName="fax_no" type="text" placeholder="Fax"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addContactForm.get('fax_no'))"
+                            [errMsg]="validationMsg.FAX_NUMBER_VALID"></app-validation>
+            <app-validation *ngIf="isValidLength(addContactForm.get('fax_no'))"
+                            [errMsg]="validationMsg.FAX_NUMBER_VALID_LENGTH"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-5">
+          <mat-form-field>
+            <mat-select placeholder="Is Feedback Contact?" formControlName="is_feedback_contact"
+                        (selectionChange)="updateFeedbackEmailValidation($event.value)" required>
+              <mat-option *ngFor="let bkChecklistData of bkChecklist.slice(1)" [value]="bkChecklistData.key">
+                {{bkChecklistData.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('is_feedback_contact'))"
+                            [errMsg]="validationMsg.IS_FEEDBACK_CONTACT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-5" *ngIf="addContactForm.get('is_feedback_contact').value === 1">
+          <mat-form-field>
+            <input matInput formControlName="feedback_email" type="text" placeholder="Feedback Contact Email"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('feedback_email'))"
+                            [errMsg]="validationMsg.FEEDBACK_CONTACT_EMAIL_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addContactForm.get('feedback_email'))"
+                            [errMsg]="validationMsg.FEEDBACK_CONTACT_EMAIL_VAILD"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5" *ngIf="addContactForm.get('is_display_bk_checklist').value === 1">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Group From Name" formControlName="from_name" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('from_name'))"
+                            [errMsg]="validationMsg.FROM_NAME_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addContactForm.get('from_name'))"
+                            [errMsg]="validationMsg.FROM_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5" *ngIf="addContactForm.get('is_display_bk_checklist').value === 1">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Group From Email" formControlName="from_email" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addContactForm.get('from_email'))"
+                            [errMsg]="validationMsg.FROM_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addContactForm.get('from_email'))"
+                            [errMsg]="validationMsg.FROM_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <!--<div class="col-md-4 MT-5">-->
+          <!--<mat-form-field>-->
+            <!--<mat-select placeholder="Is Client Login Access?" formControlName="is_login" required>-->
+              <!--<mat-option *ngFor="let bkChecklistData of bkChecklist.slice(1)" [value]="bkChecklistData.key">-->
+                <!--{{bkChecklistData.label}}-->
+              <!--</mat-option>-->
+            <!--</mat-select>-->
+          <!--</mat-form-field>-->
+          <!--<div class="validation-msg">-->
+            <!--<app-validation *ngIf="isRequiredField(addContactForm.get('is_login'))"-->
+                            <!--[errMsg]="validationMsg.IS_LOGIN_REQUIRED"></app-validation>-->
+          <!--</div>-->
+        <!--</div>-->
+        <div class="col-md-12 MB-20">
+          <div class="row MT-30">
+            <div class="col-md-6 PL-0">
+              <!--For edit contact only-->
+              <button [disabled]="addContactForm.invalid" type="submit" (click)="AddNewOptionsRedirect()"
+                      class="btn-orange btn-bordered">{{contact ? 'Update' : 'Add'}} & Add New
+              </button>
+              <!--For edit contact only over-->
+            </div>
+            <div class="col-md-6 text-right PR-0">
+              <button (click)="onContact()" type="button" class="btn-default MR-5">Cancel</button>
+              <button (click)="ngOnInit()" type="button" class="btn-default MR-5">Clear</button>
+              <button [disabled]="addContactForm.invalid" type="submit" class="btn-primary">{{contact ? 'Update' :
+                'Add'}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div *ngIf="contact">
+      <form [formGroup]="addContactRemarkForm" #addEditContactRemarksForm="ngForm"
+            (submit)="onAddContactRemark(addContactRemarkForm)">
+
+        <div class="col-md-12 PLR-0 section-sepration">
+          <span class="panel-title">Remarks</span>
+        </div>
+
+        <!--For edit contact only-->
+        <div class="row">
+          <div class="col-md-8 MT-5">
+            <mat-form-field>
+              <textarea matInput placeholder="Remarks" formControlName="notes"></textarea>
+            </mat-form-field>
+            <div class="validation-msg"></div>
+          </div>
+          <div class="col-md-4">
+            <button type="button" [disabled]="addContactRemarkForm.invalid" type="submit" class="btn-primary">Add note
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-20 table-container" *ngIf="contactRemarkList.length">
+          <div class="table-block">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Sr No.</th>
+                <th>Notes</th>
+                <th>Created By</th>
+                <th>Created On</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let contactRemarkData of contactRemarkList; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{contactRemarkData?.notes}}</td>
+                <td>{{contactRemarkData?.created_by?.userfullname}}</td>
+                <td>{{contactRemarkData?.created_on | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+                <td>
+                  <mat-slide-toggle [checked]="(contactRemarkData?.is_active) ? true : false"
+                                    (change)="onChangeContactRemarkStatus($event.checked,contactRemarkData)"></mat-slide-toggle>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!--For edit contact only over-->
+      </form>
+    </div>
+  </div>
+  <!--Over add contact form-->
+</div>

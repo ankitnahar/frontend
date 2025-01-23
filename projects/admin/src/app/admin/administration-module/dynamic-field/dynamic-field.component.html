@@ -1,0 +1,325 @@
+<!-- Admin (Client) Dynamic Field Container -->
+<div class="client-dynamic-field-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">DYNAMIC FIELD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn" (click)="AddEditGlobalConstantsDialog(null)" *ngIf="tabData['add_edit']">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add Dynamic Field
+          </button>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li (click)="downloadExcel()" *ngIf="tabData['export']">
+              <a>
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <mat-icon
+          class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Field Group" formControlName="group_id">
+                  <mat-option *ngFor="let group of dynamicGroup" [value]="group?.id">
+                    {{ group?.group_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Name" formControlName="field_title"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Field Type" formControlName="field_type">
+                  <mat-option *ngFor="let field of fieldType" [value]="field?.key">
+                    {{ field?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Value" formControlName="field_value"/>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Mandatory" formControlName="is_mandatory">
+                  <mat-option value="1">Yes</mat-option>
+                  <mat-option value="0">No</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-9 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="fieldgroup.value">
+          <span class="tag__title">Field Group :</span>
+          <span>
+            <mat-form-field>
+               <mat-select placeholder="Field Group" formControlName="group_id"
+                           (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let group of dynamicGroup" [value]="group?.id">
+                    {{ group?.group_name }}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('group_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="field_title.value">
+          <span class="tag__title">Name :</span>
+          <span>
+            <mat-form-field>
+                <input matInput placeholder="Name" formControlName="field_title"
+                       (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('field_title')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="field_type.value">
+          <span class="tag__title">Field Type :</span>
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="Field Type" formControlName="field_type"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let field of fieldType" [value]="field?.key">
+                    {{ field?.label }}
+                  </mat-option>
+              </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('field_type')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="field_value.value">
+          <span class="tag__title">Value :</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="Yes,No" formControlName="field_value"
+                     (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('field_value')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="field_parent_condition.value">
+          <span class="tag__title">Mandatory :</span>
+          <span>
+            <mat-form-field>
+              <mat-select placeholder="TextBox" readonly #selectRef
+                          formControlName="is_mandatory"
+                          (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-option value="1">Yes</mat-option>
+                <mat-option value="0">No</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('is_mandatory')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="fieldgroup.value  || field_title.value || field_type.value || field_value.value || field_parent_condition.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr.No</th>
+
+            <th width="15%" (click)="getSortData('group_name',
+             (sortBy === 'group_name') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Field Group
+              <i *ngIf="sortBy === 'group_name'" [ngClass]="{'material-icons': true,
+                 'active' : (sortBy === 'group_name'),
+                  'icon-up' : ((sortBy === 'group_name') && (sortOrder === 'asc')),
+                  'icon-down' : true}">
+                {{(sortBy === 'group_name') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="17%" (click)="getSortData('field_title',
+             (sortBy === 'field_title') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Name
+              <i *ngIf="sortBy === 'field_title'" [ngClass]="{'material-icons': true,
+                 'active' : (sortBy === 'field_title'),
+                  'icon-up' : ((sortBy === 'field_title') && (sortOrder === 'asc')),
+                  'icon-down' : true}">
+                {{(sortBy === 'field_title') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="10%" (click)="getSortData('field_type',
+             (sortBy === 'field_type') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Field Type
+              <i *ngIf="sortBy === 'field_type'" [ngClass]="{'material-icons': true,
+                 'active' : (sortBy === 'field_type'),
+                  'icon-up' : ((sortBy === 'field_type') && (sortOrder === 'asc')),
+                  'icon-down' : true}">
+                {{(sortBy === 'field_type') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="20%" (click)="getSortData('field_value',
+             (sortBy === 'field_value') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Value
+              <i *ngIf="sortBy === 'field_value'" [ngClass]="{'material-icons': true,
+                 'active' : (sortBy === 'field_value'),
+                  'icon-up' : ((sortBy === 'field_value') && (sortOrder === 'asc')),
+                  'icon-down' : true}">
+                {{(sortBy === 'field_value') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="19%" (click)="getSortData('help_text',
+             (sortBy === 'help_text') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Description
+              <i *ngIf="sortBy === 'help_text'" [ngClass]="{'material-icons': true,
+                 'active' : (sortBy === 'help_text'),
+                  'icon-up' : ((sortBy === 'help_text') && (sortOrder === 'asc')),
+                  'icon-down' : true}">
+                {{(sortBy === 'help_text') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="6%" (click)="getSortData('is_mandatory',
+             (sortBy === 'is_mandatory') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Madatory
+              <i *ngIf="sortBy === 'is_mandatory'" [ngClass]="{'material-icons': true,
+                 'active' : (sortBy === 'is_mandatory'),
+                  'icon-up' : ((sortBy === 'is_mandatory') && (sortOrder === 'asc')),
+                  'icon-down' : true}">
+                {{(sortBy === 'is_mandatory') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="9%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="dynemicFormField.length">
+            <tr *ngFor="let field of dynemicFormField; let i = index">
+              <td width="4%" class="text-center">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="15%">{{field?.group_id?.group_name}}</td>
+              <td width="17%">{{field?.field_title}}</td>
+              <td width="10%">{{getFiledTypeName(field?.field_type)}}</td>
+              <td width="20%">{{field?.field_value}}</td>
+              <td width="19%">{{field?.help_text}}</td>
+              <td width="6%">
+                <span class="turquoise-color fw-500" *ngIf="field?.is_mandatory"><mat-icon
+                  class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>Yes</span>
+                <span class="red-color fw-500" *ngIf="!field?.is_mandatory"><mat-icon
+                  class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>No</span>
+              </td>
+              <td width="9%">
+                <mat-icon class="light-orange-color" *ngIf="tabData['add_edit']"
+                          (click)="AddEditGlobalConstantsDialog(field)">edit
+                </mat-icon>
+                <mat-icon class="red-color" *ngIf="tabData['delete']" (click)="onOpenViewFieldModal(field)">delete
+                </mat-icon>
+                <mat-slide-toggle *ngIf="tabData['add_edit']" [(ngModel)]="slideData[i]"
+                                  (change)="onDisabledConfirmDialog($event, field, i)"></mat-slide-toggle>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="dynemicFormField.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+  <div *ngIf="dynemicFormField.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Data Grid -->
+</div>

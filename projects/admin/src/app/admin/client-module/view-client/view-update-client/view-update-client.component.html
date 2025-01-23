@@ -1,0 +1,70 @@
+<div class="update-client-container">
+
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>CLIENT</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onClient()">VIEW CLIENT</a></span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">VIEW CLIENT'S INFORMATION | </span>
+          <span *ngIf="clientData?.is_parent === 0"> Parent Client : {{clientData?.parent_entity?.trading_name}} | </span>
+          <span>{{clientData?.code}} - {{clientData?.name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--start tab menu-->
+  <div class="update-client">
+    <!--<mat-tab-group class="demo-tab-group contact-tab" [selectedIndex]="selectedIndexData"  (selectedTabChange)="onSelectTab($event)">-->
+    <mat-tab-group class="demo-tab-group contact-tab" [selectedIndex]="selectedIndexData"
+                   (selectedTabChange)="onSelectTab($event)">
+      <mat-tab label="Main" *ngIf="tabData['view']">
+        <div *ngIf="isActiveTabText === 'Main'">
+          <app-view-main-client></app-view-main-client>
+        </div>
+      </mat-tab>
+      <mat-tab label="Client Allocation" *ngIf="tabDataClientAllocation['view']">
+        <div *ngIf="isActiveTabText === 'Client Allocation'">
+          <app-view-client-allocation [tabInformation]="clientTabInfo"></app-view-client-allocation>
+        </div>
+      </mat-tab>
+      <mat-tab label="Bank Information" *ngIf="tabDataBank['view']">
+        <div *ngIf="isActiveTabText === 'Bank Information'">
+          <app-view-bank-information></app-view-bank-information>
+        </div>
+      </mat-tab>
+      <mat-tab label="Client Checklist" *ngIf="tabDataChecklist['view']">
+        <div *ngIf="isActiveTabText === 'Client Checklist'">
+          <app-view-client-checklist [clientInformation]="clientData"></app-view-client-checklist>
+        </div>
+      </mat-tab>
+      <mat-tab label="Special Notes" *ngIf="tabDataNotes['view']">
+        <div *ngIf="isActiveTabText === 'Special Notes'">
+          <app-view-special-notes [clientInformation]="clientData"></app-view-special-notes>
+        </div>
+      </mat-tab>
+      <mat-tab label="Trigger Information">
+        <div *ngIf="isActiveTabText === 'Trigger Information'">
+          <app-view-trigger-information></app-view-trigger-information>
+        </div>
+      </mat-tab>
+      <mat-tab label="Worksheet Schedule" *ngIf="clientData?.discontinue_stage == 0">
+        <div *ngIf="isActiveTabText === 'Worksheet Schedule'">
+          <app-view-auto-worksheet></app-view-auto-worksheet>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <!--end tab menu-->
+
+</div>

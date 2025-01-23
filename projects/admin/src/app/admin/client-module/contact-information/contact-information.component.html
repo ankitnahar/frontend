@@ -1,0 +1,48 @@
+<div class="contact-tab-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">CONTACT INFORMATION</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--start contact and address tab menu-->
+  <div class="">
+    <mat-tab-group class="demo-tab-group" (selectedTabChange)="onSelectTab($event)">
+      <mat-tab label="Contact" *ngIf="tabData['view']">
+        <div *ngIf="isActiveTabText === 'Contact'">
+          <app-contact></app-contact>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Address" *ngIf="tabAddData['view']">
+        <div *ngIf="isActiveTabText === 'Address'">
+          <app-address></app-address>
+        </div>
+      </mat-tab>
+      <mat-tab label="Newsletter" *ngIf="tabNewsData['view']">
+        <div *ngIf="isActiveTabText === 'Newsletter'">
+          <app-newsletter></app-newsletter>
+        </div>
+      </mat-tab>
+      <mat-tab label="Client Users" *ngIf="tabData['view']">
+        <div *ngIf="isActiveTabText === 'Client Users'">
+         <app-client-users></app-client-users>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <!--end contact and address tab menu-->
+
+</div>

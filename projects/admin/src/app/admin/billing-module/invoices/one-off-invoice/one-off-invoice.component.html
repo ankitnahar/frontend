@@ -1,0 +1,93 @@
+<div class="add-on-off-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="onInvoice()">INVOICE</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">ADD ONE-OFF INVOICE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add one off invoice form-->
+  <div>
+    <span class="panel-title orange-color">Add One-off Invoice</span>
+    <form [formGroup]="addOneoffInvoiceForm" (submit)="onSubmitOneoffInvoiceForm(addOneoffInvoiceForm)">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select formControlName="invoice_type" placeholder="Type" required
+                        (selectionChange)="setinvoiceTypeValue($event.value)">
+              <mat-option *ngFor="let type of invoiceTypeList" [value]="type?.key">
+                {{ type?.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addOneoffInvoiceForm.get('invoice_type'))"
+                            [errMsg]="validationMsg.ONE_OFF_TYPE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4" *ngIf="invoiceTypeValue === 'Advance' || invoiceTypeValue === 'Formation'">
+          <mat-form-field>
+            <mat-select formControlName="service_id" placeholder="Service" required
+                        (selectionChange)="getClientList($event.value)">
+              <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                {{ service?.service_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addOneoffInvoiceForm.get('service_id'))"
+                            [errMsg]="validationMsg.ONE_OFF_SERVICE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div
+          class="{{(invoiceTypeValue === 'Advance' || invoiceTypeValue === 'Formation') ?  'col-md-4' : 'col-md-8'}}">
+          <ng-select [items]="clientList"
+                     bindLabel="billing_name"
+                     bindValue="entity_id"
+                     placeholder="Select Client"
+                     formControlName="entity_id"></ng-select>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addOneoffInvoiceForm.get('entity_id'))"
+                            [errMsg]="validationMsg.ONE_OFF_CLIENT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4 MT-10">
+          <mat-form-field>
+            <input formControlName="amount" matInput placeholder="Amount" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addOneoffInvoiceForm.get('amount'))"
+                            [errMsg]="validationMsg.ONE_OFF_AMOUNT_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addOneoffInvoiceForm.get('amount'))"
+                            [errMsg]="validationMsg.NUMBER_VALID"></app-validation>
+          </div>
+        </div>
+        <div
+          class="{{(invoiceTypeValue === 'Advance' || invoiceTypeValue === 'Formation') ?  'col-md-8' : 'col-md-12'}}">
+          <div class="col-md-12 text-right PR-0 MT-10">
+            <button (click)="onInvoice()" type="button" class="btn-default MR-5">Cancel</button>
+            <button [disabled]="addOneoffInvoiceForm.invalid" type="submit" class="btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--End add one off invoice form-->
+</div>

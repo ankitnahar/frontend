@@ -1,0 +1,524 @@
+<div class="admin-hrms-attendance-summary-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">ATTENDANCE SUMMARY</span>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('pendingtimesheet')">User Pending Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('pendingtimesheetapproved')"
+                          *ngIf="PTAData['add_edit']">User Pending Timesheet
+                    Approved
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('attendancesummaryreport')" *ngIf="ASRData['view']">
+                    {{ASRData['tab_name']}}
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 leave-type-list">
+          <ul>
+            <li class="blue-drop-button" *ngIf="fetchInOut">
+              <button type="button" class="btn-primary btn-bordered" (click)="onFetchMissingInout()">
+                Fetch Missing IN/OUT
+              </button>
+            </li>
+            <li>
+              <a class="red-color list-alignment">
+                <i class="material-icons">fiber_manual_record</i>Long Break</a>
+            </li>
+            <li>
+              <a class="turquoise-color list-alignment"><i class="material-icons">fiber_manual_record</i>Approved</a>
+            </li>
+            <li>
+              <a class="orange-color list-alignment"><i class="material-icons">fiber_manual_record</i>Long Break +
+                Approved</a>
+            </li>
+            <li *ngIf="(this.userInfo?.designation_id?.designation_id === 7)">
+              <a class="green-color list-alignment"><i class="material-icons">fiber_manual_record</i>
+                Exception case can be approved</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel();">
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+            <li>
+              <span class="material-icons cursor-pointer blink orange-color"
+                    matTooltip="Filter result will be shown based on previous month’s 26 to current month’s 25 date.">help</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <mat-icon
+          class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="User Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="shiftList"
+                         [closeOnSelect]="true"
+                         bindLabel="shift_name"
+                         placeholder="Shift Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="shift_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="From" [matDatepicker]="startDateRef"
+                       formControlName="from_date"/>
+                <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+                <mat-datepicker #startDateRef disabled="false"></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="To" [matDatepicker]="endDateRef"
+                       formControlName="to_date"/>
+                <mat-datepicker-toggle matSuffix [for]="endDateRef"></mat-datepicker-toggle>
+                <mat-datepicker #endDateRef disabled="false"></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Month-Year" formControlName="month_year">
+                  <mat-option *ngFor="let year of yearMonth;" [value]="year.key">{{year.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Remark" formControlName="remark" [multiple]="true">
+                  <mat-option *ngFor="let remark of hrRemark" [value]="remark.key">{{remark.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Status" formControlName="status" [multiple]="true">
+                  <mat-option *ngFor="let status of hrStatus" [value]="status.key">{{status.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Final remark" formControlName="final_remark" [multiple]="true">
+                  <mat-option *ngFor="let finalRemark of hrfinalRemark" [value]="finalRemark.key">
+                    {{finalRemark.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            </div>
+
+            <div class="col-md-12 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="userId.value">
+          <span class="tag__title">User Name :</span>
+          <span>
+             <ng-select [items]="userList"
+                        [closeOnSelect]="true"
+                        bindLabel="userfullname"
+                        placeholder="User Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="user_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('user_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="shiftId.value">
+          <span class="tag__title">Shift Name :</span>
+          <span>
+             <ng-select [items]="shiftList"
+                        [closeOnSelect]="true"
+                        bindLabel="shift_name"
+                        placeholder="Shift Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="shift_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('shift_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="fromDatefield.value">
+          <span class="tag__title">From Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="From" [matDatepicker]="startDateRef1"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" formControlName="from_date"/>
+                <mat-datepicker-toggle matSuffix [for]="startDateRef1"></mat-datepicker-toggle>
+                <mat-datepicker #startDateRef1 disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('from_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="toDatefield.value">
+          <span class="tag__title">To Date:</span>
+          <span>
+            <mat-form-field>
+              <input matInput placeholder="To" [matDatepicker]="endDateRef1"
+                     formControlName="to_date" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+                <mat-datepicker-toggle matSuffix [for]="endDateRef1"></mat-datepicker-toggle>
+                <mat-datepicker #endDateRef1 disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('to_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="monthYearField.value">
+          <span class="tag__title">Month-Year :</span>
+          <span>
+             <mat-form-field>
+                <mat-select placeholder="Month-Year" formControlName="month_year"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let year of yearMonth;" [value]="year.key">{{year.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('user_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="remark.value">
+          <span class="tag__title">Remark :</span>
+          <span>
+             <mat-form-field>
+                <mat-select placeholder="Remark" formControlName="remark" [multiple]="true"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let remark of hrRemark" [value]="remark.key">{{remark.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('remark')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="status.value">
+          <span class="tag__title">Status :</span>
+          <span>
+             <mat-form-field>
+                <mat-select placeholder="Status" formControlName="status" [multiple]="true"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let status of hrStatus" [value]="status.key">{{status.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('status')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="final_remark.value">
+          <span class="tag__title">Final remark :</span>
+          <span>
+             <mat-form-field>
+                <mat-select placeholder="Final remark" formControlName="final_remark" [multiple]="true"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let finalRemark of hrfinalRemark"
+                              [value]="finalRemark.key">{{finalRemark.label}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('final_remark')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="userId.value || shiftId.value || fromDatefield.value || toDatefield.value || monthYearField.value || remark.value || status.value || final_remark.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+
+    <div class="expand-grid">
+      <div class="expand-grid__thead">
+        <table>
+          <thead>
+          <tr>
+            <th width="4%">Sr. No</th>
+            <th width="3%">Bio Id</th>
+            <th width="10%">Staff Name
+            </th>
+            <th width="10%">Shift Name
+            </th>
+            <th width="6%">Shift In / Out
+            </th>
+            <th width="6%">Total Shift Hours
+            </th>
+            <th width="6%">Date
+            </th>
+            <th width="7%">User In / Out
+            </th>
+            <th width="6%">Total Hours
+            </th>
+            <th width="4%">Units
+            </th>
+            <th width="10%">Remark
+            </th>
+            <th width="6%">Approval
+            </th>
+            <th width="9%">Status
+            </th>
+            <th width="8%">Final Remark</th>
+            <th width="5%">Action</th>
+          </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div class="expand-grid__tbody expand-grid-scrollable">
+        <table>
+          <tbody *ngFor="let user of attendanceSummaryList; let i = index" [ngClass]="getColor(user)">
+          <tr [ngClass]="{'is-active-row' : trIndex === i}" class="row-data">
+            <td width="4%">
+              <a class="open-inner-data" (click)="openRow(i)">
+                <mat-icon [ngClass]="{'is-open' : trIndex === i}" class="material-icons">keyboard_arrow_down
+                </mat-icon>
+              </a>
+              {{+pageSize * (pageIndex) + i + 1}}
+            </td>
+            <td width="3%">{{user?.assignee?.user_bio_id}}</td>
+            <td width="10%" class="word-break">{{user?.assignee?.userfullname}}</td>
+            <td width="10%" class="word-break">{{user?.shift_id?.shift_name}}</td>
+            <td width="6%">
+              <span class="primary-color v-align-middle font_mood">I: {{user?.shift_from_time}}
+              </span><br/>
+
+              <span class="green-color v-align-middle font_mood">O: {{user?.shift_to_time}}
+              </span><br/>
+
+              <span class="orange-color v-align-middle font_mood">B: {{user?.allow_break}}
+              </span>
+            </td>
+            <td width="6%"><span class="label-gray-bg-color fw-500">{{user?.shiftTime}}</span></td>
+            <td width="8%">{{user?.date | date:"dd-MM-yyyy"}} <br>
+              {{user?.date | date:"EEEE"}}
+              <span *ngIf="user?.is_holiday === 1"> <br>(Holiday)</span>
+            </td>
+            <td width="5%">I:{{user?.punch_in}}<br/>O:{{user?.punch_out}}<br/>B:{{user?.break_time}}</td>
+            <td width="6%"><span class="label-turquoise-bg-color fw-500">{{user?.working_time}}</span></td>
+            <!--<td width="6%" class="primary-color fw-500"></td>-->
+            <td width="4%"><span class="label-orange-bg-color">{{user?.total_timesheet_unit === '' || user?.total_timesheet_unit === null ? 0 : user?.total_timesheet_unit}}</span>
+            </td>
+            <td width="10%" class="word-break">
+              <div class="remarks" *ngFor="let remark of hrRemark">
+                <div *ngIf="remark?.key === user?.remark">
+                  <span class="leaving-type MR-5" matTooltip="{{remark.label}}">{{remark.shortName}}</span>
+                  <span>{{user?.reason}}</span>
+                </div>
+              </div>
+            </td>
+            <td width="6%">
+              <div>
+                <div class="approval-name user-approved-request-details">
+                    <span *ngIf="user?.assignee?.first_approval_user !== 0"
+                          class="{{user?.status === 2 ? 'orange-color' : user?.status === 3 ? '' : user?.status === 4 ? 'green-color' : user?.status === 5 ? 'green-color' : user?.status === 6 ? 'red-color' : ''}}">
+                    <img matTooltip="{{user?.assignee?.first_approval?.userfullname}}{{(user?.status === 4 ||user?.status === 5) ? (user?.first_approval?.comment_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                         *ngIf="user?.assignee?.first_approval_user?.user_image"
+                         src="{{url+user?.assignee?.first_approval?.user_image}}"/>
+                    <img matTooltip="{{user?.assignee?.first_approval?.userfullname}} {{(user?.status === 4 ||user?.status === 5) ? (user?.first_approval?.comment_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                         *ngIf="!user?.assignee?.first_approval_user?.user_image"
+                         src="assets/images/profile_placeholder.png"/>
+                    </span>
+                  <span *ngIf="user?.assignee?.second_approval_user !== 0"
+                        class="{{user?.status === 4 ? '' :  user?.status === 5 ? 'green-color' : user?.status === 6 ? 'red-color' : ''}}">
+                    <img matTooltip="{{user?.assignee?.second_approval?.userfullname}} {{(user?.status === 4 ||user?.status === 5) ? (user?.second_approval?.comment_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                         *ngIf="user?.assignee?.second_approval?.user_image"
+                         src="{{url+user?.assignee?.second_approval?.user_image}}"/>
+                    <img matTooltip="{{user?.assignee?.second_approval?.userfullname}} {{(user?.status === 4 ||user?.status === 5) ? (user?.second_approval?.comment_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                         *ngIf="!user?.assignee?.second_approval?.user_image"
+                         src="assets/images/profile_placeholder.png"/>
+                      </span>
+                </div>
+              </div>
+            </td>
+            <td width="9%" class="word-break">
+              <div *ngFor="let status of hrStatus">
+                <span *ngIf="status.key === user?.status">{{status.label}}</span>
+              </div>
+            </td>
+            <td width="8%">
+              <div *ngFor="let finalRemark of hrfinalRemark">
+                <span *ngIf="finalRemark.key === user?.final_remark">{{finalRemark.label}}</span>
+              </div>
+            </td>
+            <td width="5%" class="PLR-0 text-center">
+              <!-- <mat-icon class="red-color" matTooltip="Reject" *ngIf="user?.status === 6">thumb_down</mat-icon>
+
+               <mat-icon class="turquoise-color" matTooltip="Approved" *ngIf="user?.status === 5">thumb_up</mat-icon>
+ -->
+              <mat-icon class="orange-color" matTooltip="Follow up"
+                        *ngIf="(user?.status === 3 || user?.status ===  4) && this.userInfo.id === user?.user_id"
+                        (click)="followUpEmail(user)">email
+              </mat-icon>
+              <mat-icon class="light-orange-color" (click)="onOpenEarlyLeavingDialog(user)"
+                        *ngIf="user?.status === 2 && user?.user_id === this.userInfo.id">edit
+              </mat-icon>
+              <mat-icon class="light-orange-color" (click)="onOpenEarlyLeavingDialog(user)"
+                        *ngIf="user?.status === 3 && user?.assignee?.first_approval_user === this.userInfo.id">
+                edit
+              </mat-icon>
+              <mat-icon class="light-orange-color" (click)="onOpenEarlyLeavingDialog(user)"
+                        *ngIf="(user?.status === 3 || user?.status === 4) && user?.assignee?.second_approval_user === this.userInfo.id">
+                edit
+              </mat-icon>
+              <mat-icon class="light-orange-color" (click)="onOpenEarlyLeavingDialog(user)"
+                        *ngIf="(this.userInfo?.designation_id?.designation_id === 7 && (user?.status === 4 || user?.status === 3))">
+                edit
+              </mat-icon>
+              <!--<mat-icon class="green-color" (click)="onOpenExceptionCaseDialog(user)"
+                        *ngIf="(this.userInfo?.designation_id?.designation_id === 7 && user?.is_exception === 1 && (user?.final_remark === 1 || user?.final_remark === 3))">
+                edit
+              </mat-icon>-->
+              <mat-icon class="green-color" (click)="onOpenExceptionCaseDialog(user)"
+                        *ngIf="(this.userInfo?.designation_id?.designation_id === 7 && (user?.final_remark === 1 || user?.final_remark === 3) && user?.remark !== 5)">
+                edit
+              </mat-icon>
+            </td>
+          </tr>
+          <tr *ngIf="trIndex === i" class="inner-data">
+            <div class="row PT-10">
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>First approval Comment</div>
+                  <div>{{(user?.first_approval?.comment)?user?.first_approval?.comment:'-'}}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="inner-data__view">
+                  <div>Second approval Comment</div>
+                  <div>{{(user?.second_approval?.comment)?user?.second_approval?.comment:'-'}}</div>
+                </div>
+              </div>
+              <div class="col-md-6" *ngIf="user?.rejection_detail">
+                <div class="inner-data__view">
+                  <div>Super admin Comment</div>
+                  <div>{{(user?.rejection_detail?.comment)?user?.rejection_detail?.comment:'-'}}</div>
+                </div>
+              </div>
+              <div class="col-md-6" *ngIf="user?.rejection_detail">
+                <div class="inner-data__view">
+                  <div>Super admin name</div>
+                  <div>
+                    {{(user?.rejection_detail?.comment_by?.userfullname)?user?.rejection_detail?.comment_by?.userfullname:'-'}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="expand-grid__tfoot" *ngIf="attendanceSummaryList.length">
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray" (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+    <div *ngIf="!attendanceSummaryList.length" class="panel-title red-color">
+      No Records Found!
+    </div>
+  </div>
+</div>

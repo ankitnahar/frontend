@@ -1,0 +1,91 @@
+<!--  Start Change InOut Time dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{data.fieldData ? 'Update' : 'Add'}} Dynamic Field</div>
+  </div>
+
+  <div class="modal__close">
+    <a><i class="material-icons" (click)="onClose()">close</i></a>
+  </div>
+
+  <form [formGroup]="addDynamicForm" (submit)="onSubmitAddDynamicForm(addDynamicForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="Field Name" formControlName="field_title" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addDynamicForm.get('field_title'))"
+                            [errMsg]="validationMsg.FIELD_NAME_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <mat-select placeholder="Field Group" formControlName="group_id" required>
+              <mat-option *ngFor="let group of dynamicGroup" [value]="group?.id">
+                {{ group?.group_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addDynamicForm.get('group_id'))"
+                            [errMsg]="validationMsg.FIELD_GROUP_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <mat-select placeholder="Control Type" formControlName="field_type" required
+                        [disabled]="data.fieldData ? true : false"
+                        (selectionChange)="changeControlType($event.value)">
+              <mat-option *ngFor="let field of fieldType" [value]="field?.key">
+                {{ field?.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addDynamicForm.get('field_type'))"
+                            [errMsg]="validationMsg.FIELD_TYPE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-6 MT-10" *ngIf="fieldValue">
+          <mat-form-field>
+            <textarea matInput placeholder="Field Value" formControlName="field_value"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Description" formControlName="help_text"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 MT-20" *ngIf="fieldValueType">
+          <mat-radio-group formControlName="field_value_type">
+            <mat-radio-button value="A" class="MR-10">Alphabetical</mat-radio-button>
+            <mat-radio-button value="N" class="MR-10">Numeric</mat-radio-button>
+            <mat-radio-button value="B">Both</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="col-md-6 MT-20">
+          <mat-checkbox formControlName="is_mandatory">Click to make this field mandatory.</mat-checkbox>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button [disabled]="addDynamicForm.invalid" type="submit" class="btn-primary">{{data.fieldData ? 'Update' :
+            'Add'}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

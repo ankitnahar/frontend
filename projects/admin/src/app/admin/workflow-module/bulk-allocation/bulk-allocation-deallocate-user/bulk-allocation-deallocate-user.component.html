@@ -1,0 +1,101 @@
+<!--Start bulk de-allocation form-->
+<div class="bulk-allocation">
+  <form [formGroup]="addDeAllocationUser" (submit)="onSubmit(addDeAllocationUser)">
+    <span class="panel-title">Bulk Deallocation</span>
+    <span class="panel-title on-right back-color">You have selected <span class="primary-color">{{(selectedFilterEntity) ? selectedFilterEntity.length : 0}}</span> clients.</span>
+    <div class="row">
+      <div class="col-md-4">
+        <ng-select class="custom" [items]="userList"
+                   [closeOnSelect]="true"
+                   bindLabel="userfullname"
+                   placeholder="Deallocated User"
+                   bindValue="id"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   (change)="onUserChange($event)"
+                   formControlName="user_id">
+        </ng-select>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addDeAllocationUser.get('user_id'))"
+                          [errMsg]="validationMsg.ALLOCATED_USER_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-8 text-right orange-color PT-30">
+        <span (click)="selectAll()" class="cursor-pointer">Select All</span> |
+        <span (click)="unselectAll()" class="cursor-pointer">DeSelect All</span>
+      </div>
+
+      <div class="col-md-12 MB-15">
+        <ng-select class="custom" [items]="clientList"
+                   [closeOnSelect]="true"
+                   bindLabel="trading_name"
+                   placeholder="Select Client"
+                   bindValue="id"
+                   [virtualScroll]="true"
+                   [searchable]="true"
+                   [hideSelected]="true"
+                   multiple="true"
+                   (change)="onClientChangeUpdateCount($event)"
+                   formControlName="entity_id">
+        </ng-select>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addDeAllocationUser.get('entity_id'))"
+                          [errMsg]="validationMsg.CLIENT_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Uploaded CSV File" type="text" name="uploadDocument"
+                 formControlName="document_file">
+          <mat-icon matSuffix (click)="onClear()">close</mat-icon>
+          <mat-icon matSuffix (click)="onChooseDocument()">attach_file</mat-icon>
+          <input type="file" [hidden]="true" id="uploadDocument" (change)="onUploadDocument($event)"/>
+        </mat-form-field>
+        <a href="{{url+'docs/bulk_allocation.csv'}}" class="primary-color cursor-pointer">
+          <mat-icon class="upload_ico">get_app</mat-icon>
+          Download supported format</a>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <mat-select formControlName="services" placeholder="Service" required multiple="true">
+            <mat-option [value]="0">Other</mat-option>
+            <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+              {{ service?.service_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(addDeAllocationUser.get('services'))"
+                          [errMsg]="validationMsg.SERVICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+      <!--<div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Uploaded Document Name" type="text" name="uploadDocument"
+                 formControlName="documentName">
+          <mat-icon matSuffix (click)="onClear()">close</mat-icon>
+          <mat-icon matSuffix (click)="onChooseDocument()">attach_file</mat-icon>
+          <input type="file" [hidden]="true"/>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-5">
+        <a (click)="downloadSupportedDocument()" class="primary-color">
+          <mat-icon class="upload_ico">get_app</mat-icon>
+          Download supported format</a>
+      </div>-->
+
+      <div class="col-md-12">
+        <div class="col-md-12 text-right PR-0 MT-10">
+          <button type="button" class="btn-default MR-10">Cancel</button>
+          <button [disabled]="addDeAllocationUser.invalid" type="submit" class="btn-primary">Deallocate User</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--End bulk De-allocation form-->

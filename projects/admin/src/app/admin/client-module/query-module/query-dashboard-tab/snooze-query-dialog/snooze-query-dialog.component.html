@@ -1,0 +1,56 @@
+<!--  Start Snooze Information dialog  -->
+<div class="">
+  <div class="modal__header">
+    <div class="modal__header__logo">Snooze Query : {{queryData?.trading_name}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addSnoozeForm" (submit)="onSubmitSnoozeForm(addSnoozeForm)">
+    <div class="modal__body">
+      <span><span class="orange-color">Subject : </span>{{queryData?.subject}}</span>
+      <div class="row">
+        <div class="col-md-12 PLR-0 MT-15">
+          <mat-form-field>
+            <mat-select placeholder="Snooze Days" formControlName="snooze" (selectionChange)="getReminderDate()">
+              <mat-option *ngFor="let days of snoozeOrReminderDays" [value]="days['key']">
+                {{days['label']}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSnoozeForm.get('snooze'))"
+                            [errMsg]="validationMsg.SNOOZE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-20 MB-30 PLR-0">
+          <mat-form-field>
+            <mat-select placeholder="Reminder Days" formControlName="reminder" (selectionChange)="getReminderDate()">
+              <mat-option *ngFor="let days of snoozeOrReminderDays" [value]="days['key']">
+                {{days['label']}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addSnoozeForm.get('reminder'))"
+                            [errMsg]="validationMsg.REMINDER_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div *ngIf="nextReminderDate">Next Reminder Date :: {{nextReminderDate | date : 'dd-MM-yyyy'}}</div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addSnoozeForm.invalid">Set Reminder</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Assignee dialog  -->

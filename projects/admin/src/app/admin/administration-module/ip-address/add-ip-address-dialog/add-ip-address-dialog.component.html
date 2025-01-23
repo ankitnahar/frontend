@@ -1,0 +1,67 @@
+<!--  Start ADD IP ADDRESS dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{ipAddress ? 'Update' : 'Add'}} IP Address</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addIpAddressForm" (submit)="onSubmitIP(addIpAddressForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <input matInput placeholder="IP Addreess From" formControlName="from_ip" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addIpAddressForm.get('from_ip'))"
+                            [errMsg]="validationMsg.IP_ADDRESS_FORM_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="IP Addreess To" formControlName="to_ip"/>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <mat-select placeholder="Server Access" formControlName="access_by" required>
+              <mat-option *ngFor="let access of accessByList" [value]="access?.key">
+                {{ access?.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addIpAddressForm.get('access_by'))"
+                            [errMsg]="validationMsg.SERVER_ACCESS_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput placeholder="Belongs To" formControlName="belongs_to" required/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addIpAddressForm.get('belongs_to'))"
+                            [errMsg]="validationMsg.BELONGS_TO_REQUIRED"></app-validation>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" [disabled]="addIpAddressForm.invalid">{{ipAddress ? 'UPDATE': 'ADD'}}</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

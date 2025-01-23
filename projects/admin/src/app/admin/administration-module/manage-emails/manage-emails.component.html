@@ -1,0 +1,109 @@
+<!-- Manage Emails Container -->
+<div class="manage-emails-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">MANAGE EMAILS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3> Manage Emails</h3>
+        </div>
+        <div class="col-md-6">
+          <div class="grid-search">
+            <form [formGroup]="filterForm">
+              <mat-form-field [floatLabel]="'never'">
+                <input matInput placeholder="Search" formControlName="manage_emails_search"
+                       (keyup)="setAdvanceFilter(filterForm)">
+              </mat-form-field>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="22%">Code</th>
+            <th width="30%">Subject</th>
+            <th width="35%">CC</th>
+            <th width="8%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="manageEmailList.length">
+            <tr *ngFor="let emaillist of manageEmailList; let i = index">
+              <td width="5%">{{i+1}}</td>
+              <td width="22%" class="word-break">{{emaillist?.code}}</td>
+              <td width="30%" class="word-break">{{emaillist?.subject}}</td>
+              <td width="35%" class="word-break-emails"> {{emaillist?.cc}}
+                <a (click)="onEditCCDialog(emaillist)" *ngIf="tabData['add_edit']"
+                   class="cursor-pointer light-orange-color">
+                  <mat-icon class="cc-f-12 v-align-middle">edit</mat-icon>
+                </a></td>
+              <td width="8%">
+                <a class="light-orange-color" [matTooltip]="'Set Email Template'" *ngIf="tabData['add_edit']"
+                   (click)="onSetEmailTemplate(emaillist)">
+                  <mat-icon class="material-icons">email</mat-icon>
+                </a>
+                <a class="primary-color">
+                  <mat-slide-toggle *ngIf="slideActiveInactive[i] && tabData['add_edit']"
+                                    [(ngModel)]="slideActiveInactive[i]"
+                                    (change)="openToggleConfirmationDialog($event, emaillist, i)"></mat-slide-toggle>
+                  <mat-slide-toggle *ngIf="!slideActiveInactive[i] && tabData['add_edit']"
+                                    [checked]="(emaillist?.is_active) ? true : false"
+                                    (change)="openToggleConfirmationDialog($event, emaillist, i)"></mat-slide-toggle>
+
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="manageEmailList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>  <!-- End Table -->
+  <div *ngIf="manageEmailList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Grid Inner Header -->
+</div>

@@ -1,0 +1,109 @@
+<!--  Start Sub Client List dialog  -->
+<div class="modal large-modal history-modal debtors-management-comments">
+  <div class="modal__header">
+    <div class="modal__header__logo">ADD COMMENTS : {{entityName}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+  <div class="modal__body">
+    <div class="view-history-container">
+      <div class="MB-10">
+        <form [formGroup]="commentForm" #addEditCommentForm="ngForm" (submit)="onSubmitComment(commentForm)">
+          <div class="row">
+            <div class="col-md-9">
+              <mat-form-field floatLabel="never">
+                <textarea formControlName="comment" matInput placeholder="Enter Comments" rows="3"></textarea>
+              </mat-form-field>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(commentForm.get('comment'))"
+                                [errMsg]="validationMsg.COMMENTS"></app-validation>
+              </div>
+            </div>
+            <div class="col-md-3 MT-10 text-left">
+              <mat-checkbox [checked]="isSendEmailNotification" (change)="onSelectItem($event.checked)">Send Email
+                Notification
+              </mat-checkbox>
+              <button type="button" class="btn-default MR-5" (click)="resetForm()">Clear</button>
+              <button type="submit" class="btn-primary" [disabled]="commentForm.invalid">Submit</button>
+            </div>
+            <div class="col-md-4 MT-10" *ngIf="isSendEmailNotification">
+              <ng-select class="custom" [items]="userList" [multiple]="true"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="To"
+                         bindValue="email"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         [(ngModel)]="selectedToEmail"
+                         formControlName="to_mail">
+              </ng-select>
+              <div class="validation-msg">
+                <app-validation *ngIf="isRequiredField(commentForm.get('to_mail'))"
+                                [errMsg]="validationMsg.TO_REQUIRED"></app-validation>
+              </div>
+            </div>
+            <div class="col-md-8 MT-10" *ngIf="isSendEmailNotification">
+              <ng-select class="custom" [items]="userList" [multiple]="true"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="CC"
+                         bindValue="email"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         [(ngModel)]="selectedCCEmail"
+                         formControlName="cc_mail">
+              </ng-select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <ul>
+        <div *ngFor="let debtorsComment of debtorsManagementComment; let i = index">
+          <li>
+            <a>
+              <div class="profile-icon">
+                <img src="assets/images/profile_placeholder.png" width="28" height="28" alt=""/>
+              </div>
+              <div class="history-details">
+                <div>
+                  <h3>Updated By <span>{{debtorsComment?.created_by?.userfullname}}</span></h3>
+                  <div class="history-time">
+                    <i class="material-icons">query_builder</i>
+                    <span>{{debtorsComment?.created_on | date : 'dd-MM-yyy HH:mm:ss'}}</span>
+                  </div>
+                </div>
+                <div>
+                  <h5><span *ngIf="debtorsComment?.to_mail"><strong>TO:</strong>{{debtorsComment?.to_mail}}</span><span
+                    *ngIf="debtorsComment?.cc_mail"> | <strong>CC:</strong>{{debtorsComment?.cc_mail}}</span></h5>
+                </div>
+                <div class="clearfix"></div>
+                <ul class="history-content">
+                  <li>
+                    <div><i class="material-icons">done_all</i>
+                      <span class="fw-500">{{debtorsComment?.comment}}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </a>
+          </li>
+        </div>
+      </ul>
+    </div>
+  </div>
+
+  <mat-paginator [length]="totalRecords"
+                 [pageSize]="pageSize"
+                 [pageIndex]="pageIndex"
+                 [pageSizeOptions]="pageArray"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+
+</div>
+<!--  End Change Sub client list dialog  -->

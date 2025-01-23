@@ -1,0 +1,104 @@
+<!--  Start Sub Client List dialog  -->
+<div class="modal large-modal history-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">VIEW HISTORY</div>
+    <div class="modal__header__datepicker">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="Start date" [matDatepicker]="startDateRef" (mousedown)="startDateRef.open()"
+                   [(ngModel)]="startDateValue" readonly (dateChange)="onChangeDate()" [max]="endDateValue"/>
+            <mat-datepicker-toggle matSuffix [for]="startDateRef"></mat-datepicker-toggle>
+            <mat-datepicker #startDateRef></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field>
+            <input matInput placeholder="End date" [matDatepicker]="endDateRef" (mousedown)="endDateRef.open()"
+                   [(ngModel)]="endDateValue" readonly (dateChange)="onChangeDate()" [min]="startDateValue"/>
+            <mat-datepicker-toggle matSuffix [for]="endDateRef"></mat-datepicker-toggle>
+            <mat-datepicker #endDateRef></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+
+  <div class="modal__body">
+    <ul class="view-history-container" *ngIf="historyList.length">
+      <li *ngFor="let history of historyList">
+        <a>
+          <div class="profile-icon">
+            <img src="assets/images/profile_placeholder.png" width="28" height="28" alt=""/>
+          </div>
+          <div class="history-details">
+            <div>
+              <h3>Updated By <span>{{history?.modified_by?.userfullname}}</span></h3>
+              <div class="history-time">
+                <i class="material-icons">query_builder</i>
+                <span>{{history?.modified_on | date : 'dd-MM-yyyy HH:mm:ss'}}</span>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <ul class="history-content" *ngFor="let changes of history.changesList; let i=index">
+              <li *ngIf="formatType == 0">
+                <div><i class="material-icons">done_all</i>
+                  <span *ngIf="history.changesList[i].display_name" class="fw-500">{{history.changesList[i].display_name}}</span>
+                  <span *ngIf="history.changesList[i].old_value"> | Before : {{isValidDate(history.changesList[i].old_value) ? (history.changesList[i].old_value | date : 'dd-MM-yyyy') : history.changesList[i].old_value}}</span>
+                  <span *ngIf="history.changesList[i].new_value"> | Now : {{isValidDate(history.changesList[i].new_value) ? (history.changesList[i].new_value | date : 'dd-MM-yyyy') : history.changesList[i].new_value}}</span>
+                </div>
+              </li>
+              <li *ngIf="formatType == 1">
+                <div><i class="material-icons">done_all</i>
+                  <span *ngIf="history.changesList[i].checklist"
+                        class="fw-500">{{history.changesList[i].checklist}}</span>
+                  <span *ngIf="history.changesList[i].before"> | Before : {{isValidDate(history.changesList[i].before) ? (history.changesList[i].before | date : 'dd-MM-yyyy') : history.changesList[i].before}}</span>
+                  <span *ngIf="history.changesList[i].now"> | Now : {{isValidDate(history.changesList[i].now) ? (history.changesList[i].now | date : 'dd-MM-yyyy') : history.changesList[i].now}}</span>
+                </div>
+              </li>
+              <li *ngIf="formatType == 2">
+                <div><i class="material-icons">done_all</i>
+                  <span *ngIf="history.changesList[i].changeDetail" class="fw-500">{{history.changesList[i].changeDetail}}</span>
+                  <span *ngIf="history.changesList[i].new_value"> {{isValidDate(history.changesList[i].new_value) ? (history.changesList[i].new_value | date : 'dd-MM-yyyy') : history.changesList[i].new_value}}</span>
+                </div>
+              </li>
+              <li *ngIf="formatType == 3">
+                  <span *ngFor="let changesData of history.changesList[i]; let j=index">
+                     <div class="MR-20">
+                        <span *ngIf="j ===0" class="light-orange-color"><i class="material-icons light-orange-color">navigate_next</i>Sub Activity Code - <span
+                          class="fw-500">{{i}}</span></span>
+                     </div>
+                    <div class="MR-20"><i class="material-icons">done_all</i>
+                        <span *ngIf="history.changesList[i][j].display_name" class="fw-500">{{getFieldName(history.changesList[i][j].display_name, i)}}</span>
+                        <span *ngIf="history.changesList[i][j].old_value"> | Before : {{isValidDate(history.changesList[i][j].old_value) ? (history.changesList[i][j].old_value | date : 'dd-MM-yyyy') : history.changesList[i][j].old_value}}</span>
+                        <span *ngIf="history.changesList[i][j].new_value"> | Now : {{isValidDate(history.changesList[i][j].new_value) ? (history.changesList[i][j].new_value | date : 'dd-MM-yyyy') : history.changesList[i][j].new_value}}</span>
+                    </div>
+                  </span>
+              </li>
+            </ul>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="modal__footer" *ngIf="historyList.length">
+    <mat-paginator [length]="totalRecords"
+                   [pageSize]="pageSize"
+                   [pageIndex]="pageIndex"
+                   [pageSizeOptions]="pageArray"
+                   (page)="onClientHistoryListPageChange($event)">
+    </mat-paginator>
+  </div>
+  <div *ngIf="historyList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>
+<!--  End Change Sub client list dialog  -->

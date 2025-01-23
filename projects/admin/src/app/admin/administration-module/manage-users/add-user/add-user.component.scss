@@ -1,0 +1,29 @@
+@import "../../../../../assets/scss/main";
+// --------------------------------------------------------------------------------------
+// ===================== Add user scss  =====================
+// --------------------------------------------------------------------------------------
+.picture-add {
+  position: relative;
+  display: inline-block;
+  height: 10rem;
+  width: 10rem;
+  cursor: pointer;
+  border-radius: 50%;
+  text-align: center;
+
+  &__hover {
+    text-align: center;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 3rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    mat-icon {
+      font-size: 2.6rem;
+      line-height: 17rem;
+      color: $primary-color;
+    }
+  }
+}

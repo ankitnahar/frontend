@@ -1,0 +1,375 @@
+
+<div class="with-filter-grid-container">
+  <!-- Start Grid Inner Header -->
+  <div class="grid-inner-header PT-5">
+    <div class="row">
+      <div class="col-md-3 leave-type-list">
+        <ul>
+          <li class="blue-drop-button">
+            <button (click)="onAddEntity()" *ngIf="tabData['add_edit']" type="button" class="btn-primary btn-add">
+              <i class="material-icons">add</i> Add Entity
+            </button>
+          </li>
+          <!--   <li>
+               <a class="red-color list-alignment"><i class="material-icons">fiber_manual_record</i> Discontinue Process
+                 Initiated</a>
+             </li>-->
+        </ul>
+      </div>
+      <div class="col-md-9">
+        <ul class="download-icon">
+          <li>
+            <a>
+              <span class="red-color">Note:- If client discontinue process initiated, Worksheet Schedule data will not be display in update clients</span>
+            </a>
+          </li>
+          <li>
+            <a (click)="onOpenFilter()">
+              <span>Filter</span>
+              <mat-icon class="material-icons">filter_list</mat-icon>
+            </a>
+          </li>
+          <li>
+            <a (click)="downloadExcel()">
+              <span>Checklist Report</span>
+              <mat-icon>file_download</mat-icon>
+            </a>
+          </li>
+        </ul>
+        <div class="grid-search">
+        </div>
+      </div>
+
+    </div>
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="parentClientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Parent Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="parent_id"
+                         (change)="onChangeParentEntity($event)">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="filteredTradingClientList"
+                         [closeOnSelect]="true"
+                         bindLabel="code"
+                         placeholder="Client Code"
+                         bindValue="code"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="code"
+              >
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="filteredTradingClientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="filteredTradingClientList"
+                         [closeOnSelect]="true"
+                         bindLabel="billing_name"
+                         placeholder="Billing Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="id"
+              >
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Is Parent?" formControlName="is_parent">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Client Console?" formControlName="is_dashboard">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Billing From BDMS?" formControlName="billing_from">
+                  <mat-option *ngFor="let billingData of billingFrom.slice(1)" [value]="billingData?.key">
+                    {{ billingData?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-20 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="parentTradingName.value">
+          <span class="tag__title">Parent Trading Name:</span>
+          <span>
+            <ng-select class="custom" [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="parent_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="clientCode.value">
+          <span class="tag__title">Client Code:</span>
+          <span>
+            <ng-select class="custom" [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="code"
+                       placeholder="Client Code"
+                       bindValue="code"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="code"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('code')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="tradingName.value">
+          <span class="tag__title">Trading Name:</span>
+          <span>
+            <ng-select class="custom" [items]="filteredTradingClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="tradingName.value">
+          <span class="tag__title">Billing Name:</span>
+          <span>
+            <ng-select class="custom" [items]="filteredTradingClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="billing_name"
+                       placeholder="Billing name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="(isParent.value >=0 && isParent.value !== null)">
+          <span class="tag__title">Is Parent:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Is Parent?" (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" formControlName="is_parent">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('is_parent')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="(isClientConsole.value >=0 && isClientConsole.value !== null)">
+          <span class="tag__title">Client Console?:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Client Console?" (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" formControlName="is_dashboard">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('is_dashboard')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="(isBillingFrom.value >=0 && isBillingFrom.value !== null)">
+          <span class="tag__title">Billing From BDMS?:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Client Console?" (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" formControlName="billing_from">
+                  <mat-option *ngFor="let billingData of billingFrom.slice(1)" [value]="billingData?.key">
+                    {{ billingData?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('billing_from')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="tradingName.value || parentTradingName.value || clientCode.value || (isParent.value >=0 && isParent.value !== null)  || (isClientConsole.value >=0 && isClientConsole.value !== null) || (isBillingFrom.value >=0 && isBillingFrom.value !== null)">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!--table start-->
+  <div class="table-container table-no-striped">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr No.</th>
+          <th width="8%"
+              (click)="getSortClientData('code', sortBy === 'code' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Client Code
+            <i *ngIf="sortBy === 'code'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'code' && sortOrder === 'asc', 'icon-down' :  sortBy === 'code' && sortOrder === 'desc'}">
+              {{sortBy === 'code' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+          <th width="15%">Parent Trading Name</th>
+          <th width="12%"
+              (click)="getSortClientData('billing_name', sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Billing Name
+            <i *ngIf="sortBy === 'billing_name'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'billing_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'billing_name' && sortOrder === 'desc'}">
+              {{sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+          <th width="12%"
+              (click)="getSortClientData('name', sortBy === 'name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Legal Name
+            <i *ngIf="sortBy === 'name'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'name' && sortOrder === 'desc'}">
+              {{sortBy === 'name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+          <th width="12%"
+              (click)="getSortClientData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Trading Name
+            <i *ngIf="sortBy === 'trading_name'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+              {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+          <th width="9%">Is Parent?</th>
+          <th width="9%">Is Client Console?</th>
+          <th width="9%">Billing From BDMS?</th>
+          <th width="9%">Action</th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr class="hover-icons" *ngFor="let client of clientList; let i = index">
+            <td width="5%">{{+pageSize * (pageIndex) + i + 1}}
+              <mat-icon *ngIf="client?.discontinue_stage == 1" class="red-color v-align-middle"
+                        [matTooltip]="'Discontinue Process Initiated'">block
+              </mat-icon>
+            </td>
+            <td width="8%">{{client?.code}}</td>
+            <td width="15%" class="word-break">{{client?.parent_entity?.trading_name}}</td>
+            <td width="12%" class="word-break">{{client?.billing_name}}</td>
+            <td width="12%" class="word-break">{{client?.name}}</td>
+            <td width="12%" class="word-break">{{client?.trading_name}}</td>
+            <td width="9%">{{getYesNoStatus(client?.is_parent)}}</td>
+            <td width="9%">{{getYesNoStatus(client?.is_dashboard)}}</td>
+            <td width="9%">{{getBillingFrom(client?.billing_from)}}</td>
+            <td width="9%">
+              <i class="material-icons wet-asphalt-color" *ngIf="client.is_document">attach_file</i>
+              <a *ngIf="tabData['add_edit']" (click)="onUpdateClient(client, false)" [matTooltip]="'Edit'"><i
+                class="material-icons">edit</i></a>
+
+              <!--same as an edit but only view access-->
+              <a *ngIf="tabData['view']" (click)="onViewClient(client, false)" [matTooltip]="'View'"><i
+                class="material-icons">remove_red_eye</i></a>
+              <a *ngIf="is_upload_doc" [matTooltip]="'Upload Documents'" (click)="onUploadDocuments(client)"><i
+                class="material-icons is-open">get_app</i></a>
+              <a *ngIf="is_perm" (click)="onPermanentInformation(client)"
+                 [matTooltip]="'View Permanent Information'"><i
+                class="material-icons">info</i></a>
+              <a *ngIf="tabData['view']" (click)="onClientDocument(client)" [matTooltip]="'Client Documents'"><i
+                class="material-icons">list_alt</i></a>
+              <!--  <a [matTooltip]="'Mail'"><i class="material-icons">mail</i></a>
+                <a [matTooltip]="'Message'" *ngIf="client.is_service"><i class="material-icons">message</i></a>-->
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <table *ngIf="clientList.length">
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onClientListPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <!--table over-->
+  <div *ngIf="!clientList.length" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<!-- Admin (Administration) user hierarchy html view -->
+<div class="admin-user-hierarchy-container">
+  <!-- Start form view -->
+  <form [formGroup]="hierarchyForm" (submit)="onSubmitHierarchyForm(hierarchyForm.value,hierarchyForm.valid)"
+        class="row">
+    <div class=" col-md-12 PLR-0">
+      <div class="gray-section">
+        <h2>Hierarchy Details</h2>
+        <div class="row">
+          <div class="col-md-4 MT-10">
+            <ng-select [items]="departmentList"
+                       bindLabel="department_name"
+                       placeholder="Department"
+                       bindValue="id"
+                       formControlName="department_id"
+                       (change)="onChangeDepartment($event)"
+                       required>
+            </ng-select>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(hierarchyForm.get('department_id'))"
+                              [errMsg]="validationMsg.DEPARTMENT"></app-validation>
+            </div>
+          </div>
+          <div class="{{isParent.length ? 'col-md-3 MT-10 PLR-0' : 'col-md-4 MT-10'}} ">
+            <ng-select [items]="designationList"
+                       bindLabel="designation_name"
+                       placeholder="Designation"
+                       bindValue="id"
+                       formControlName="designation_id"
+                       [disableControl]="isParent.length ? true : false"
+                       (change)="getUserDesignationWise($event)"
+                       required>
+            </ng-select>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(hierarchyForm.get('designation_id'))"
+                              [errMsg]="validationMsg.DESIGNATION"></app-validation>
+            </div>
+          </div>
+          <div class="col-md-1 PLR-0 MT-20" *ngIf="isParent.length">
+            <mat-icon class="cursor-pointer gray-color MR-20"
+                      matTooltip="If User designation have setup in other user hierarchy then it can not be changed until it moved in to another user.">
+              info
+            </mat-icon>
+            <a (click)="onViewUser()" class="cursor-pointer light-orange-color" matTooltip="View User List">
+              <mat-icon>remove_red_eye</mat-icon>
+            </a>
+          </div>
+          <div class="col-md-4 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Select Team" formControlName="teamId" [multiple]="true"
+                          (selectionChange)="onChangeTeam()">
+                <mat-option *ngFor="let team of designationTeamList" [value]="team.id">
+                  {{ team?.team_name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(hierarchyForm.get('teamId'))"
+                              [errMsg]="validationMsg.TEAM"></app-validation>
+            </div>
+          </div>
+          <span class="dymanic-field" *ngIf="teamDeisgnationWise.length > 0">
+          <div class="col-md-4 MT-10" *ngFor="let teamDesignation of teamDeisgnationWise; let i = index;">
+            <ng-select [items]="userDesignationWise[teamDesignation?.id]"
+                       bindLabel="userfullname"
+                       placeholder="{{teamDesignation?.designation_name}}"
+                       bindValue="id"
+                       (change)="getUserTeamDesignationWise(i+1,$event)"
+                       formControlName="{{teamDesignation?.id}}">
+            </ng-select>
+            <!--<mat-form-field>-->
+            <!--<mat-select [placeholder]="teamDesignation?.designation_name" [formControlName]="teamDesignation?.id"-->
+            <!--(selectionChange)="getUserTeamDesignationWise(i+1,$event.value)">-->
+            <!--<mat-option>Please Select</mat-option>-->
+            <!--<mat-option *ngFor="let user of userDesignationWise[teamDesignation?.id]" [value]="user['id']">-->
+            <!--{{user['userfullname']}}-->
+            <!--</mat-option>-->
+            <!--</mat-select>-->
+            <!--</mat-form-field>-->
+            <div class="validation-msg"></div>
+          </div>
+            <!--</div>-->
+      </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 PLR-0">
+      <div class="gray-section">
+        <h2>Other Details</h2>
+        <div class="row">
+          <div class="col-md-4 MT-10">
+            <mat-form-field>
+              <mat-select placeholder="Service Rights" formControlName="other_right" [multiple]="true">
+                <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                  {{ service?.service_name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+            </div>
+          </div>
+          <div class="col-md-4 MT-10">
+            <ng-select [items]="userList"
+                       bindLabel="userfullname"
+                       placeholder="Send For First Approval"
+                       bindValue="id"
+                       formControlName="first_approval_user"
+                       [virtualScroll]="true"
+                       required>
+            </ng-select>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(hierarchyForm.get('first_approval_user'))"
+                              [errMsg]="validationMsg.FIRST_APPROVAL"></app-validation>
+            </div>
+          </div>
+          <div class="col-md-4 MT-10">
+            <ng-select [items]="userList"
+                       bindLabel="userfullname"
+                       placeholder="Send For Second Approval"
+                       bindValue="id"
+                       formControlName="second_approval_user">
+            </ng-select>
+            <div class="validation-msg">
+            </div>
+          </div>
+          <div class="col-md-4 MT-10">
+            <ng-select [items]="userList"
+                       bindLabel="userfullname"
+                       placeholder="Missed timesheet/IN-OUT Request Approval Staff"
+                       bindValue="id"
+                       formControlName="timesheet_approval_user"
+                       [virtualScroll]="true"
+                       required>
+            </ng-select>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(hierarchyForm.get('timesheet_approval_user'))"
+                              [errMsg]="validationMsg.TIMESHEET_APPROVAL"></app-validation>
+            </div>
+          </div>
+
+          <div class="col-md-4 MT-10" *ngIf="checkIsBefreeWriteOff()">
+            <mat-form-field>
+              <mat-select placeholder="Befree writeoff approval staff" formControlName="writeoffstaff"
+                          required>
+                <mat-option *ngFor="let user of writeOffUserList" [value]="user?.id">
+                  {{ user?.userfullname }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validation-msg">
+            </div>
+          </div>
+
+          <div class="col-md-12 PLR-0 MT-15">
+            <div class="row">
+              <div class="col-md-12">
+                <p class="red-color">If Second approval user is not available then first user approved it means user
+                  have
+                  only single approval
+                  late coming</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 MT-15 text-right">
+            <button type="button" class="btn-default MR-10">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="hierarchyForm.invalid">Save</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+  <!-- End form view -->
+</div>

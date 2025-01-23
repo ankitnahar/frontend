@@ -1,0 +1,186 @@
+<!-- Admin (Administration)Update Information html view -->
+<div class="admin-manage-users-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span><a (click)="onGoInformationRequired()">INFORMATION REQUIRED</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">VIEW INFORMATION</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active" *ngIf="informationData?.parent_id > 0"> Parent Client : {{informationData?.parent_name}} | </span>
+          <span>{{informationData?.trading_name}}</span>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <form [formGroup]="editInformationForm" (submit)="onSubmit(editInformationForm)">
+
+    <div>
+      <span class="panel-title">Frequency:</span> <label>{{informationData?.frequency_name}}</label>
+      <span class="panel-title">Trigger Period:</span> <label>{{informationData?.start_period | date : 'dd-MM-yyyy'}} TO
+      {{informationData?.end_period | date : 'dd-MM-yyyy'}}</label>
+      <span class="panel-title">Subject:</span>{{editInformationForm.get('subject').value}}
+      <!-- Start grid -->
+      <div class="expand-grid">
+        <div class="expand-grid__thead">
+          <table class="PT-0">
+            <thead>
+            <tr>
+              <th width="4%">Sr. No</th>
+              <th width="9%">Information</th>
+              <th width="9%">Type of Account</th>
+              <th width="8%">Account No</th>
+              <th width="10%">Period</th>
+              <th width="20%">Befree Comments</th>
+              <th width="5%">Documents</th>
+              <th width="10%">Answer</th>
+              <th width="10%">Client Comments</th>
+              <th width="15%">Status</th>
+            </tr>
+            </thead>
+          </table>
+          <div class="expand-grid__tbody expand-grid-scrollable">
+            <table>
+              <tbody *ngFor="let updateinfo of getInformationArray().controls; let i = index">
+              <tr [ngClass]="{'is-active-row' : trIndex === i}" class="hover-icons row-data">
+                <td (click)="openRow(i)" width="4%">
+                  {{i + 1}}
+                </td>
+                <td width="9%" class="word-break">{{updateinfo.value['bank_other']}}</td>
+                <td width="9%" class="word-break">{{updateinfo.value['type_account']}}</td>
+                <td width="8%" class="word-break">{{updateinfo.value['account_no']}}</td>
+                <td width="10%" class="word-break">{{updateinfo.value['start_period'] | date: 'dd-MM-yyyy'}} To {{ updateinfo.value['end_period'] | date: 'dd-MM-yyyy' }}</td>
+                <td width="20%" class="word-break">{{updateinfo.value['befree_comment']}}</td>
+                <td width="5%">
+                  <mat-icon matBadge="{{getDocumentArray(i).controls.length}}" matBadgeColor="warn"
+                            matTooltip="View Document" *ngIf="getDocumentArray(i).controls.length > 0" class="primary-color" (click)="openRow(i)">cloud_done
+                  </mat-icon>
+                </td>
+                <td width="10%" class="word-break">{{getAnswerName(updateinfo.get('answer_type').value)}}</td>
+                <td width="10%" class="word-break">{{updateinfo.value['client_comment']}}</td>
+                <td width="15%" class="word-break">{{getStatusName(updateinfo.get('status_id').value)}}</td>
+              </tr>
+              <tr *ngIf="trIndex === i" class="inner-data">
+                <div class="row PT-10">
+                  <div class="col-md-6" *ngFor="let documentData of getDocumentArray(i).controls; let j = index">
+                    <div class="inner-data__view">
+                      <div class="PT-5">{{documentData.value['is_client'] === 1 ? 'Client' : 'Befree'}} :</div>
+                      <div>
+                      <a (click)="onOpenDocumentFile(documentData.value)" *ngIf="documentData.value['is_drive'] === 1"
+                         class="cursor-pointer v-align-middle">
+                        <mat-icon>remove_red_eye</mat-icon>{{documentData.get('document_name').value}}
+                      </a>
+                      <a (click)="downloadDocument(documentData)" *ngIf="documentData.value['is_drive'] === 0"
+                         class="cursor-pointer v-align-middle">
+                        <mat-icon class="v-align-middle primary-color">get_app</mat-icon>{{documentData.get('document_name').value}}
+                      </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row col-md-12 MB-20 information-card">
+        <div class="col-md-8 PL-0">
+          <mat-card>
+
+            <div class="panel-title ML-0">Additional Information</div>
+            <!-- Start Table -->
+            <div class="expand-grid">
+              <div class="expand-grid__thead">
+                <table *ngIf="additionalInformationListing.length">
+                  <thead>
+                  <tr>
+                    <th width="8%">Sr. No</th>
+                    <th width="40%">Additional Information</th>
+                    <th width="25%">Document</th>
+                    <th width="27%">Client Comment</th>
+                  </tr>
+                  </thead>
+                </table>
+
+                <div class="expand-grid__tbody expand-grid-scrollable">
+                  <table>
+                    <tbody *ngFor="let updateAdditionalinfo of additionalInformationListing; let j = index">
+                    <tr [ngClass]="{'is-active-row' : trIndexInner === j}" class="hover-icons row-data">
+                      <td width="8%">
+                        {{j + 1}}
+                      </td>
+                      <td width="40%" class="word-break">{{updateAdditionalinfo?.comment}}</td>
+                      <td width="25%" *ngIf="updateAdditionalinfo['document'].length">
+                        <mat-icon matBadge="{{updateAdditionalinfo['document'].length}}" matBadgeColor="warn"
+                                  matTooltip="View Document" class="primary-color" *ngIf="updateAdditionalinfo['document'].length" (click)="openRowAdditionalComments(j)">cloud_done
+                        </mat-icon>
+                      </td>
+                      <td width="27%" class="word-break">{{updateAdditionalinfo?.client_comment}}</td>
+                    </tr>
+                    <tr *ngIf="trIndexInner === j" class="inner-data">
+                      <div class="row PT-10">
+                        <div class="col-md-6"*ngFor="let documentsList of updateAdditionalinfo['document']; let k = index">
+                          <div class="inner-data__view">
+                            <div class="PT-5">{{documentsList?.is_client === 1 ? 'Client' : 'Befree'}} :</div>
+                            <div>
+                        <a (click)="onOpenDocumentFile(documentsList)" *ngIf="documentsList?.is_drive === 1"
+                           class="cursor-pointer">
+                          <mat-icon>remove_red_eye</mat-icon>{{documentsList?.document_name}}
+                        </a>
+                        <a (click)="downloadDocument(documentsList, 1)" *ngIf="documentsList?.is_drive === 0"
+                           class="cursor-pointer">
+                          <mat-icon class="v-align-middle">get_app</mat-icon>{{documentsList?.document_name}}
+                        </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <table *ngIf="isSendToClient">
+                  <tfoot>
+                  <tr>
+                    <td colspan="8" class=""></td>
+                    <td colspan="2" class="PR-10 text-right">
+                      <mat-label>Reminder Days</mat-label>
+                      : <label class="fw-500 red-color">{{editInformationForm.get('reminder').value === -1 ? 'N/A' : editInformationForm.get('reminder').value === 0 ? 'Stop' : editInformationForm.get('reminder').value}}</label>
+                    </td>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            <!-- End Grid -->
+          </mat-card>
+        </div>
+      </div>
+      <div class="row col-md-12 MB-20">
+        <div class="col-md-6 PL-0" *ngIf="informationData?.sendback_reason_tm">
+          <span class="panel-title"> Send Back Reason to TM :</span> {{informationData?.sendback_reason_tm}}
+        </div>
+        <div class="col-md-6 PL-0" *ngIf="informationData?.sendback_reason_atl">
+          <span class="panel-title">  Send Back Reason to ATL :</span> {{informationData?.sendback_reason_atl}}
+        </div>
+        <div class="col-md-6 PL-0" *ngIf="informationData?.sendback_reason_tl">
+          <span class="panel-title"> Send Back Reason to TL :</span> {{informationData?.sendback_reason_tl}}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

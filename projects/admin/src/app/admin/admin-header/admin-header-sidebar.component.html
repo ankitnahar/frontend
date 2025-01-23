@@ -1,0 +1,209 @@
+<!-- Admin Header html View -->
+<div class="server-error-msg" *ngIf="false">Site is scheduled to go under server maintenance for 1 hour. It will go down
+  at 11:30 AM(IST) today. Apologies for inconvenience caused.
+</div>
+
+<div class="admin-header-sidebar-container" *ngIf="showHeader">
+  <!-- Start  Header top panel  -->
+  <header class="header-section">
+    <div class="row">
+      <div class="col-md-6 col-sm-6 header-section__top-bar-container">
+        <!-- Start Header left menu -->
+        <a (click)="hideMenu()" routerLink="/admin-hrms-new">
+          <div class="header-section__top-bar">
+            <img src="assets/images/logo.png"/>
+            <span>befree CRM</span>
+          </div>
+        </a>
+        <ul class="header-section__left-menu">
+          <li>
+            <a class="mega-menu-container" (mouseleave)="hideMenu()">
+              <div (mouseenter)="onOpenHeaderMenu('megaMenu')">
+                <mat-icon [ngClass]="{'active': activeView == menuEnumView.MEGA_MENU_LIST}">menu</mat-icon>
+                <mat-icon class="dropdown-icon" [ngClass]="{'active': activeView == menuEnumView.MEGA_MENU_LIST}">
+                  arrow_drop_down
+                </mat-icon>
+              </div>
+              <div class="mega-menu opacity-0" [ngClass]="{'opacity-1' : activeView == menuEnumView.MEGA_MENU_LIST}">
+                <ul class="mega-menu__main-nav">
+                  <li><a></a></li>
+
+                  <li *ngFor="let administration of privilegeData; let tab=index;">
+                    <a *ngIf="+administration?.parent_id === 0"
+                       [ngClass]="{'active': activeSubMenuView === administration?.tab_name}"
+                       (mouseenter)="onChangeSubMenu(administration?.tab_name)">
+                      <!--<i class="material-icons">group</i> Administration-->
+                      <mat-icon *ngIf="administration?.id === 1">group</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 2">group_work</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 3">settings_brightness</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 4">person_outline</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 5">payment</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 6">report</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 7">email</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 8">person</mat-icon>
+                      <mat-icon *ngIf="administration?.id === 230">monetization_on</mat-icon>
+                      {{administration?.tab_name}}
+                      <div class="sub-nav" *ngIf="activeSubMenuView == administration?.tab_name">
+                        <div class="sub-nav__header-title">
+                          <h3>Menu Items</h3>
+                        </div>
+                        <ul>
+                          <li *ngFor="let childMenu of childMenuList[administration?.id]">
+                            <a (click)="hideMenu()" [routerLink]="childMenu['route_name']">
+                              <mat-icon>chevron_right</mat-icon>
+                              {{childMenu.tab_name}}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+                  <li><a></a></li>
+                </ul>
+              </div>
+            </a>
+
+            <!--<a>-->
+            <!--<i class="material-icons">search</i>-->
+            <!--</a>-->
+          </li>
+        </ul>
+        <!-- End Header left menu -->
+      </div>
+
+      <div class="col-md-6 col-sm-6">
+        <!-- Start Header right menu -->
+        <ul class="header-section__right-menu">
+          <li class="units_bg"><label>Units: {{userTimesheetUnits}}</label></li>
+          <li>
+            <button *ngIf="hrDetail?.punch_in == null" class="btn-success btn-add punch_in MR-5"
+                    (click)="onPunchIn()">
+              <mat-icon>schedule</mat-icon>
+              Punch In
+            </button>
+          </li>
+          <li>
+            <label *ngIf="hrDetail?.punch_in != null" class="label-light-dark-blue-bg-color MR-5">In:
+              {{hrDetail?.punch_in}}</label>
+          </li>
+          <li>
+            <button *ngIf="hrDetail?.punch_in != null && hrDetail?.punch_out == null"
+                    class="btn-success btn-add punch_in MR-5" (click)="onPunchOut()">
+              <mat-icon>schedule</mat-icon>
+              Punch Out
+            </button>
+            <button *ngIf="hrDetail?.punch_in == null && hrDetail?.punch_out == null"
+                    class="btn-default btn-add punch_in MR-5">
+              <mat-icon>schedule</mat-icon>
+              Punch Out
+            </button>
+          </li>
+
+          <li>
+            <label *ngIf="hrDetail?.punch_out != null" class="label-light-dark-blue-bg-color MR-5">Out:
+              {{hrDetail?.punch_out}}</label>
+          </li>
+          <li class="full-screen">
+            <a (click)="toggleFullScreen()">
+              <mat-icon *ngIf="!isFullScreen">fullscreen</mat-icon>
+              <mat-icon *ngIf="isFullScreen">fullscreen_exit</mat-icon>
+            </a>
+          </li>
+
+          <li>
+            <a class="timeline">
+              <mat-icon (click)="onOpenHeaderMenu('timeline')"
+                        [ngClass]="{'active': activeView == menuEnumView.TIMELINE_LIST}">toc
+              </mat-icon>
+              <div class="timeline__menu opacity-0"
+                   [ngClass]="{'opacity-1' : activeView == menuEnumView.TIMELINE_LIST}">
+                <ul class="activity">
+                  <li class="header-title">
+                    <h3>Activity</h3>
+                  </li>
+
+                  <li>
+                    <label>Last Login</label>
+                    <span>{{adminUser.user_lastlogin | date : 'dd-MM-yyyy HH:mm:ss'}}</span>
+                  </li>
+
+                  <li>
+                    <label>Punch In</label>
+                    <span>{{(hrDetail?.punch_in)? hrDetail?.punch_in:'-'}}</span>
+                  </li>
+                </ul>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a class="profile" (click)="onOpenHeaderMenu('profile')"
+               [ngClass]="{'active': activeView == menuEnumView.PROFILE_MENU_LIST}">
+              <img src="{{imagePath+adminUser.user_image}}" alt=""
+                   *ngIf="adminUser.user_image !== ''"/>
+              <img src="assets/images/profile_placeholder.png" alt=""
+                   *ngIf="adminUser.user_image == ''"/>
+              <ul class="profile__menu opacity-0"
+                  [ngClass]="{'opacity-1': activeView == menuEnumView.PROFILE_MENU_LIST}">
+                <li class="user-name">
+                  <a>{{adminUser.userfullname}}</a>
+                </li>
+                <li *ngIf="tabData['add_edit']">
+                  <a (click)="onChangePasswordDialog()">
+                    <mat-icon>compare_arrows</mat-icon>
+                    Change Password
+                  </a>
+                </li>
+                <li>
+                  <a (click)="onLogout()">
+                    <mat-icon>input</mat-icon>
+                    Logout
+                  </a>
+                </li>
+              </ul>
+            </a>
+          </li>
+        </ul>
+        <!-- End Header right menu -->
+      </div>
+    </div>
+  </header>
+  <!-- End Header top panel  -->
+</div>
+
+<!--  Start menu layer -->
+<div class="light-overlay" *ngIf="activeView !== null" (click)="activeView = null"></div>
+<!--  End menu layer -->
+
+<!--  Start Favorite menu dialog  -->
+<div class="modal" *ngIf="onOpenFavoriteMenuDialog">
+  <div class="modal__header">
+    <div class="modal__header__logo">Add Favorite Menu</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon (click)="onCloseDialog()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <mat-form-field>
+      <mat-select placeholder="Menu Items" [formControl]="faviriteMenuControl" multiple>
+        <mat-optgroup *ngFor="let group of favoriteMenuList" [label]="group.name"
+                      [disabled]="group.disabled">
+          <mat-option *ngFor="let pokemon of group.pokemon" [value]="pokemon.value">
+            {{ pokemon.viewValue }}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="modal__footer">
+    <button class="btn-primary" (click)="onSubmitFavoriteMenu(faviriteMenuControl)">Save</button>
+  </div>
+</div>
+<!--  End Favorite menu dialog  -->
+
+<!--  Start dialog layer -->
+<div class="modal-layer" *ngIf="onOpenFavoriteMenuDialog" (click)="onCloseDialog()"></div>
+<!--  End dialog layer -->

@@ -1,0 +1,38 @@
+<!--  Start Training List Dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">Dismiss Invoice</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="dismissForm" (submit)="onSubmitDismissForm(dismissForm)">
+    <div class="modal__body">
+      <div class="row">
+        <div class="col-md-12 MT-10">
+          <p>Once invoice is dismissed units will be set as uncharged for next invoice, are you sure you want to dismiss
+            this invoice now?</p>
+        </div>
+        <div class="col-md-12 MT-20">
+          <mat-form-field>
+            <textarea matInput placeholder="Reason for dismiss the invoice" formControlName="dismiss_reason"
+                      required></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <div class="row">
+        <div class="col-md-12 text-right PR-25">
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Training List Dialog  -->

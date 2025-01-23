@@ -1,0 +1,87 @@
+
+.min_width_query {
+  .mat-form-field {
+    width: 120px !important;
+  }
+}
+
+.merge_cells {
+  tr {
+    td {
+      display: table-cell;
+      padding: 0.7rem 1rem;
+      font-size: 1.3rem;
+      color: #4f4f4f;
+      border-bottom: 1px solid #f0f0f0;
+      .mat-icon {
+        font-size: 1.8rem;
+        cursor: pointer;
+      }
+    }
+  }
+
+}
+
+.bgTextarea_Merge_Cell {
+  background: #efefef;
+  border-bottom: 5px solid #ffffff !important;
+}
+
+//textarea top space
+.textarea_small {
+  vertical-align: middle;
+
+  //background-color: #efefef;
+  .mat-form-field {
+    width: auto !important;
+  }
+  .mat-form-field-infix {
+    border: 0px !important;
+  }
+  .ng-select {
+
+    min-width: 250px !important;
+    max-width: 280px !important;
+    .ng-option {
+      span {
+        white-space: normal !important;
+      }
+
+    }
+  }
+
+}
+
+.query-module {
+  .mat-expansion-panel-header {
+    background: #f9f9f9 !important;
+    height: 40px !important;
+  }
+
+  .mat-expansion-panel {
+    border-bottom: 1px solid #e6e6e6 !important;
+    border-radius: 0 !important;
+    margin-bottom: 5px;
+    box-shadow: none;
+  }
+  .mat-card {
+    border: 1px solid #dcdcdc;
+    box-shadow: none;
+  }
+
+  .inner-data {
+    mat-icon {
+      font-size: 20px;
+    }
+  }
+
+  .merge_cells {
+    max-height: 61vh;
+    overflow: auto;
+    padding: 0;
+    position: relative;
+  }
+}
+
+
+

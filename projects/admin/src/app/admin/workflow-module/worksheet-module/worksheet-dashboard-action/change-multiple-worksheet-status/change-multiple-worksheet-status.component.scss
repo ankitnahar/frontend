@@ -1,0 +1,13 @@
+@import "../../../../../../assets/scss/main";
+
+.bottom-panel-action {
+  padding: 0;
+  .mat-select {
+    background: lighten($white-color, 12%) !important;
+    padding: 10px;
+  }
+}
+
+.change_status {
+  border: none !important;
+}

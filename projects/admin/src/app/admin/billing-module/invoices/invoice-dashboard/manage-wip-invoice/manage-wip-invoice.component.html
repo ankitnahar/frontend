@@ -1,0 +1,929 @@
+<!-- Admin (Invoices) Dashboard html view -->
+<div class="admin-invoice-manage-wip-invoice-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active"><a (click)="invoice()"> INVOICE </a></span>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>MANAGE WIP INVOICE | {{WIPInvoiceData['entityName']}} {{WIPInvoiceData['period']}}</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('previousInvoices')">Previous Invoices</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('billingInformation')">Billing Information</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('pendingTickets')">Pending Tickets</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('completedTickets')">Completed Tickets</button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="manage-wip-invoice-tab-container" *ngIf="isView === 0">
+
+    <mat-tab-group (selectedTabChange)="onSelectedIndexChange($event)" [selectedIndex]="selectedIndex"
+                   (selectedIndexChange)="onSelectedIndexTabChange($event)">
+      <mat-tab *ngFor="let topDetail of WIPInvoiceData['topDetail']; let t = index" label="{{topDetail['name']}}" #tab
+               [disabled]="btnAdjWIP ? !tab.isActive : false">
+        <div>
+          <!-- Start Accordian menu -->
+          <div *ngIf="WIPParentDataKey.length">
+            <div *ngFor="let parentData of WIPParentDataKey; let i = index" class="bk-general-services">
+              <h2>{{WIPInvoiceData['BillingDetail']['masterName'][parentData]}}</h2>
+              <div class="col-md-12 PLR-10" *ngFor="let childData of WIPChildDataKey[parentData]">
+                <mat-accordion>
+                  <mat-expansion-panel [expanded]="false">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>{{childData}}</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="table-container table-no-striped">
+                      <div class="table-block">
+                        <table>
+                          <thead>
+                          <tr>
+                            <th width="25%">Subactivity</th>
+                            <th width="15%">Worksheet Period</th>
+                            <th width="10%">Timesheet Date</th>
+                            <th width="10%">Staff</th>
+                            <th width="5%">Unit</th>
+                            <th width="5%">Amount($)</th>
+                            <th width="15%">Notes</th>
+                            <th width="10%">Invoice Status</th>
+                            <th width="5%">More</th>
+                          </tr>
+                          </thead>
+
+                          <tbody>
+                          <tr *ngFor="let row of WIPChildDataKey[parentData][childData]">
+                            <td width="25%">{{WIPParentData[parentData][childData][row]['subactivity_code']}} -
+                              {{WIPParentData[parentData][childData][row]['subactivity_name']}}
+                            </td>
+
+                            <td width="15%">
+                              {{formatDate(WIPParentData[parentData][childData][row]['worksheet_start_date']) +' - ' +
+                              formatDate(WIPParentData[parentData][childData][row]['worksheet_end_date'])}}
+                            </td>
+
+                            <td width="10%">{{formatDate(WIPParentData[parentData][childData][row]['date'])}}</td>
+                            <td width="10%">{{WIPParentData[parentData][childData][row]['userfullname']}}</td>
+                            <td width="5%">{{WIPParentData[parentData][childData][row]['units']}}</td>
+                            <td width="5%">{{WIPParentData[parentData][childData][row]['amount']}}
+                            </td>
+                            <td width="15%">{{WIPParentData[parentData][childData][row]['notes']}}</td>
+                            <td width="10%">
+                              <mat-form-field>
+                                <mat-select [(ngModel)]="WIPParentData[parentData][childData][row]['billing_status']"
+                                            (selectionChange)="onBillingStatusChange($event,parentData,childData,row,WIPParentDataKey)">
+                                  <mat-option *ngFor="let status of billingStatus" [value]="status?.key">
+                                    {{status?.label}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </td>
+                            <td width="5%">
+                              <mat-icon class="wet-asphalt-color" [matTooltip]="'More Details'"
+                                        (click)="openMoreDetailsDialog(WIPParentData[parentData][childData][row])">
+                                remove_red_eye
+                              </mat-icon>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="row MT-10">
+                        <div class="col-md-6 totalAmount PLR-0">
+                          <label>Task Extra Amount:</label>
+                          <span>{{ WIPParentData[parentData][childData]['task_extra_amount']}}</span>
+                          <div *ngIf="WIPParentData[parentData][childData]['extra_activity'].length">
+                            <div *ngFor="let otherData of WIPParentData[parentData][childData]['extra_activity']">
+                              <label>Code :</label> <span>{{otherData['code']}}</span>
+                              <label>Total :</label> <span>{{otherData['totalValue']}}</span>
+                              <label>Fixed :</label> <span>{{otherData['fixed']}}</span>
+                              <label *ngIf="otherData['fixed'] > 0">Extra :</label> <span
+                              *ngIf="otherData['fixed'] > 0">{{otherData['extra']}}</span>
+                              <label *ngIf="otherData['fixed'] > 0">Price :</label> <span
+                              *ngIf="otherData['fixed'] > 0">{{otherData['price']}}</span>
+                              <label *ngIf="otherData['fixed'] > 0">Minimum Price :</label> <span
+                              *ngIf="otherData['fixed'] > 0">{{otherData['min']}}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6 totalAmount PLR-10">
+                          <div class="text-right">
+                            <label>Total Units:</label>
+                            <span>{{WIPParentData[parentData][childData]['task_total_units']}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <!-- Start Grid -->
+              <div class="col-md-12 MT-20 PLR-10">
+                <div class="table-container">
+                  <div class="table-block">
+                    <table class="table" *ngIf="WIPParentData">
+                      <thead>
+                      <tr>
+                        <th>Timesheet Units(t)</th>
+                        <th>W/off Units(a)</th>
+                        <th>W/on Units(b)</th>
+                        <th>W/off(c)</th>
+                        <th>Carry forward Units(d)</th>
+                        <th>Charged Units y=(t+b)-(a+c+d)</th>
+                        <th>Rate per hour</th>
+                        <th>Extra Amount($)</th>
+                      </tr>
+                      </thead>
+
+                      <tbody>
+                      <tr>
+                        <td>{{WIPParentData[parentData]['timesheet_unit']}}</td>
+                        <td><input type="number" min="0"
+                                   (change)="changeTimesheetAmount($event,parentData,WIPInvoiceData['BillingDetail']['RPH'][parentData], 0)"
+                                   [(ngModel)]="writeOffUnit[parentData]"/></td>
+                        <td><input type="number" min="0"
+                                   (change)="changeTimesheetAmount($event,parentData,WIPInvoiceData['BillingDetail']['RPH'][parentData], 1)"
+                                   [(ngModel)]="writeOnUnit[parentData]"/></td>
+                        <td>{{WIPParentData[parentData]['write_Off']}}</td>
+                        <td>{{WIPParentData[parentData]['carry_forward_unit']}}</td>
+                        <td>{{WIPParentData[parentData]['charged_units']}}
+                        </td>
+                        <td>{{WIPInvoiceData['BillingDetail']['RPH'][parentData] | number : '1.2-2'}}</td>
+                        <td>{{WIPParentData[parentData]['extra_amount']}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- End Grid -->
+            </div>
+          </div>
+          <!-- End Grid -->
+
+
+          <!-- Start Discount section -->
+          <div class="discount-section" *ngIf="showDiscount > 0">
+            <h2>Discount</h2>
+            <div class="col-md-12">
+              <mat-radio-group [(ngModel)]="discountType" [value]="discountType">
+                <mat-radio-button [value]="1" (change)="resetDiscountData($event)"
+                                  [checked]="discountType === 1 ? true : false">None
+                </mat-radio-button>
+                <mat-radio-button [value]="2" (change)="resetDiscountData($event)"
+                                  [checked]="discountType === 2 ? true : false">Specific Amount
+                </mat-radio-button>
+                <input type="number" min="0" value="0" *ngIf="+discountType === 2" [(ngModel)]="discountAmount"
+                       (change)="updateGrandTotalAfterDiscount($event)" class="ML-5"/>
+                <mat-radio-button [value]="3" (change)="resetDiscountData($event)"
+                                  [checked]="discountType === 3 ? true : false">Advance Fees
+                </mat-radio-button>
+                <input type="number" min="0" value="0" *ngIf="+discountType === 3" [(ngModel)]="discountAmount"
+                       (keyup)="checkForAdvanceFee($event.target.value)"
+                       (change)="updateGrandTotalAfterDiscount($event)" class="ML-5"/>
+                <a class="advance-invoice-link" (click)="onOpenAdvanceInvoice()"
+                   *ngIf="discountType === 3 && advanceFeeData.length">See
+                  Advance
+                  Invoices</a>
+              </mat-radio-group>
+            </div>
+          </div>
+          <!-- End Discount section -->
+
+          <!-- Start Grand total section -->
+          <div class="grand-total-section col-md-12 PL-0 MT-10">
+            <h2>Grand Total</h2>
+            <div class="row">
+              <div class="col-md-3 MT-10 PL-5 totalAmount" *ngIf="showIsFixedFees > 0 && FixedFee.length">
+                <label>Fixed Fee($)</label>
+              </div>
+
+              <div class="col-md-9 PLR-10 totalAmount" *ngIf="showIsFixedFees > 0 && FixedFee.length">
+                <span *ngFor="let ff of FixedFee; let f = index">
+                  <label>{{ff['service_id']}}:</label>
+                  <span>{{ff['fixed_fee']}}</span>
+                </span>
+              </div>
+
+              <div class="col-md-6 MT-20 ng-star-inserted" *ngIf="showGrandTotalWriteOffSection > 0">
+                <div class="table-container">
+                  <div class="table-block">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>W/off amount</th>
+                        <th>W/on amount</th>
+                      </tr>
+                      </thead>
+
+                      <tbody>
+                      <tr>
+                        <td><input type="number" min="0" (change)="changeGrandWriteOffOnAmount($event,0)"
+                                   [(ngModel)]="grandWriteOffAmount"/></td>
+                        <td><input type="number" min="0" (change)="changeGrandWriteOffOnAmount($event,1)"
+                                   [(ngModel)]="grandWriteOnAmount"/></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Grand total section -->
+
+          <!-- Start Grid -->
+          <div class="col-md-12 MT-20 PLR-10 PB-10" *ngIf="showGrandTotalTimeSheetSection > 0">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Timesheet Units(T)</th>
+                    <th>Carry Forward Units(B)</th>
+                    <th>Fixed Units(D)</th>
+                    <th>Extra Units (E=Extra amount/RPH)</th>
+                    <th>W/off (Y=T-(B+D+E))</th>
+                    <th>W/on (Y=(B+D+E)- T)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['totalTimesheetUnit']}}</td>
+                    <td>{{totalAmountData['carryForwardUnit']}}</td>
+                    <td>{{totalAmountData['fixedUnit']}}</td>
+                    <td>{{totalAmountData['extraUnit']}}</td>
+                    <td>{{totalAmountData['wOffUnit']}}</td>
+                    <td>{{totalAmountData['wOnUnit']}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- End Grid -->
+
+          <!-- Start Grid -->
+          <div class="col-md-12 MT-20 PLR-10 PB-10"
+               *ngIf="(serviceId === 1 || serviceId === 2 || serviceId === 6) && (invoiceType !== 'Advance' && invoiceType !== 'Formation')">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Fixed Fee($)</th>
+                    <th>Extra Amount($)</th>
+                    <th>Gross Amount($)</th>
+                    <th>Discount($)</th>
+                    <th>Net Amount($)</th>
+                    <th>Card Surcharge($)</th>
+                    <th>GST (10%)($)</th>
+                    <th>Amount to be paid($)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['fixedFee']}}</td>
+                    <td>{{totalAmountData['extraAmount']}}</td>
+                    <td>{{totalAmountData['grossAmount']}}</td>
+                    <td>{{discountAmount ? (discountAmount) : (totalAmountData['discount'])}}
+                    </td>
+                    <td>{{totalAmountData['netAmount']}}
+                    </td>
+                    <td>{{totalAmountData['SurchargeAmount']}}
+                    </td>
+                    <td>{{totalAmountData['gstAmount']}}
+                    </td>
+                    <td>{{totalAmountData['paidAmount']}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 MT-20 PLR-10 PB-10"
+               *ngIf="(serviceId === 4 || serviceId === 5 || serviceId === 7) && (invoiceType !== 'Advance')">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Gross Amount($)</th>
+                    <th>Discount($)</th>
+                    <th>Net Amount($)</th>
+                    <th>Card Surcharge($)</th>
+                    <th>GST (10%)($)</th>
+                    <th>Amount to be paid($)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['grossAmount']}}</td>
+                    <td>{{discountAmount ? (discountAmount) : (totalAmountData['discount'])}}
+                    </td>
+                    <td>{{totalAmountData['netAmount']}}
+                    </td>
+                    <td>{{totalAmountData['SurchargeAmount']}}
+                    </td>
+                    <td>{{totalAmountData['gstAmount']}}
+                    </td>
+                    <td>{{totalAmountData['paidAmount']}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 MT-20 PLR-10 PB-10" *ngIf="invoiceType === 'Advance' || invoiceType === 'Formation'">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Gross Amount($)</th>
+                    <th>Discount($)</th>
+                    <th>Net Amount($)</th>
+                    <th>Card Surcharge($)</th>
+                    <th>GST (10%)($)</th>
+                    <th>Amount to be paid($)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['grossAmount']}}</td>
+                    <td>{{discountAmount ? (discountAmount) : (totalAmountData['discount'])}}
+                    </td>
+                    <td>{{totalAmountData['netAmount']}}
+                    </td>
+                    <td>{{totalAmountData['SurchargeAmount']}}
+                    </td>
+                    <td>{{totalAmountData['gstAmount']}}
+                    </td>
+                    <td>{{totalAmountData['paidAmount']}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- End Grid -->
+
+          <!-- Start Notes section -->
+          <div class="notes-section">
+            <h2>Notes</h2>
+            <form [formGroup]="notesForm" #addEditnotesForm="ngForm"
+                  (submit)="submitInoiceNotes(notesForm.value, notesForm.valid)">
+              <div class="row">
+                <div class="col-md-12 PL-5 totalAmount">
+                  <label>Billing information notes:</label>
+                  <span [innerHTML]="WIPInvoiceData['BillingNotes'] | safeHtml" class="PL-5"></span>
+                </div>
+
+                <div class="col-md-12 MT-10 PL-5 totalAmount">
+                  <label>Invoice notes:</label>
+                </div>
+                <div class="col-md-8 MT-10">
+                  <mat-form-field>
+                    <textarea matInput placeholder="Description" formControlName="notes" required></textarea>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4 MT-20">
+                  <button type="submit" [disabled]="notesForm.invalid" class="btn-primary">Add Note</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- End Notes section -->
+
+          <!-- Start Grid -->
+          <div class="col-md-12 MT-20 PLR-10 PB-10" *ngIf="WIPInvoiceData['InvoiceNotes'] !== ''">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th width="60%">Notes</th>
+                    <th>Added By</th>
+                    <th>Added On</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr *ngFor="let notes of WIPInvoiceData['InvoiceNotes']; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{notes['notes']}}</td>
+                    <td>{{notes['created_by']['userfullname']}}</td>
+                    <td>{{notes['created_on'] | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- End Grid -->
+
+          <div class="notes-section" *ngIf="showAdjWIP === 1">
+            <h2>ADJUST WIP</h2>
+            <div class="row">
+              <div class="col-md-12 MT-10 PL-5 totalAmount">
+                <label>Reason:</label>
+              </div>
+              <div class="col-md-8 MT-10">
+                <mat-form-field>
+                  <textarea matInput placeholder="Adjust WIP Reason" [(ngModel)]="AdjustWIPReason"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <!-- Start Action Buttons -->
+          <div class="col-md-12 MTB-10">
+            <button type="button" class="btn-dark-blue btn-bordered" (click)="onSubmitWipInvoice(2)" *ngIf="btnPreview">
+              Preview Invoice
+            </button>
+            <button type="button" class="btn-orange btn-bordered ML-10" (click)="onOpenDismissDialog()"
+                    *ngIf="btnDismiss">Dismiss
+              Invoice
+            </button>
+            <button type="button" class="btn-primary btn-bordered ML-10" (click)="onToggleConfomrtaionDialogBacktoTAM()"
+                    *ngIf="btnSendTAM">Send Back To
+              TAM
+            </button>
+            <button type="button" class="btn-primary btn-bordered ML-10"
+                    (click)="onToggleConfomrtaionDialogBacktoBillingStage()" *ngIf="btnSendBilling && tabData['add_edit']">Send Back To
+              Billing Stage
+            </button>
+            <button class="btn-primary btn-bordered" type="submit" (click)="changeInvoiceIndexToPrevious();"
+                    *ngIf="btnSave && btnAdjWIP && selectedIndex !== 0">Previous
+            </button>
+            <button class="btn-primary btn-bordered ML-10 on-right" type="button" (click)="onSubmitWipInvoice(3)"
+                    *ngIf="btnAdjWIP && ((topDetailsLength - 1)  === selectedIndex)">Adjust WIP
+            </button>
+            <button class="btn-primary on-right" type="submit" (click)="onSubmitWipInvoice(1)"
+                    *ngIf="btnSave && !btnAdjWIP">Save & Update Later
+            </button>
+            <button class="btn-success on-right" type="submit" (click)="onSubmitWipInvoice(4)"
+                    *ngIf="btnSave && btnAdjWIP && ((topDetailsLength - 1)  !== selectedIndex)">Save & Next
+            </button>
+
+          </div>
+          <!-- End Action Buttons -->
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+
+  <div class="manage-wip-invoice-tab-container" *ngIf="isView === 1">
+
+    <mat-tab-group (selectedTabChange)="onSelectedIndexChange($event)">
+      <mat-tab *ngFor="let topDetail of WIPInvoiceData['topDetail']; let t = index" label="{{topDetail['name']}}">
+        <div>
+          <!-- Start Accordian menu -->
+          <div *ngIf="WIPParentDataKey.length">
+            <div *ngFor="let parentData of WIPParentDataKey; let i = index" class="bk-general-services">
+              <h2>{{WIPInvoiceData['BillingDetail']['masterName'][parentData]}}</h2>
+              <div class="col-md-12 PLR-10" *ngFor="let childData of WIPChildDataKey[parentData]">
+                <mat-accordion>
+                  <mat-expansion-panel [expanded]="false">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>{{childData}}</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="table-container table-no-striped">
+                      <div class="table-block">
+                        <table>
+                          <thead>
+                          <tr>
+                            <th width="25%">Subactivity</th>
+                            <th width="15%">Worksheet Period</th>
+                            <th width="10%">Timesheet Date</th>
+                            <th width="10%">Staff</th>
+                            <th width="5%">Unit</th>
+                            <th width="5%">Amount($)</th>
+                            <th width="15%">Notes</th>
+                            <th width="10%">Invoice Status</th>
+                            <th width="5%">More</th>
+                          </tr>
+                          </thead>
+
+                          <tbody>
+                          <tr *ngFor="let row of WIPChildDataKey[parentData][childData]">
+                            <td width="25%">{{WIPParentData[parentData][childData][row]['subactivity_code']}} -
+                              {{WIPParentData[parentData][childData][row]['subactivity_name']}}
+                            </td>
+
+                            <td width="15%">
+                              {{formatDate(WIPParentData[parentData][childData][row]['worksheet_start_date']) +' - ' +
+                              formatDate(WIPParentData[parentData][childData][row]['worksheet_end_date'])}}
+                            </td>
+
+                            <td width="10%">{{formatDate(WIPParentData[parentData][childData][row]['date'])}}</td>
+                            <td width="10%">{{WIPParentData[parentData][childData][row]['userfullname']}}</td>
+                            <td width="5%">{{WIPParentData[parentData][childData][row]['units']}}</td>
+                            <td width="5%">{{WIPParentData[parentData][childData][row]['amount']}}
+                            </td>
+                            <td width="15%">{{WIPParentData[parentData][childData][row]['notes']}}</td>
+                            <td width="10%">
+                              {{getBillingStatusName(WIPParentData[parentData][childData][row]['billing_status'])}}
+                            </td>
+                            <td width="5%">
+                              <mat-icon class="primary-color" [matTooltip]="'More Details'"
+                                        (click)="openMoreDetailsDialog(WIPParentData[parentData][childData][row])">
+                                remove_red_eye
+                              </mat-icon>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="row MT-10">
+                        <div class="col-md-6 totalAmount PLR-0">
+                          <label>Task Extra Amount:</label>
+                          <span>{{ WIPParentData[parentData][childData]['task_extra_amount']}}</span>
+                          <div *ngIf="WIPParentData[parentData][childData]['extra_activity'].length">
+                            <div *ngFor="let otherData of WIPParentData[parentData][childData]['extra_activity']">
+                              <label>Code :</label> <span>{{otherData['code']}}</span>
+                              <label>Total :</label> <span>{{otherData['totalValue']}}</span>
+                              <label>Fixed :</label> <span>{{otherData['fixed']}}</span>
+                              <label *ngIf="otherData['fixed'] > 0">Extra :</label> <span
+                              *ngIf="otherData['fixed'] > 0">{{otherData['extra']}}</span>
+                              <label *ngIf="otherData['fixed'] > 0">Price :</label> <span
+                              *ngIf="otherData['fixed'] > 0">{{otherData['price']}}</span>
+                              <label *ngIf="otherData['fixed'] > 0">Minimum Price :</label> <span
+                              *ngIf="otherData['fixed'] > 0">{{otherData['min']}}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6 totalAmount PLR-10">
+                          <div class="text-right">
+                            <label>Total Units:</label>
+                            <span>{{WIPParentData[parentData][childData]['task_total_units']}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+              <!-- Start Grid -->
+              <div class="col-md-12 MT-20 PLR-10">
+                <div class="table-container">
+                  <div class="table-block">
+                    <table class="table" *ngIf="WIPParentData">
+                      <thead>
+                      <tr>
+                        <th>Timesheet Units(t)</th>
+                        <th>W/off Units(a)</th>
+                        <th>W/on Units(b)</th>
+                        <th>W/off(c)</th>
+                        <th>Carry forward Units(d)</th>
+                        <th>Charged Units y=(t+b)-(a+c+d)</th>
+                        <th>Rate per hour</th>
+                        <th>Extra Amount($)</th>
+                      </tr>
+                      </thead>
+
+                      <tbody>
+                      <tr>
+                        <td>{{WIPParentData[parentData]['timesheet_unit']}}</td>
+                        <td>{{writeOffUnit[parentData]}}</td>
+                        <td>{{writeOnUnit[parentData]}}</td>
+                        <td>{{WIPParentData[parentData]['write_Off']}}</td>
+                        <td>{{WIPParentData[parentData]['carry_forward_unit']}}</td>
+                        <td>{{WIPParentData[parentData]['charged_units']}}
+                        </td>
+                        <td>{{WIPInvoiceData['BillingDetail']['RPH'][parentData] | number : '1.2-2'}}</td>
+                        <td>{{WIPParentData[parentData]['extra_amount']}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- End Grid -->
+            </div>
+          </div>
+          <!-- End Grid -->
+
+
+          <!-- Start Discount section -->
+          <div class="discount-section" *ngIf="showDiscount > 0">
+            <h2>Discount</h2>
+            <div class="col-md-12">
+              <span *ngIf="discountType === 1">None</span>
+              <span *ngIf="discountType === 2">Specific Amount : </span><span *ngIf="discountType === 2">{{discountAmount}}</span>
+              <span *ngIf="discountType === 3">Advance Fees : </span><span
+              *ngIf="discountType === 3">{{discountAmount}}</span>
+              <a class="advance-invoice-link" (click)="onOpenAdvanceInvoice()"
+                 *ngIf="discountType === 3 && advanceFeeData.length">See Advance
+                Invoices</a>
+            </div>
+          </div>
+          <!-- End Discount section -->
+
+          <!-- Start Grand total section -->
+          <div class="grand-total-section col-md-12 PL-0 MT-10" *ngIf="isDismissInvoice === 0">
+            <h2>Grand Total</h2>
+            <div class="row">
+              <div class="col-md-3 MT-10 PL-5 totalAmount" *ngIf="showIsFixedFees > 0 && FixedFee.length">
+                <label>Fixed Fee($)</label>
+              </div>
+
+              <div class="col-md-9 PLR-10 totalAmount" *ngIf="showIsFixedFees > 0 && FixedFee.length">
+                <span *ngFor="let ff of FixedFee; let f = index">
+                  <label>{{ff['service_id']}}:</label>
+                  <span>{{ff['fixed_fee']}}</span>
+                </span>
+              </div>
+
+              <div class="col-md-6 MT-20 ng-star-inserted" *ngIf="showGrandTotalWriteOffSection > 0">
+                <div class="table-container">
+                  <div class="table-block">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>W/off amount</th>
+                        <th>W/on amount</th>
+                      </tr>
+                      </thead>
+
+                      <tbody>
+                      <tr>
+                        <td>{{grandWriteOffAmount}}</td>
+                        <td>{{grandWriteOnAmount}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Grand total section -->
+
+          <!-- Start Grid -->
+          <div class="col-md-12 MT-20 PLR-10 PB-10" *ngIf="showGrandTotalTimeSheetSection > 0">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Timesheet Units(T)</th>
+                    <th>Carry Forward Units(B)</th>
+                    <th>Fixed Units(D)</th>
+                    <th>Extra Units (E=Extra amount/RPH)</th>
+                    <th>W/off (Y=T-(B+D+E))</th>
+                    <th>W/on (Y=(B+D+E)- T)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['totalTimesheetUnit']}}</td>
+                    <td>{{totalAmountData['carryForwardUnit']}}</td>
+                    <td>{{totalAmountData['fixedUnit']}}</td>
+                    <td>{{totalAmountData['extraUnit']}}</td>
+                    <td>{{totalAmountData['wOffUnit']}}</td>
+                    <td>{{totalAmountData['wOnUnit']}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- End Grid -->
+
+          <!-- Start Grid -->
+          <div class="col-md-12 MT-20 PLR-10 PB-10"
+               *ngIf="(serviceId === 1 || serviceId === 2 || serviceId === 6) && (invoiceType !== 'Advance') && (isDismissInvoice === 0)">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Fixed Fee($)</th>
+                    <th>Extra Amount($)</th>
+                    <th>Gross Amount($)</th>
+                    <th>Discount($)</th>
+                    <th>Net Amount($)</th>
+                    <th>Card Surcharge($)</th>
+                    <th>GST (10%)($)</th>
+                    <th>Amount to be paid($)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['fixedFee']}}</td>
+                    <td>{{totalAmountData['extraAmount']}}</td>
+                    <td>{{totalAmountData['grossAmount']}}</td>
+                    <td>{{discountAmount ? (discountAmount) : (totalAmountData['discount'])}}
+                    </td>
+                    <td>{{totalAmountData['netAmount']}}
+                    </td>
+                    <td>{{totalAmountData['SurchargeAmount']}}
+                    </td>
+                    <td>{{totalAmountData['gstAmount']}}
+                    </td>
+                    <td>{{totalAmountData['paidAmount']}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 MT-20 PLR-10 PB-10"
+               *ngIf="(serviceId === 4 || serviceId === 5 || serviceId === 7) && (invoiceType !== 'Advance') && (isDismissInvoice === 0)">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Gross Amount($)</th>
+                    <th>Discount($)</th>
+                    <th>Net Amount($)</th>
+                    <th>Card Surcharge($)</th>
+                    <th>GST (10%)($)</th>
+                    <th>Amount to be paid($)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['grossAmount']}}</td>
+                    <td>{{discountAmount ? (discountAmount) : (totalAmountData['discount'])}}
+                    </td>
+                    <td>{{totalAmountData['netAmount']}}
+                    </td>
+                    <td>{{totalAmountData['SurchargeAmount']}}
+                    </td>
+                    <td>{{totalAmountData['gstAmount']}}
+                    </td>
+                    <td>{{totalAmountData['paidAmount']}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 MT-20 PLR-10 PB-10" *ngIf="(invoiceType === 'Advance') && (isDismissInvoice === 0)">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Gross Amount($)</th>
+                    <th>Discount($)</th>
+                    <th>Net Amount($)</th>
+                    <th>Card Surcharge($)</th>
+                    <th>GST (10%)($)</th>
+                    <th>Amount to be paid($)</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr>
+                    <td>{{totalAmountData['grossAmount']}}</td>
+                    <td>{{discountAmount ? (discountAmount) : (totalAmountData['discount'])}}
+                    </td>
+                    <td>{{totalAmountData['netAmount']}}
+                    </td>
+                    <td>{{totalAmountData['SurchargeAmount']}}
+                    </td>
+                    <td>{{totalAmountData['gstAmount']}}
+                    </td>
+                    <td>{{totalAmountData['paidAmount']}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- End Grid -->
+
+          <!-- Start Notes section -->
+          <div class="notes-section">
+            <h2>Notes</h2>
+            <form [formGroup]="notesForm" (submit)="submitInoiceNotes(notesForm.value, notesForm.valid)">
+              <div class="row">
+                <div class="col-md-12 PL-5 totalAmount">
+                  <label>Billing information notes:</label>
+                  <span [innerHTML]="WIPInvoiceData['BillingNotes']| safeHtml" class="PL-5"></span>
+                </div>
+
+                <div class="col-md-12 MT-10 PL-5 totalAmount">
+                  <label>Invoice notes:</label>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- End Notes section -->
+
+          <!-- Start Grid -->
+          <div class="col-md-12 MT-20 PLR-10 PB-10" *ngIf="WIPInvoiceData['InvoiceNotes'] !== ''">
+            <div class="table-container">
+              <div class="table-block">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th width="60%">Notes</th>
+                    <th>Added By</th>
+                    <th>Added On</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <tr *ngFor="let notes of WIPInvoiceData['InvoiceNotes']; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{notes['notes']}}</td>
+                    <td>{{notes['created_by']['userfullname']}}</td>
+                    <td>{{notes['created_on'] | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="notes-section" *ngIf="showAdjWIP === 1">
+            <h2>ADJUST WIP</h2>
+            <div class="row">
+              <div class="col-md-12 MT-10 PL-5 totalAmount">
+                <label>Reason:</label>
+              </div>
+              <div class="col-md-8 MT-10">
+                {{AdjustWIPReason}}
+              </div>
+            </div>
+          </div>
+
+          <div class="notes-section" *ngIf="invoiceStatusData.status_id === DIM">
+            <h2>Dismiss Reason</h2>
+            <div class="col-md-12 MT-20 PLR-0">
+              <div class="row">
+                <div class="col-md-12 totalAmount PL-5">
+                  <label>Reason:</label>
+                  <span [innerHTML]="dimissReason| safeHtml"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Grid -->
+
+          <!-- Start Action Buttons -->
+          <div class="col-md-12 MTB-10">
+            <button type="button" class="btn-dark-blue btn-bordered" (click)="onPreviewInvoice()">Preview Invoice
+            </button>
+            <button type="button" class="btn-orange btn-bordered ML-10"
+                    (click)="onToggleConfomrtaionDialogBacktoBillingStage()" *ngIf="btnSendBilling  && tabData['add_edit']">Send Back To
+              Billing Stage
+            </button>
+          </div>
+          <!-- End Action Buttons -->
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

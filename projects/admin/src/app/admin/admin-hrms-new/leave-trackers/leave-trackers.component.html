@@ -1,0 +1,96 @@
+<div class="leave-trackers-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">LEAVE TRACKERS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <div class="sub-header-bg">
+    <div class="row">
+      <div class="col-md-7 PL-0">
+        <span class="user_img">
+          <img src="assets/images/user.png"/>
+        </span>
+        <span class="user_description">
+        <h3>{{userData?.userfullname}}</h3>
+        <mat-label>{{userData?.email}}</mat-label><br/>
+        <mat-label>{{userData?.designation_id?.designation_name}}</mat-label>
+          </span>
+      </div>
+      <div class="col-md-3 PL-0 text-right PT-15">
+        <mat-label><span [innerHTML]="userData?.Entity"></span></mat-label>
+      </div>
+      <div class="col-md-2 PL-0 text-right">
+        <mat-form-field floatLabel="never" *ngIf="hrDetail?.leave_balance?.length">
+          <mat-select placeholder="Months" (selectionChange)="onChangeTypeOfView($event.value)"
+                      [value]="hrDetail?.leave_balance[0].id">
+            <mat-option *ngFor="let dataItem of hrDetail?.leave_balance;" [value]="dataItem.id">{{dataItem.month}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="row col-md-12 MT-15">
+    <div class="col-md-3 PL-0">
+      <mat-card class="personal-card bg_c">
+        <mat-card-title>Compensatory Off
+          <mat-icon class="PL-5">arrow_forward</mat-icon>
+        </mat-card-title>
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MTB-10">
+              <mat-icon>date_range</mat-icon>
+            </li>
+            <li class="MB-10">
+              Available : {{leaveInfo?.co}}
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-md-3 PL-0">
+      <mat-card class="personal-card bg_e">
+        <mat-card-title>Casual Leave
+          <mat-icon class="PL-5">arrow_forward</mat-icon>
+        </mat-card-title>
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MTB-10">
+              <mat-icon>date_range</mat-icon>
+            </li>
+            <li class="MB-10">
+              Available : {{leaveInfo?.cl}}
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-md-3 PL-0">
+      <mat-card class="personal-card bg_loss">
+        <mat-card-title>Leave Account
+          <mat-icon class="PL-5">arrow_forward</mat-icon>
+        </mat-card-title>
+        <mat-card-content class="text-center">
+          <ul>
+            <li class="MTB-10">
+              <mat-icon>date_range</mat-icon>
+            </li>
+            <li class="MB-10">
+              Available : {{leaveInfo?.la}}
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

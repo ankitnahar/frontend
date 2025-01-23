@@ -1,0 +1,89 @@
+<div class="worksheet-hierarchy-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onWorkflow()">WORKSHEET</a></span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">WORKSHEET HIERARCHY</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                          *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayTimesheet')">Today's Timesheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                          *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                          *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                          *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                          *ngIf="tabDataWorksheetTraining['view']">Training List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                          *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                    Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                          *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                    Listing
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--start tab menu-->
+  <div class="update-client">
+    <mat-tab-group class="demo-tab-group contact-tab" (selectedTabChange)="onSelectTab($event)">
+      <mat-tab label="Master Activity">
+        <div *ngIf="isActiveTab === 0">
+          <app-master-activity></app-master-activity>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Task List">
+        <div *ngIf="isActiveTab === 1">
+          <app-task-list></app-task-list>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Sub Activity">
+        <div *ngIf="isActiveTab === 2">
+          <app-sub-activity></app-sub-activity>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <!--end tab menu-->
+
+</div>

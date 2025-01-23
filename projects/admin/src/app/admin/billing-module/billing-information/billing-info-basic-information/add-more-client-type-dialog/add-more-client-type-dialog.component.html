@@ -1,0 +1,78 @@
+<!-- Start add more bank modal -->
+<div class="modal large-modal bank-dialog">
+  <div class="modal__header">
+    <div class="modal__header__logo">Add More Client Type</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <form [formGroup]="addClientTypeForm" #addMoreClientForm="ngForm" (submit)="onClientTypeSubmit(addClientTypeForm)">
+      <div class="row">
+        <div class="col-md-6 PL-0">
+          <mat-form-field>
+            <input matInput placeholder="Client Type" formControlName="name" required>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addClientTypeForm.get('name'))"
+                            [errMsg]="validationMsg.CLIENT_TYPE_REQUIRED"></app-validation>
+          </div>
+        </div>
+        <div class="col-md-4 MT-5">
+          <button [disabled]="addClientTypeForm.invalid" class="btn-primary" type="submit">Save</button>
+        </div>
+      </div>
+    </form>
+    <div class="table-container dialog-table-container">
+      <div class="table-block">
+        <div class="row">
+          <div class="col-md-4 PL-0">
+            <div>
+              <form [formGroup]="filterForm">
+                <mat-form-field floatLabel="never">
+                  <input matInput placeholder="Search" formControlName="name" (keyup)="setAdvanceFilter(filterForm)">
+                </mat-form-field>
+              </form>
+            </div>
+          </div>
+          <div class="col-md-8 PR-0">
+            <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray" (page)="onPageChange($event)">
+            </mat-paginator>
+          </div>
+        </div>
+        <table>
+          <thead>
+          <tr>
+            <th width="10%">Sr. no.</th>
+            <th width="70%">Client Type</th>
+            <th width="20%">Action</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let clientdata of clientType; let i = index">
+            <td width="10%">{{+pageSize * (pageIndex) + i + 1}}</td>
+            <td width="70%">{{clientdata['name']}}</td>
+            <td width="20%">
+              <mat-icon class="orange-color" [matTooltip]="'Edit'"><i class="material-icons"
+                                                                      (click)="onEditClientTypeData(clientdata)">edit</i>
+              </mat-icon>
+              <mat-slide-toggle *ngIf="slideActiveInactive[i]" [(ngModel)]="slideActiveInactive[i]"
+                                (change)="openToggleConfirmationDialog($event, clientdata, i)"></mat-slide-toggle>
+              <mat-slide-toggle *ngIf="!slideActiveInactive[i]" [checked]="(clientdata['is_active']) ? true : false"
+                                (change)="openToggleConfirmationDialog($event, clientdata, i)"></mat-slide-toggle>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-layer" (click)="onClose()"></div>
+<!-- End add more bank  modal -->

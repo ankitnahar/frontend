@@ -1,0 +1,33 @@
+<div class="bulk-allocation-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>WORKFLOW</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">BULK ALLOCATION</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <!--start tab menu-->
+  <div>
+    <mat-tab-group (selectedTabChange)="onSelectTab($event)">
+      <mat-tab label="Bulk Allocation">
+        <div>
+          <app-bulk-allocation-allocate-user *ngIf="isActiveTab===0"></app-bulk-allocation-allocate-user>
+        </div>
+      </mat-tab>
+      <mat-tab label="Deallocate User">
+        <div>
+          <app-bulk-allocation-deallocate-user *ngIf="isActiveTab===1"></app-bulk-allocation-deallocate-user>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

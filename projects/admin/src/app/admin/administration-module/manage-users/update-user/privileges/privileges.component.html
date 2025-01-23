@@ -1,0 +1,53 @@
+<!-- admin (Administration) previleges html view -->
+<div class="admin-user-privileges-container">
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field floatLabel="never">
+        <mat-select placeholder="Choose an option" [(ngModel)]="selectedPrivilegeType"
+                    (selectionChange)="onChangePageRight($event.value)">
+          <mat-option *ngFor="let rights of privilegeList" [value]="rights?.key">
+            {{ rights.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-7"></div>
+    <div class="col-md-3">
+      <!--<div class="grid-search">-->
+      <!--<div class="add-one">-->
+      <!--<input placeholder="Search" type="text" [value]="filterInput.value" [formControl]="filterInput">-->
+      <!--<span class="prefix">-->
+      <!--<i class="material-icons">search</i>-->
+      <!--</span>-->
+      <!--</div>-->
+      <!--</div>-->
+      <!--<div class="clearfix"></div>-->
+    </div>
+  </div>
+
+  <!-- Start page rights view -->
+  <div *ngIf="activeEnumView == enumView.PAGE_RIGHTS_VIEW">
+    <app-page-rights [pageRightsValue]="selectedPrivilegeType"></app-page-rights>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div *ngIf="activeEnumView == enumView.DYNAMIC_FIELD_GROUP_VIEW">
+    <app-dynamic-field-group [pageRightsValue]="selectedPrivilegeType"></app-dynamic-field-group>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div *ngIf="activeEnumView == enumView.WORKSHEET_STATUS_RIGHTS_VIEW">
+    <app-worksheet-status-right [pageRightsValue]="selectedPrivilegeType"></app-worksheet-status-right>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div *ngIf="activeEnumView == enumView.FORM_EMAIL_RIGHTS_VIEW">
+    <app-form-email-rights [pageRightsValue]="selectedPrivilegeType"></app-form-email-rights>
+  </div>  <!-- End page rights view -->
+
+  <!-- Start page rights view -->
+  <div *ngIf="activeEnumView == enumView.OTHER_VIEW">
+    <app-other [pageRightsValue]="selectedPrivilegeType"></app-other>
+  </div>
+  <!-- End page rights view -->
+</div>

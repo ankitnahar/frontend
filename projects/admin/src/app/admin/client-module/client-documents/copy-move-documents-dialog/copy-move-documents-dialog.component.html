@@ -1,0 +1,94 @@
+<!--&lt;!&ndash;  Start copy and move folder dialog  &ndash;&gt;-->
+<!--<div class="modal">-->
+<!--<div class="modal__header">-->
+<!--<div class="modal__header__logo">{{itemPasteType === 1 ? 'Copy' : 'Move'}} File : {{clientData?.trading_name}}</div>-->
+<!--</div>-->
+
+<!--<div class="modal__close">-->
+<!--<a>-->
+<!--<mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>-->
+<!--</a>-->
+<!--</div>-->
+<!--<div class="modal__body">-->
+<!--<div class="row move-copy-dialog-container">-->
+<!--<div class="col-md-12 ">-->
+<!--<ul *ngIf="folderData.length">-->
+<!--<ng-template #recursiveList let-folderData>-->
+<!--<ul *ngFor="let item of folderData" class="PL-10" >-->
+<!--<li>-->
+<!--<mat-radio-button (change)="OnSelectFolder(item.folder_id)"></mat-radio-button>-->
+<!--{{item['directory_name']}}-->
+<!--</li>-->
+<!--<ul *ngIf="item['children']">-->
+<!--<ng-container-->
+<!--*ngTemplateOutlet="recursiveList; context:{ $implicit: item['children'] }"></ng-container>-->
+<!--</ul>-->
+<!--</ul>-->
+<!--</ng-template>-->
+<!--<ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: folderData }"></ng-container>-->
+<!--</ul>-->
+
+
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="modal__footer">-->
+<!--<div class="text-right row">-->
+<!--<div class="col-md-12 PR-25">-->
+<!--<button class="btn-primary MR-5" [disabled]="selectedFolder && selectedFolder['id'] === ''"-->
+<!--(click)="onClose(true)">Past-->
+<!--</button>-->
+<!--<button class="btn-default" (click)="onClose(false)">Cancel</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
+
+<!--  Start copy and move folder dialog  -->
+<div class="modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">{{itemPasteType === 1 ? 'Copy' : 'Move'}} File : {{clientData?.trading_name}}</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose(false)">close</mat-icon>
+    </a>
+  </div>
+  <div class="modal__body">
+    <div class="row">
+      <div class="col-md-12 tree-bg-copy-client-doc move-copy-dialog-container PLR-0">
+        <ul *ngIf="folderData.length">
+          <ng-template #recursiveList let-folderData>
+            <mat-accordion *ngFor="let item of folderData" ng-init="isOpen = true" is-open="isOpen">
+              <mat-expansion-panel hideToggle="true" [@.disabled]="true">
+                <mat-expansion-panel-header class="timeline-header">
+                  <mat-panel-title>
+                    <mat-radio-button (change)="OnSelectFolder(item.folder_id)"></mat-radio-button>
+                    <span class="v-align-middle">{{item['directory_name']}}</span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <ul *ngIf="item['children']">
+                  <ng-container
+                    *ngTemplateOutlet="recursiveList; context:{ $implicit: item['children'] }"></ng-container>
+                </ul>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: folderData }"></ng-container>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal__footer">
+    <div class="text-right row">
+      <div class="col-md-12 PR-25">
+        <button class="btn-primary MR-5" [disabled]="selectedFolder && selectedFolder['id'] === ''"
+                (click)="onClose(true)">Paste
+        </button>
+        <button class="btn-default" (click)="onClose(false)">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

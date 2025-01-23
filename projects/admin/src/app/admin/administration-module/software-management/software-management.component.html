@@ -1,0 +1,239 @@
+<div class="software-management-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>ADMINISTRATION</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">SOFTWARE MANAGEMENT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn" (click)="onEditSoftwareDialog()">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add Software Detail
+          </button>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()" *ngIf="tabData['export']">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilter}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilter" (click)="onCloseFilter()">Esc <mat-icon
+          class="material-icons">close</mat-icon></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Software" formControlName="software_name">
+                  <mat-option *ngFor="let software of softwareNameList" [value]="software">
+                    {{software}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Frequency" formControlName="frequency_id">
+                  <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                    {{frequency?.frequency_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 MT-10">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="SoftwareField.value">
+          <span class="tag__title">Software:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Software" formControlName="software_name"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                   <mat-option *ngFor="let software of softwareNameList" [value]="software">
+                  {{software}}
+                </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('software_name')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="frequencyIdField.value">
+          <span class="tag__title">Frequency:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Frequency" formControlName="frequency_id"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let frequency of frequencyList" [value]="frequency?.id">
+                    {{frequency?.frequency_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('frequency_id')">close</mat-icon>
+        </div>
+        <div class="clearAll-tags" *ngIf="SoftwareField.value || frequencyIdField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+
+            <th width="25%"
+                (click)="getSortData('software_name', sortBy === 'software_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Software Name
+              <i *ngIf="sortBy === 'software_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'software_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'software_name' && sortOrder === 'desc'}">
+                {{sortBy === 'software_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%"
+                (click)="getSortData('frequency_name', sortBy === 'frequency_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Frequency
+              <i *ngIf="sortBy === 'frequency_name'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'frequency_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'frequency_name' && sortOrder === 'desc'}">
+                {{sortBy === 'frequency_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%"
+                (click)="getSortData('transaction', sortBy === 'transaction' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')"
+                class="text-center">Transaction
+              <i *ngIf="sortBy === 'transaction'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'transaction' && sortOrder === 'asc', 'icon-down' :  sortBy === 'transaction' && sortOrder === 'desc'}">
+                {{sortBy === 'transaction' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="10%"
+                (click)="getSortData('budgeted_unit', sortBy === 'budgeted_unit' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')"
+                class="text-center">Budgeted Unit
+              <i *ngIf="sortBy === 'budgeted_unit'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'budgeted_unit' && sortOrder === 'asc', 'icon-down' :  sortBy === 'budgeted_unit' && sortOrder === 'desc'}">
+                {{sortBy === 'budgeted_unit' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i>
+            </th>
+
+            <th width="30%"
+                (click)="getSortData('created_by', sortBy === 'created_by' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Created By
+              <i *ngIf="sortBy === 'created_by'"
+                 [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_by' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_by' && sortOrder === 'desc'}">
+                {{sortBy === 'created_by' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+              </i></th>
+
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="softwareList.length">
+            <tr *ngFor="let software of softwareList; let i = index">
+              <td width="5%">{{ i + 1}}</td>
+              <td width="25%">{{software?.software_name}}</td>
+              <td width="10%">{{software?.frequency_name}}</td>
+              <td width="10%" class="text-center"><span class="label-gray-bg-color">{{software?.transaction}}</span>
+              </td>
+              <td width="10%" class="text-center"><span
+                class="label-turquoise-bg-color">{{software?.budgeted_unit}}</span></td>
+              <td width="30%">{{software?.created_by.created_by}} | {{software?.created_on | date : 'dd-MM-yyyy'}}</td>
+              <td width="10%">
+
+                <mat-icon class="light-orange-color" [matTooltip]="'Edit'" (click)="onEditSoftwareDialog(software)">edit
+                </mat-icon>
+                <mat-icon class="primary-color" [matTooltip]="'History'" (click)="viewSoftwareHistory(software)">history
+                </mat-icon>
+                <mat-icon class="red-color" [matTooltip]="'Delete'" (click)="onDeleteConfirmationDialog(software)">
+                  delete
+                </mat-icon>
+                <mat-slide-toggle *ngIf="tabData['add_edit']"
+                                  [checked]="(software?.is_active) ? true : false"
+                                  (change)="openToggleConfirmationDialog($event, software, i)"></mat-slide-toggle>
+
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table *ngIf="softwareList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    <div *ngIf="softwareList.length === 0" class="panel-title red-color">
+      No Records Found!
+    </div>
+  </div>
+  <!-- End Data Grid -->
+</div>

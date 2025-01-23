@@ -1,0 +1,199 @@
+<div class="upload-document-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>CLIENT</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onClient()">VIEW CLIENT</a></span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">UPLOAD DOCUMENT | {{clientData?.code}} - {{clientData?.name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Upload Form -->
+  <div class="upload-document-form" *ngIf="tabData['add_edit']">
+    <div class="panel-title orange-color">Document Upload</div>
+    <form [formGroup]="uploadDocumentForm" #uploadForm="ngForm"
+          (submit)="onSubmitUploadDocumentForm(uploadDocumentForm.value, uploadDocumentForm.valid)">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput placeholder="Uploaded Document Name" type="text" name="uploadDocument"
+                   formControlName="documentName" readonly>
+            <mat-icon matSuffix (click)="onClear()" *ngIf="documentName">close</mat-icon>
+            <mat-icon matSuffix (click)="onChooseDocument()">attach_file</mat-icon>
+            <input type="file" [hidden]="true" id="uploadDocument" (change)="onUploadDocument($event)"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(uploadDocumentForm.get('documentName'))"
+                            [errMsg]="validationMsg.DOCUMENT_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select placeholder="Document Type" #docTypeRef formControlName="type"
+                        (selectionChange)="updateValidation($event.value)">
+              <mat-option *ngFor="let doc of documentTypeList" [value]="doc?.key">
+                {{ doc?.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(uploadDocumentForm.get('type'))"
+                            [errMsg]="validationMsg.TYPE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4" *ngIf="docTypeRef.value == 2">
+          <mat-form-field>
+            <input matInput placeholder="Other" type="text" formControlName="notes"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(uploadDocumentForm.get('notes'))"
+                            [errMsg]="validationMsg.NOTE_REQUIRED"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <div class="right-buttons">
+            <button type="submit" class="btn-primary" [disabled]="uploadDocumentForm.invalid">Upload</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- End Upload Form -->
+
+  <!-- Start Uploaded document table -->
+
+  <!-- End Grid Inner Header -->
+  <div class="grid-inner-header">
+    <div class="row">
+      <div class="col-md-6 PLR-0">
+        <div class="panel-title orange-color">Document Upload</div>
+      </div>
+      <div class="col-md-6 text-right">
+        <div class="panel-title" *ngIf="tabData['download'] && documentList.length">
+          <a (click)="downloadAllDocument()" class="cursor-pointer">
+            <mat-icon>get_app</mat-icon>
+            Download all attachment</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr. No</th>
+          <th width="20%"
+              (click)="getSortData('original_name', sortBy === 'original_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Document
+            <i *ngIf="sortBy === 'original_name'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'original_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'original_name' && sortOrder === 'desc'}">
+              {{sortBy === 'original_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="15%"
+              (click)="getSortData('type', sortBy === 'type' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Document Type
+            <i *ngIf="sortBy === 'type'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'type' && sortOrder === 'asc', 'icon-down' :  sortBy === 'type' && sortOrder === 'desc'}">
+              {{sortBy === 'type' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="25%"
+              (click)="getSortData('notes', sortBy === 'notes' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Notes
+            <i *ngIf="sortBy === 'notes'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'notes' && sortOrder === 'asc', 'icon-down' :  sortBy === 'notes' && sortOrder === 'desc'}">
+              {{sortBy === 'notes' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="12%"
+              (click)="getSortData('created_by', sortBy === 'created_by' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Uploaded By
+            <i *ngIf="sortBy === 'created_by'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_by' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_by' && sortOrder === 'desc'}">
+              {{sortBy === 'created_by' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+          <th width="15%"
+              (click)="getSortData('created_on', sortBy === 'created_on' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+            Uploaded On
+            <i *ngIf="sortBy === 'created_on'"
+               [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_on' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_on' && sortOrder === 'desc'}">
+              {{sortBy === 'created_on' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+            </i>
+          </th>
+
+          <th width="8%"></th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody *ngIf="documentList.length">
+          <tr *ngFor="let document of documentList; let i=index">
+            <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+            <td width="20%">{{document?.original_name}}</td>
+            <td width="15%">
+              <mat-icon class="grid_icon_trip_origin mat-icon orange-color">trip_origin
+              </mat-icon>
+              {{getDocumentType(document?.type)}}
+            </td>
+            <td width="25%">{{document?.notes}}</td>
+            <td width="12%">{{document?.created_by?.userfullname}}</td>
+            <td width="15%">{{document?.created_on | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+            <td width="8%">
+              <mat-icon *ngIf="tabData['download']" class="wet-asphalt-color MR-5" (click)="downloadDocument(document)">
+                get_app
+              </mat-icon>
+              <mat-icon (click)="onEditDocument(document)" [matTooltip]="'Edit'">edit</mat-icon>
+              <mat-icon *ngIf="tabData['delete']" class="red-color" (click)="deleteDocument(document)">delete</mat-icon>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <table *ngIf="documentList.length">
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <!-- End Uploaded document table -->
+  <div *ngIf="!documentList.length" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

@@ -1,0 +1,126 @@
+<div class="">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>HRMS</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">
+            <a (click)="onHolidayListing()">HOLIDAY WORKING</a>
+          </span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">APPLY HOLIDAY WORKING</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Over BreadCrumb Top Header -->
+
+  <!--Start add Apply leave form-->
+  <div>
+    <span class="panel-title orange-color">Apply Holiday Working Leave</span>
+    <form [formGroup]="addApplyHolidayworkingLeaveForm" (submit)="onSubmit(addApplyHolidayworkingLeaveForm)">
+      <div class="row">
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Employee ID" formControlName="employee_id" readonly/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Department" value="{{userInfo?.designation_id?.department_name}}" readonly/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput type="text" placeholder="First Approval" value="{{userInfo?.first_approval?.userfullname}}" readonly/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput type="text" placeholder="Second Approval" value="{{userInfo?.second_approval?.userfullname}}" readonly/>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <mat-select placeholder="Location" formControlName="location_id" required>
+              <mat-option *ngFor="let location of locationList" [value]="location?.id">
+                {{ location?.location_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addApplyHolidayworkingLeaveForm.get('location_id'))"
+                            [errMsg]="validationMsg.LOCATION"></app-validation>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput formControlName="date" [matDatepicker]="dueDateFrom"
+                   placeholder="Holiday's Date">
+            <mat-datepicker-toggle matSuffix [for]="dueDateFrom"></mat-datepicker-toggle>
+            <mat-datepicker #dueDateFrom></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput placeholder="Estimated Arrival Time" aria-label="Select Time" [ngxTimepicker]="selecttime"
+                   [format]="24" formControlName="start_time">
+            <ngx-material-timepicker #selecttime></ngx-material-timepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput placeholder="Estimated Departure Time" aria-label="Select Time"
+                   [ngxTimepicker]="selecttime1"
+                   [format]="24" formControlName="end_time">
+            <ngx-material-timepicker #selecttime1></ngx-material-timepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="trading_name"
+                     placeholder="Trading Name"
+                     bindValue="id"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="entity_id">
+          </ng-select>
+        </div>
+
+        <div class="col-md-8">
+          <mat-form-field>
+            <textarea matInput type="text" placeholder="Reason for Holiday Working" formControlName="notes" required></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 MB-20">
+          <div class="row MT-30">
+            <div class="col-md-6 PL-0">
+            </div>
+            <div class="col-md-6 text-right PR-0">
+              <button (click)="onGoDashboard()" type="button" class="btn-default MR-5">Cancel</button>
+              <button [disabled]="addApplyHolidayworkingLeaveForm.invalid" type="submit" class="btn-primary">Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--Over add apply holiday working leave form-->
+</div>
+

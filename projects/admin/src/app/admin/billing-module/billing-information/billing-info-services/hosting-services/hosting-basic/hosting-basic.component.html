@@ -1,0 +1,141 @@
+<div class="bookkeeping-basic-container" *ngIf="isEdit">
+  <span class="panel-title">Hosting Basic</span>
+  <form [formGroup]="hostingbasicForm" (submit)="onSubmitHostingInfo(hostingbasicForm)">
+    <div class="row">
+      <div class="col-md-12 MB-20">
+        <label class="MR-20">Setup cost applicable ?</label>
+        <mat-radio-group formControlName="is_setup_cost" (change)="changeSetupCostType($event.value)">
+          <mat-radio-button *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+            {{ yesNo?.label}}
+          </mat-radio-button>
+        </mat-radio-group>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(hostingbasicForm.get('is_setup_cost'))"
+                          [errMsg]="validationMsg.SETUP_COST_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="isSetupCost">
+        <mat-form-field>
+          <input formControlName="setup_cost" matInput placeholder="Setup Cost" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(hostingbasicForm.get('setup_cost'))"
+                          [errMsg]="validationMsg.SETUP_COST_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(hostingbasicForm.get('setup_cost'))"
+                          [errMsg]="validationMsg.SETUP_COST_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input formControlName="basic_rate" matInput placeholder="Basic Fees" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(hostingbasicForm.get('basic_rate'))"
+                          [errMsg]="validationMsg.BASIC_FEES_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(hostingbasicForm.get('basic_rate'))"
+                          [errMsg]="validationMsg.BASIC_FEES_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field>
+          <input formControlName="permium_rate" matInput placeholder="Premium Fees" required/>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(hostingbasicForm.get('permium_rate'))"
+                          [errMsg]="validationMsg.PREMIUM_FEES_REQUIRED"></app-validation>
+        </div>
+        <div class="validation-msg">
+          <app-validation *ngIf="isValidField(hostingbasicForm.get('permium_rate'))"
+                          [errMsg]="validationMsg.PREMIUM_FEES_VALID"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="recurring_id" placeholder="Recurring"
+                      (selectionChange)="changeAutoInvoice($event.value)">
+            <mat-option value="">Please Select</mat-option>
+            <mat-option *ngFor="let recurring of recurringList" [value]="recurring?.id">
+              {{ recurring?.recurring_name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4 MT-10">
+        <mat-form-field>
+          <mat-select formControlName="auto_invoice" placeholder="Auto invoice" required
+                      (selectionChange)="changeAutoInvoiceType($event.value)">
+            <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+              {{ yesNo?.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validation-msg">
+          <app-validation *ngIf="isRequiredField(hostingbasicForm.get('auto_invoice'))"
+                          [errMsg]="validationMsg.AUTO_INVOICE_REQUIRED"></app-validation>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <mat-form-field>
+          <textarea matInput placeholder="Hosting Notes" formControlName="notes"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 text-right MTB-20">
+        <button type="button" class="btn-default MR-5">Cancel</button>
+        <button [disabled]="hostingbasicForm.invalid" type="submit" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="view-billing-info-container" *ngIf="!isEdit">
+  <div class="basic-details-border">
+    <span class="panel-title">Hosting Basic</span>
+    <form>
+      <div class="row">
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Setup cost applicable</label>
+            <span>{{getYesNoStatus(hostingData?.is_setup_cost)}}</span>
+          </div>
+          <div *ngIf="hostingData?.is_setup_cost === 1">
+            <label>Setup Cost</label>
+            <span>{{hostingData?.setup_cost}}</span>
+          </div>
+          <div>
+            <label>Basic Fee</label>
+            <span>{{hostingData?.basic_rate}}</span>
+          </div>
+          <div>
+            <label>Auto Invoice</label>
+            <span>{{getYesNoStatus(hostingData?.auto_invoice)}}</span>
+          </div>
+        </div>
+        <div class="col-md-6 label-span-color">
+          <div>
+            <label>Premium Fee</label>
+            <span>{{hostingData?.permium_rate}}</span>
+          </div>
+          <div>
+            <label>Recurring</label>
+            <span>{{getRecurringName(hostingData?.recurring_id)}}</span>
+          </div>
+          <div>
+            <label>Note</label>
+            <span>{{hostingData?.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

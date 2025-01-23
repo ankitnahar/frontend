@@ -1,0 +1,15 @@
+<!--  Start Favorite menu dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">EMAIL PREVIEW</div>
+  </div>
+  <div class="modal__body P-0">
+    <div [innerHTML]="emailContent | safeHtml"></div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<!--  Start Sub Client List dialog  -->
+<div class="modal large-modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">Client Discontinue Reason</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <div>
+      <form [formGroup]="commentForm" #commentChildForm="ngForm" (submit)="addReason(commentForm)">
+        <div class="row">
+          <div class="col-md-9">
+            <mat-form-field>
+              <textarea formControlName="discontinue_comment" matInput placeholder="Enter Comments"></textarea>
+            </mat-form-field>
+            <div class="validation-msg">
+              <app-validation *ngIf="isRequiredField(commentForm.get('discontinue_comment'))"
+                              [errMsg]="validationMsg.COMMENTS"></app-validation>
+            </div>
+          </div>
+          <div class="col-md-3 MT-10 text-left">
+            <button type="submit" class="btn-primary on-right MT-5" [disabled]="commentForm.invalid">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--  End Change Sub client list dialog  -->

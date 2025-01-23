@@ -1,0 +1,7 @@
+.mat-checkbox {
+  font-family: $font-family;
+}
+
+.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: $dark-primary-color;
+}

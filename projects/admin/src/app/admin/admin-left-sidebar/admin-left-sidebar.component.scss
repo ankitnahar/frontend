@@ -1,0 +1,122 @@
+@import "../../../assets/scss/main";
+
+.aside-toolbar {
+  background: $white-color;
+  padding: 5px;
+  height: 50px !important;
+  position: fixed;
+  width: 100%;
+  top: 50px;
+  z-index: 9;
+  box-shadow:  0 1px 0px -3px rgba(0, 0, 0, 0.2), 0 1px 1px 0px rgba(0, 0, 0, 0.14), 0 1px 2px 1px rgba(0, 0, 0, 0.12);
+  h2 {
+    color: $black-color;
+    font-weight: 400;
+    display: inline-block;
+  }
+  .menu_team {
+    background: #b2b2b2 !important;
+    height: 32px;
+    mat-icon {
+      vertical-align: middle !important;
+    }
+  }
+  .mat-icon-button {
+    background: $primary-color;
+    border-radius: 2px;
+    margin-left: 5px;
+    mat-icon {
+      vertical-align: middle;
+      vertical-align: -webkit-baseline-middle;
+    }
+  }
+  mat-icon {
+    color: $white-color;
+    vertical-align: middle;
+  }
+  .user-label {
+    background: #b2b2b2;
+    padding: 0 15px;
+    color: $white-color;
+    border-radius: 0;
+    margin-left: 10px;
+  }
+}
+
+.mat-nav-list .mat-list-item {
+  color: $white-color !important;
+}
+
+.mat-list-option:focus, .mat-list-option:hover, .mat-nav-list .mat-list-item:focus, .mat-nav-list .mat-list-item:hover {
+  background: #495062;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  background: #3c4251;
+}
+
+.example-container {
+  min-height: 500px;
+  width: 100%;
+  background-color: #fff;
+  padding: 0;
+  top: 47px;
+  height: 85vh;
+}
+
+.example-sidenav-content {
+  display: inline-block;;
+  height: 80vh;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.example-sidenav {
+  user-select: none;
+  position: fixed;
+  top: 14%;
+  .mat-list-item {font-size: 15px;}
+  .mat-expansion-panel {
+    background: #3c4251 !important;
+    box-shadow: none !important;
+    .mat-expansion-panel-header {
+      padding: 0 16px !important;
+
+    }
+  }
+  ::ng-deep .mat-expansion-indicator::after {
+    color: $white-color !important;
+  }
+  .mat-expansion-panel-header-title {
+    color: $white-color;
+  }
+  .mat-expansion-indicator::after, .mat-expansion-panel-header-description {
+    color: $white-color !important;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.menu-button {
+  transition: 300ms ease-in-out;
+  transform: rotate(0deg);
+}
+
+.menu-button.rotated {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  overflow-y: hidden;
+  transition: transform 300ms ease;
+  transform: scaleY(0);
+  transform-origin: top;
+  padding-left: 30px;
+}
+
+.submenu.expanded {
+  transform: scaleY(1);
+}

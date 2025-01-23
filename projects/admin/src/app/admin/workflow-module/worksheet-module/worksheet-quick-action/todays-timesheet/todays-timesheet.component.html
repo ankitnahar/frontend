@@ -1,0 +1,693 @@
+<!-- Admin Today's Timesheet Container -->
+<div class="today-timesheet-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>WORKFLOW</span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active"><a (click)="onWorksheetDashboard()">WORKSHEET</a></span>
+
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span class="active">TODAY'S TIMESHEET</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+        <div class="breadcrumb-top-header__right-menu">
+          <ul>
+            <li>
+              <a>
+                <label class="black-color">Quick actions</label>
+                <i class="material-icons" [matMenuTriggerFor]="menu">more_vert</i>
+                <mat-menu #menu="matMenu" class="column-menu">
+                  <button mat-menu-item class="menu-header">
+                    <h3>Quick Action</h3>
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('addNewWorksheet')"
+                          *ngIf="worksheetTabIDData['add_edit']">Add New Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('todayWorksheet')">Today's Worksheet</button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetHierarchy')"
+                          *ngIf="tabDataWorksheetHierarchy['view']">Worksheet Hierarchy
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('subClientList')"
+                          *ngIf="tabDataWorksheetSubClientList['view']">Sub Client List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('worksheetMasterChecklist')"
+                          *ngIf="tabDataWorksheetMasterChecklist['view']">Worksheet Master Checklist
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('changeMultipleWorksheetStatus')"
+                          *ngIf="isMultipleStatusUpdate">Change Multiple Worksheet Status
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('trainingList')"
+                          *ngIf="tabDataWorksheetTraining['view']">Training List
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('revieworKnockBackWorksheet')"
+                          *ngIf="tabDataWorksheetReviewerList['view']">Review or Knock Back
+                    Worksheet
+                  </button>
+                  <button mat-menu-item (click)="onOpenQuickMenu('peerReviewWorksheetListing')"
+                          *ngIf="tabDataWorksheetPeerReviewerList['view']">Peer Review Worksheet
+                    Listing
+                  </button>
+                </mat-menu>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <!-- Start button  container -->
+  <div class="with-button-container PB-10">
+    <button type="button" class="btn-primary MR-5 ML-10" (click)="onOpenTodaysWorksheet()">
+      Today's Worksheet
+    </button>
+    <button type="button" class="btn-primary MR-5" (click)="onOpenTodaysIncompletedWorksheet()"
+            *ngIf="isInCompletedWorksheet['view']">
+      Incomplete Worksheet
+    </button>
+    <button type="button" class="btn-primary MR-5" (click)="onOpenReviewTimesheets()" *ngIf="reviewerTimesheetRights">
+      Review Timesheets (<span>{{reviewTimesheetCount}}</span>)
+    </button>
+  </div>
+  <!-- End button container -->
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn" (click)="onAddTimeSheet()"
+                  *ngIf="isAddTimesheetButtonRights && userData?.user_timesheet_fillup_flag === 1">
+            <mat-icon class="material-icons">add</mat-icon>
+            Add New Timesheet
+          </button>
+          <h3 *ngIf="!isAddTimesheetButtonRights && userData?.user_timesheet_fillup_flag === 0">Today's Timesheet</h3>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onToggleFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li (click)="downloadExcel()">
+              <a>
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onToggleFilter()">Esc
+          <mat-icon class="material-icons">close</mat-icon>
+        </span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <ng-select class="custom" [items]="parentClientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Parent Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         (change)="onChangeParentEntity($event)"
+                         formControlName="parent_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="User Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id">
+              </ng-select>
+            </div>
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select formControlName="service_id" placeholder="Service">
+                  <mat-option *ngFor="let service of serviceList;" [value]="service.id">
+                    {{service.service_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="masterActivityList"
+                         [closeOnSelect]="true"
+                         bindLabel="name"
+                         placeholder="Master activity"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [hideSelected]="true"
+                         [multiple]="true"
+                         (change)="getTaskFilterList($event)"
+                         formControlName="master_activity_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="taskList"
+                         [closeOnSelect]="true"
+                         bindLabel="name"
+                         placeholder="Task"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         [multiple]="true"
+                         formControlName="task_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="subActivityList"
+                         [closeOnSelect]="true"
+                         bindLabel="subactivity_full_name"
+                         placeholder="Sub Activity"
+                         bindValue="subactivity_code"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="subactivity_code">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <div class="row">
+                <div class="col-md-6 PL-0">
+                  <mat-form-field>
+                    <input matInput formControlName="from_date" [matDatepicker]="periodFrom"
+                           placeholder="Timesheet From" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="periodFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #periodFrom></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-6 PR-0">
+                  <mat-form-field>
+                    <input matInput formControlName="to_date" [matDatepicker]="periodTo" placeholder="Timesheet To"
+                           readonly>
+                    <mat-datepicker-toggle matSuffix [for]="periodTo"></mat-datepicker-toggle>
+                    <mat-datepicker #periodTo></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <div class="row">
+                <div class="col-md-6 PL-0">
+                  <mat-form-field>
+                    <input matInput formControlName="start_date" [matDatepicker]="speriodFrom"
+                           placeholder="Period From" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="speriodFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #speriodFrom></mat-datepicker>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-6 PR-0">
+                  <mat-form-field>
+                    <input matInput formControlName="end_date" [matDatepicker]="eperiodTo" placeholder="Period To"
+                           readonly>
+                    <mat-datepicker-toggle matSuffix [for]="eperiodTo"></mat-datepicker-toggle>
+                    <mat-datepicker #eperiodTo></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select formControlName="billing_status" placeholder="Billing Status" [multiple]="true">
+                  <mat-option *ngFor="let statusList of billingStatusList" value="{{statusList.key}}">
+                    {{statusList.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!--<div class="col-md-3 MT-10">-->
+              <!--<ng-select [items]="subClientList"-->
+                         <!--[closeOnSelect]="true"-->
+                         <!--bindLabel="subclient"-->
+                         <!--placeholder="Sub Client"-->
+                         <!--bindValue="id"-->
+                         <!--[virtualScroll]="true"-->
+                         <!--[searchable]="true"-->
+                         <!--[hideSelected]="true"-->
+                         <!--formControlName="subclient_id">-->
+              <!--</ng-select>-->
+            <!--</div>-->
+
+            <div class="col-md-3 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button [disabled]="filterForm.invalid" type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="parent_id.value">
+          <span class="tag__title">Parent Trading Name:</span>
+          <span>
+            <ng-select class="custom" [items]="parentClientList"
+                       [closeOnSelect]="true"
+                       bindLabel="trading_name"
+                       placeholder="Trading name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="parent_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true);onChangeParentEntity($event);">
+              </ng-select>
+            </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="entity_id.value">
+          <span class="tag__title">Client name :</span>
+          <span>
+             <ng-select [items]="clientList"
+                        [closeOnSelect]="true"
+                        bindLabel="trading_name"
+                        placeholder="Trading Name"
+                        bindValue="id"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        formControlName="entity_id"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('entity_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="userId.value">
+          <span class="tag__title">User Name :</span>
+          <span>
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="User Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="user_id"
+                         (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('user_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="service_id.value">
+          <span class="tag__title">Service :</span>
+          <span>
+              <mat-form-field>
+                <mat-select formControlName="service_id" placeholder="Service"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let service of serviceList;" [value]="service.id">
+                    {{service.service_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('service_id')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="master_activity_id.value && master_activity_id.value.length">
+          <span class="tag__title">Master activity :</span>
+          <span>
+            <ng-select [items]="masterActivityList"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Master activity"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [hideSelected]="true"
+                       [multiple]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true); getTaskFilterList($event);"
+                       formControlName="master_activity_id">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('master_activity_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="task_id.value && task_id.value.length">
+          <span class="tag__title">Task :</span>
+          <span>
+            <ng-select [items]="taskList"
+                       [closeOnSelect]="true"
+                       bindLabel="name"
+                       placeholder="Task"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       [multiple]="true"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                       formControlName="task_id">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('task_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="subactivityCode.value">
+          <span class="tag__title">Sub Activity :</span>
+          <span>
+             <ng-select [items]="subActivityList"
+                        [closeOnSelect]="true"
+                        bindLabel="subactivity_full_name"
+                        placeholder="Sub Activity"
+                        bindValue="subactivity_code"
+                        [virtualScroll]="true"
+                        [searchable]="true"
+                        [hideSelected]="true"
+                        (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                        formControlName="subactivity_code">
+            </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('subactivity_code')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="from_date.value">
+          <span class="tag__title">From :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="from_date" [matDatepicker]="perdiodFromDate"
+                     placeholder="From" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly>
+              <mat-datepicker-toggle matSuffix [for]="perdiodFromDate"></mat-datepicker-toggle>
+              <mat-datepicker #perdiodFromDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('from_date')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="to_date.value">
+          <span class="tag__title">To :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="to_date" [matDatepicker]="perdiodToDate" (click)="perdiodToDate.open()"
+                     placeholder="To" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly>
+              <mat-datepicker-toggle matSuffix [for]="perdiodToDate"></mat-datepicker-toggle>
+              <mat-datepicker #perdiodToDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('to_date')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="start_date.value">
+          <span class="tag__title">From :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="start_date" [matDatepicker]="sperdiodFromDate"
+                     placeholder="From" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly>
+              <mat-datepicker-toggle matSuffix [for]="sperdiodFromDate"></mat-datepicker-toggle>
+              <mat-datepicker #sperdiodFromDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('start_date')">close</mat-icon>
+        </div>
+        <div class="tag" *ngIf="end_date.value">
+          <span class="tag__title">To :</span>
+          <span>
+            <mat-form-field [floatLabel]="'never'">
+              <input matInput formControlName="end_date" [matDatepicker]="eperdiodToDate" (click)="perdiodToDate.open()"
+                     placeholder="To" (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly>
+              <mat-datepicker-toggle matSuffix [for]="eperdiodToDate"></mat-datepicker-toggle>
+              <mat-datepicker #eperdiodToDate></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('end_date')">close</mat-icon>
+        </div>
+
+
+        <div class="tag" *ngIf="billingStatus.value">
+          <span class="tag__title">Billing Status :</span>
+          <span>
+            <mat-form-field>
+                <mat-select formControlName="billing_status" placeholder="Billing Status" [multiple]="true"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let statusList of billingStatusList" value="{{statusList.key}}">
+                    {{statusList.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('billing_status')">close</mat-icon>
+        </div>
+
+        <!--<div class="tag" *ngIf="subclientId.value">-->
+          <!--<span class="tag__title">Sub Client :</span>-->
+          <!--<span>-->
+           <!--<ng-select [items]="subClientList"-->
+                      <!--[closeOnSelect]="true"-->
+                      <!--bindLabel="subclient"-->
+                      <!--placeholder="Sub Client"-->
+                      <!--bindValue="id"-->
+                      <!--[virtualScroll]="true"-->
+                      <!--[searchable]="true"-->
+                      <!--[hideSelected]="true"-->
+                      <!--formControlName="subclient_id">-->
+              <!--</ng-select>-->
+          <!--</span>-->
+          <!--<mat-icon class="material-icons tag__close" (click)="onClearTag('subclient_id')">close</mat-icon>-->
+        <!--</div>-->
+
+        <div class="clearAll-tags" *ngIf="
+          entity_id.value || parent_id.value
+          || (master_activity_id.value && master_activity_id.value.length)
+          || (task_id.value && task_id.value.length)
+          || service_id.value
+          || from_date.value
+          || to_date.value
+          || start_date.value
+          || end_date.value
+          || userId.value
+          || subclientId.value
+          || subactivityCode.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <!-- Start Table -->
+    <div class="expand-grid">
+      <div>
+        <div class="expand-grid__thead">
+          <table>
+            <thead>
+            <tr>
+              <th width="5%">Sr. No</th>
+
+              <th width="10%" (click)="getSortData('userfullname',
+            (sortBy === 'userfullname') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">User Name
+                <i *ngIf="sortBy === 'userfullname'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'userfullname'),
+                 'icon-up' : ((sortBy === 'userfullname') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                  {{(sortBy === 'userfullname') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                  'arrow_downward'}}
+                </i>
+              </th>
+
+              <th width="12%">Parent Trading Name</th>
+
+              <th width="16%" (click)="getSortData('entity_name',
+            (sortBy === 'entity_name') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Client Name
+                <i *ngIf="sortBy === 'entity_name'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'entity_name'),
+                 'icon-up' : ((sortBy === 'entity_name') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                  {{(sortBy === 'entity_name') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                  'arrow_downward'}}
+                </i>
+              </th>
+
+              <th width="10%" (click)="getSortData('master',
+            (sortBy === 'master') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">Master Activity
+                <i *ngIf="sortBy === 'master'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'master'),
+                 'icon-up' : ((sortBy === 'master') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                  {{(sortBy === 'master') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                  'arrow_downward'}}
+                </i>
+              </th>
+
+              <th width="10%"
+                  (click)="getSortData('task', (sortBy === 'task') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                Task
+                <i *ngIf="sortBy === 'task'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'task'),
+                 'icon-up' : ((sortBy === 'task') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                  {{(sortBy === 'task') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                  'arrow_downward'}}
+                </i>
+              </th>
+
+              <!--<th width="5%">SubActivity</th>-->
+              <th width="12%">Period</th>
+
+              <th width="8%"
+                  (click)="getSortData('date', (sortBy === 'date') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                Timesheet Date
+                <i *ngIf="sortBy === 'date'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'date'),
+                 'icon-up' : ((sortBy === 'date') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                  {{(sortBy === 'date') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                  'arrow_downward'}}
+                </i>
+              </th>
+
+              <th width="10%"
+                  (click)="getSortData('billing_status', (sortBy === 'billing_status') ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                Billing Status
+                <i *ngIf="sortBy === 'billing_status'" [ngClass]="{'material-icons': true,
+                'active' : (sortBy === 'billing_status'),
+                 'icon-up' : ((sortBy === 'billing_status') && (sortOrder === 'asc')),
+                 'icon-down' : true}">
+                  {{(sortBy === 'billing_status') ? ((sortOrder === 'asc') ? 'arrow_upward':'arrow_downward') :
+                  'arrow_downward'}}
+                </i>
+              </th>
+
+              <th width="7%">Action</th>
+            </tr>
+            </thead>
+          </table>
+        </div>
+
+        <div class="expand-grid__tbody expand-grid-scrollable">
+          <table *ngIf="timeSheetList.length">
+            <tbody *ngFor="let timeSheet of timeSheetList; let i = index;">
+            <tr [ngClass]="{'is-active-row' : trIndex === i}" class="hover-icons row-data">
+              <td width="5%">
+                <a class="open-inner-data" (click)="openRow(i)">
+                  <mat-icon [ngClass]="{'is-open' : trIndex === i}" class="material-icons">keyboard_arrow_down
+                  </mat-icon>
+                </a>
+                {{+pageSize * (pageIndex) + i + 1}}
+              </td>
+              <td width="10%" class="word-break">{{timeSheet?.userfullname}}</td>
+              <td width="12%" class="word-break">{{timeSheet?.parent_name}}</td>
+              <td width="16%" class="word-break">{{timeSheet?.entity_name}}</td>
+              <td width="10%" class="word-break">{{timeSheet?.master}}</td>
+              <td width="10%" class="word-break">{{timeSheet?.task}}</td>
+              <!--<td width="5%" class="text-center">{{timeSheet?.subactivity_code}}</td>-->
+              <td width="12%">{{timeSheet?.start_date | date : 'dd-MM-yyyy'}} to
+                {{timeSheet?.end_date | date : 'dd-MM-yyyy'}}
+              </td>
+              <td width="8%">{{timeSheet?.date | date : 'dd-MM-yyyy'}}</td>
+              <td width="10%"><span class="label-turquoise-bg-color">{{timeSheet?.units}}</span>
+                {{getBillingStatusName(timeSheet?.billing_status)}}
+              </td>
+              <td width="7%">
+                <mat-icon class="light-orange-color" [matTooltip]="'Edit'" (click)="onEditTimeSheet(timeSheet)"
+                          *ngIf="checkToShowButton(timeSheet, 1)">edit
+                </mat-icon>
+                <mat-icon class="light-dark-blue-color" [matTooltip]="'View Extra Item'"
+                          (click)="onOpenMoreDetailsDialog(timeSheet)">
+                  remove_red_eye
+                </mat-icon>
+                <mat-icon class="red-color" [matTooltip]="'Delete'" (click)="openTodayTimesheetDeleteDialog(timeSheet)"
+                          *ngIf="checkToShowButton(timeSheet, 2)">
+                  delete
+                </mat-icon>
+              </td>
+            </tr>
+
+
+            <tr *ngIf="trIndex === i" class="inner-data">
+              <div class="row PT-20 PB-20">
+                <div class="col-md-12">
+                  <div class="inner-data__view-notes">
+                    <div>Sub Activity:</div>
+                    <div>{{timeSheet?.subactivity_full_name}}</div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="inner-data__view-notes">
+                    <div>Notes:</div>
+                    <div [innerHtml]="toHTML(timeSheet?.notes) | newline | safeHtml"></div>
+                  </div>
+                </div>
+              </div>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="expand-grid__tfoot" *ngIf="timeSheetList.length">
+          <table>
+            <tfoot>
+            <tr>
+              <td colspan="3" class="total_units">
+                <label>Total Units:</label> <span class="primary-color ML-10">{{totalUnits}}</span>
+              </td>
+              <td colspan="10">
+                <mat-paginator [length]="totalRecords"
+                               [pageSize]="pageSize"
+                               [pageIndex]="pageIndex"
+                               [pageSizeOptions]="pageArray"
+                               (page)="onPageChange($event)">
+                </mat-paginator>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+  <div *ngIf="timeSheetList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+  <!-- End Data Grid -->
+</div>

@@ -1,0 +1,371 @@
+<!-- Admin view archived list Container -->
+<div class="billing-info-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>BILLING</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">BILLING INFORMATION</span>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 leave-type-list">
+          <ul>
+            <li>
+              <a class="primary-color list-alignment"><i class="material-icons">fiber_manual_record</i>Service's quotes
+                updated </a>
+            </li>
+            <li>
+              <a class="light-orange-color list-alignment"><i class="material-icons">fiber_manual_record</i>Service's
+                quotes not updated
+                Initiated</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span> <i class="material-icons">filter_list</i>
+              </a>
+            </li>
+
+            <li *ngIf="tabData['export']">
+              <a>
+                <span (click)="downloadExcel()">Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- End Grid Inner Header -->
+
+      <!-- Start Grid Filter -->
+      <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+        <div class="filter-action-icon">
+          <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <mat-icon
+            class="material-icons">close</mat-icon></span>
+        </div>
+        <div class="grid-filter-container">
+          <div class="filter-title">
+            <h3>Advance Filter</h3>
+          </div>
+          <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+            <div class="row">
+              <div class="col-md-3 MT-10">
+                <ng-select [items]="clientList"
+                           [closeOnSelect]="true"
+                           bindLabel="code"
+                           placeholder="Client Code"
+                           bindValue="code"
+                           [virtualScroll]="true"
+                           [searchable]="true"
+                           [hideSelected]="true"
+                           formControlName="code">
+                </ng-select>
+              </div>
+              <div class="col-md-3 MT-10">
+                <mat-form-field>
+                  <input matInput placeholder="Billing Name" formControlName="billing_entity">
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-3 MT-10">
+                <mat-form-field>
+                  <input matInput placeholder="Trading Name" formControlName="trading_entity">
+                </mat-form-field>
+              </div>
+              <div class="col-md-3 MT-10">
+                <mat-form-field>
+                  <mat-select placeholder="Service" formControlName="service_id">
+                    <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                      {{ service?.service_name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3 MT-10">
+                <mat-form-field>
+                  <mat-select placeholder="Service Updated" formControlName="is_updated">
+                    <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                      {{ yesNo?.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-3 MT-10">
+                <mat-form-field>
+                  <mat-select placeholder="Parent Entity" formControlName="parent_id">
+                    <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                      {{ yesNo?.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-3 MT-10">
+                <mat-form-field>
+                  <mat-select placeholder="Billing From BDMS?" formControlName="billing_from">
+                    <mat-option *ngFor="let billingData of billingFrom.slice(1)" [value]="billingData?.key">
+                      {{ billingData?.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3 MT-10 text-right">
+                <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+                <button type="submit" class="btn-primary">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- End Grid Filter -->
+
+      <!-- Start Filter Tags -->
+      <div class="filter-tags">
+        <form [formGroup]="advanceFilterForm">
+
+          <div class="tag" *ngIf="entityCodeField.value">
+            <span class="tag__title">Code :</span>
+            <span>
+          <ng-select [items]="clientList"
+                     [closeOnSelect]="true"
+                     bindLabel="code"
+                     placeholder="Client Code"
+                     bindValue="code"
+                     [virtualScroll]="true"
+                     [searchable]="true"
+                     [hideSelected]="true"
+                     formControlName="code"
+                     (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+            </ng-select>
+        </span>
+            <i class="material-icons tag__close" (click)="onClearTag('code')">close</i>
+          </div>
+
+          <div class="tag" *ngIf="entityIdBillingField.value">
+            <span class="tag__title">Billing name :</span>
+            <span>
+              <mat-form-field>
+                <input matInput placeholder="Billing Name" formControlName="billing_entity"
+                       (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </mat-form-field>
+        </span>
+            <i class="material-icons tag__close" (click)="onClearTag('billing_entity','billing_name')">close</i>
+          </div>
+
+          <div class="tag" *ngIf="entityIdTradingField.value">
+            <span class="tag__title">Trading name :</span>
+            <span>
+          <mat-form-field>
+            <input matInput placeholder="Trading Name" formControlName="trading_entity"
+                   (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+          </mat-form-field>
+        </span>
+            <i class="material-icons tag__close" (click)="onClearTag('trading_entity','trading_name')">close</i>
+          </div>
+
+          <div class="tag" *ngIf="serviceIdField.value">
+            <span class="tag__title">Service :</span>
+            <span>
+                <mat-form-field>
+                  <mat-select placeholder="Service" #selectRef
+                              (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly
+                              formControlName="service_id">
+                  <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                    {{ service?.service_name}}
+                  </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </span>
+            <mat-icon class="material-icons tag__close" (click)="onClearTag('service_id')">close</mat-icon>
+          </div>
+
+          <div class="tag" *ngIf="serviceIdUpdatedField.value !== null">
+            <span class="tag__title">Services Updated :</span>
+            <span>
+                <mat-form-field>
+                  <mat-select placeholder="select" #selectRef
+                              (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly
+                              formControlName="is_updated">
+                 <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </span>
+            <mat-icon class="material-icons tag__close" (click)="onClearTag('is_updated')">close</mat-icon>
+          </div>
+          <div class="tag" *ngIf="parentIdField.value !== null">
+            <span class="tag__title">Parent entity :</span>
+            <span>
+                <mat-form-field>
+                  <mat-select placeholder="select" #selectRef
+                              (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" readonly
+                              formControlName="parent_id">
+                 <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </span>
+            <mat-icon class="material-icons tag__close" (click)="onClearTag('parent_id')">close</mat-icon>
+          </div>
+
+          <div class="tag" *ngIf="(isBillingFrom.value >=0 && isBillingFrom.value !== null)">
+            <span class="tag__title">Billing From BDMS?:</span>
+            <span>
+            <mat-form-field>
+                <mat-select placeholder="Client Console?" (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" formControlName="billing_from">
+                  <mat-option *ngFor="let billingData of billingFrom.slice(1)" [value]="billingData?.key">
+                    {{ billingData?.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+            <mat-icon class="material-icons tag__close" (click)="onClearTag('billing_from')">close</mat-icon>
+          </div>
+
+          <div class="clearAll-tags"
+               *ngIf="entityCodeField.value || entityIdBillingField.value || entityIdTradingField.value || serviceIdField.value || serviceIdUpdatedField.value !== null || parentIdField.value !== null || (isBillingFrom.value >=0 && isBillingFrom.value !== null)">
+            <a (click)="resetFilterForm()">Clear all</a>
+          </div>
+        </form>
+      </div>
+      <!-- End Filter Tags -->
+
+      <!-- Start Table -->
+      <div class="table-container table-no-striped">
+        <div class="table-block">
+          <table>
+            <thead>
+            <tr>
+              <th width="5%">Sr. No</th>
+
+              <th width="9%"
+                  (click)="getSortData('code', sortBy === 'code' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                Client Code
+                <i *ngIf="sortBy === 'code'"
+                   [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'code' && sortOrder === 'asc', 'icon-down' :  sortBy === 'code' && sortOrder === 'desc'}">
+                  {{sortBy === 'code' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+                </i>
+              </th>
+
+              <th width="16%"
+                  (click)="getSortData('billing_name', sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                Billing Name
+                <i *ngIf="sortBy === 'billing_name'"
+                   [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'billing_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'billing_name' && sortOrder === 'desc'}">
+                  {{sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+                </i>
+              </th>
+
+              <th width="16%"
+                  (click)="getSortData('trading_name', sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                Trading Name
+                <i *ngIf="sortBy === 'trading_name'"
+                   [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'trading_name' && sortOrder === 'asc', 'icon-down' :  sortBy === 'trading_name' && sortOrder === 'desc'}">
+                  {{sortBy === 'trading_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+                </i>
+              </th>
+
+              <th width="18%">Services</th>
+
+              <th width="7%">Parent Entity</th>
+              <th width="9%">Billing From BDMS?</th>
+              <th width="13%"
+                  (click)="getSortData('created_by', sortBy === 'created_by' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+                Created
+                <i *ngIf="sortBy === 'created_by'"
+                   [ngClass]="{'material-icons': true, 'icon-up' : sortBy === 'created_by' && sortOrder === 'asc', 'icon-down' :  sortBy === 'created_by' && sortOrder === 'desc'}">
+                  {{sortBy === 'created_by' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') : ''}}
+                </i>
+              </th>
+
+              <th width="7%">Action</th>
+            </tr>
+            </thead>
+          </table>
+
+          <div class="table-body">
+            <table *ngIf="billingBasic.length">
+              <tbody>
+              <tr *ngFor="let billingData of billingBasic; let i = index">
+                <td width="5%">
+                  {{+pageSize * (pageIndex) + i + 1}}
+                  <mat-icon class="red-color v-align-middle" [matTooltip]="'Discontinue Process Initialized'"
+                            *ngIf="billingData?.discontinue_stage === 1">block
+                  </mat-icon>
+                </td>
+                <td width="9%">{{billingData?.code}}</td>
+                <td width="16%">{{billingData?.billing_name}}</td>
+                <td width="16%">{{billingData?.trading_name}}</td>
+                <td width="18%">
+                  <a *ngFor="let serviceNames of billingData?.service_array; let j = index" class="">
+                    <span class="label-primary-bg-color ML-5 label_services"
+                          *ngIf="serviceNames['is_updated'] === 1">{{serviceNames['value']}}</span>
+                    <span class="label-orange-bg-color ML-5 label_services"
+                          *ngIf="serviceNames['is_updated'] === 0">{{serviceNames['value']}}</span>
+                  </a>
+                </td>
+                <td width="7%">
+                   <span class="turquoise-color fw-500" *ngIf="billingData?.is_related"><mat-icon
+                     class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>Yes</span>
+                  <span class="red-color fw-500" *ngIf="!billingData?.is_related"><mat-icon
+                    class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>No</span>
+                </td>
+                <td width="9%">{{getBillingFrom(billingData?.billing_from)}}</td>
+                <td width="13%">{{billingData?.created_by?.userfullname}} {{(billingData?.created_on !== '0000-00-00
+                  00:00:00') ? (billingData?.created_on | date : 'dd-MM-yyyy') : ''}}
+                </td>
+                <td width="8%">
+                  <mat-icon class="orange-color" *ngIf="tabData['add_edit']"
+                            (click)="onEditBillingBasicInfo(billingData)" [matTooltip]="'Edit'"><i
+                    class="material-icons">edit</i></mat-icon>
+
+                  <mat-icon class="wet-asphalt-color" (click)="onViewBillingInfo(billingData)" [matTooltip]="'View'"><i
+                    class="material-icons">remove_red_eye</i></mat-icon>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <table *ngIf="billingBasic.length">
+            <tfoot>
+            <tr>
+              <td colspan="10">
+                <mat-paginator [length]="totalRecords" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                               [pageSizeOptions]="pageArray" (page)="onPageChange($event)">
+                </mat-paginator>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <!-- End Table -->
+    </div>
+    <!-- End Data Grid -->
+  </div>
+  <div *ngIf="billingBasic.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>

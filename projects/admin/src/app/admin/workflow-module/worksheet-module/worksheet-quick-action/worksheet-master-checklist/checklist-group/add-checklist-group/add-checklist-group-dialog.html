@@ -1,0 +1,95 @@
+<!--  Start Add Master Checklist dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">{{data ? 'Update' : 'Add'}} Checklist Group</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <i class="material-icons" (click)="onClose()">close</i>
+    </a>
+  </div>
+
+  <form [formGroup]="addCheklistGroupForm" (submit)="onSubmitAddChecklistGroupForm(addCheklistGroupForm)">
+    <div class="modal__body">
+      <div class="row">
+        <!--<div class="col-md-12">-->
+        <!--<mat-form-field>-->
+        <!--<mat-select placeholder="Master Checklist" formControlName="addMasterChecklist">-->
+        <!--&lt;!&ndash;[(ngModel)]="masterActivityDefaultSelect"&ndash;&gt;-->
+        <!--<mat-option *ngFor="let data of masterActivityData; let i = index;" [value]="+data.id"> {{data.name}}-->
+        <!--</mat-option>-->
+        <!--</mat-select>-->
+        <!--</mat-form-field>-->
+        <!--<div class="validation-msg">-->
+        <!--<app-validation *ngIf="isRequiredField(addCheklistGroupForm.get('addMasterChecklist'))"-->
+        <!--[errMsg]="validationMsg.MASTER_CHECKLIST_REQUIRED"></app-validation>-->
+        <!--</div>-->
+        <!--</div>-->
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <!--[(ngModel)]="addChecklistGroupData"-->
+            <input matInput placeholder="Checklist Group" formControlName="addChecklistGroup"/>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addCheklistGroupForm.get('addChecklistGroup'))"
+                            [errMsg]="validationMsg.CHECKLIST_GROUP_REQUIRED"></app-validation>
+            <app-validation *ngIf="isValidField(addCheklistGroupForm.get('addChecklistGroup'))"
+                            [errMsg]="validationMsg.CHECKLIST_GROUP_VALID"></app-validation>
+          </div>
+        </div>
+
+        <!--<div class="col-md-12 MT-10">-->
+        <!--<mat-form-field>-->
+        <!--<input matInput placeholder="Sort Order" formControlName="addSortOrder"/>-->
+        <!--</mat-form-field>-->
+        <!--</div>-->
+
+        <div class="col-md-12 MT-20">
+          <mat-checkbox #showSubactivity formControlName="addValidationTimesheet"
+                        (change)="checkSubactitivyValidation($event.checked)">Validation required for timesheet ?
+          </mat-checkbox>
+        </div>
+        <!--   -->
+        <div class="col-md-12 MT-10" *ngIf="showSubactivity.checked">
+          <mat-form-field>
+            <mat-select placeholder="Subactivity" formControlName="addSubActivity">
+              <mat-optgroup *ngFor="let parent of subActivity" [label]="parent.name">
+                <mat-option *ngFor="let data of parent.value; let i = index" [value]="data.id">
+                  {{data.subactivity_full_name}}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <textarea matInput placeholder="Email content" formControlName="addEmailContent"></textarea>
+            <!--[(ngModel)]="emailDefaultSelect"-->
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isValidField(addCheklistGroupForm.get('addEmailContent'))"
+                            [errMsg]="validationMsg.EMAIL_CONTENT_VALID"></app-validation>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary" (click)="updateData()" *ngIf="buttonFlag"
+                  [disabled]="addCheklistGroupForm.invalid">Update
+          </button>
+          <button class="btn-primary" (click)="saveData()" *ngIf="!buttonFlag"
+                  [disabled]="addCheklistGroupForm.invalid">Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End Change InOut Time dialog  -->

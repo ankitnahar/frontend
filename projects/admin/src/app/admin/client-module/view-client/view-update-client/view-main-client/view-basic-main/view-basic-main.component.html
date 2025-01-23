@@ -1,0 +1,15 @@
+<!--basic tab html start-->
+<div class="view-basic-main-tab-container">
+  <span class="panel-title orange-color">View entity from here</span>
+
+  <form>
+    <div class="row">
+      <div class="col-md-6 label-span-color" *ngFor="let data of viewDataArray; let i = index;">
+        <div class="MB-10">
+          <label class="fw-500">{{data.key}} :</label>
+          <span class="col-md-9">{{data.value}}</span>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

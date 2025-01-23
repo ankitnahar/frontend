@@ -1,0 +1,20 @@
+<!-- Start add more bank modal -->
+<div class="modal">
+  <div class="modal__header">
+    <div class="modal__header__logo">Notes</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <div class="modal__body">
+    <div class="row">
+      <div class="col-md-12">
+        <div [innerHTML]="toHTML(notesData)"></div>
+      </div>
+    </div>
+  </div>
+</div>

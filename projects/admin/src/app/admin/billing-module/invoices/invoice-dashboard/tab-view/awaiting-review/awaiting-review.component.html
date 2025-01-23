@@ -1,0 +1,777 @@
+<div class="admin-invoice-awaiting-review-tab-container">
+  <!-- Start Data Grid -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-10 invoice-status-list">
+          <ul>
+            <li class="primary-color">
+              <a class="list-alignment">
+                <mat-icon class="v-align-middle">merge_type</mat-icon>
+                Merged Invoice
+              </a>
+            </li>
+
+            <li>
+              <a class="list-alignment">
+                <mat-icon class="material-icons">fiber_manual_record</mat-icon>
+                Past invoices in debtors follow up
+              </a>
+            </li>
+
+            <li>
+              <a class="list-alignment">
+                <mat-icon class="material-icons">fiber_manual_record</mat-icon>
+                Debtors follow up
+              </a>
+            </li>
+
+            <li>
+              <a class="list-alignment">
+                <mat-icon class="material-icons">fiber_manual_record</mat-icon>
+                Partially paid invoice
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <ul class="download-icon">
+            <li>
+              <a (click)="onOpenFilter()">
+                <span>Filter</span>
+                <mat-icon class="material-icons">filter_list</mat-icon>
+              </a>
+            </li>
+
+            <li>
+              <a (click)="downloadExcel()" *ngIf="tabData['export']">
+                <span>Excel</span>
+                <mat-icon class="material-icons">file_download</mat-icon>
+              </a>
+            </li>
+
+            <li
+              *ngIf="(invoiceSelectedStatus === RTE || invoiceSelectedStatus === APM) && (moveToXero || moveToPaid || moveToDebtors)">
+              <a>
+                <mat-icon class="material-icons" [matMenuTriggerFor]="columnMenu">more_vert</mat-icon>
+              </a>
+              <mat-menu #columnMenu="matMenu" class="column-menu">
+                <button mat-menu-item class="menu-header">
+                  <h3>More Actions</h3>
+                </button>
+                <button mat-menu-item *ngIf="invoiceSelectedStatus === RTE && moveToXero">
+                  <mat-icon class="material-icons">contact_mail</mat-icon>
+                  <span (click)="runCronMoveToXero()">Run cron - Move to Xero</span>
+                </button>
+                <button mat-menu-item *ngIf="invoiceSelectedStatus === APM && moveToPaid">
+                  <mat-icon class="material-icons">contact_mail</mat-icon>
+                  <span (click)="runCronMoveToPaid()">Run cron - Move to Paid</span>
+                </button>
+                <button mat-menu-item *ngIf="invoiceSelectedStatus === APM && moveToDebtors">
+                  <mat-icon class="material-icons">contact_mail</mat-icon>
+                  <span (click)="runCronToUpdateDebtors()">Run cron - to update debtors</span>
+                </button>
+              </mat-menu>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Grid Filter -->
+    <div class="filter opacity-0" [ngClass]="{'opacity-1':isOpenFilterView}">
+      <div class="filter-action-icon">
+        <span class="filter-close" *ngIf="isOpenFilterView" (click)="onCloseFilter()">Esc <i
+          class="material-icons">close</i></span>
+      </div>
+      <div class="grid-filter-container">
+        <div class="filter-title">
+          <h3>Advance Filter</h3>
+        </div>
+        <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+          <div class="row">
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput placeholder="Invoice No" formControlName="invoice_no"/>
+              </mat-form-field>
+              <!--<ng-select [items]="invoiceNoList"-->
+              <!--[closeOnSelect]="true"-->
+              <!--bindLabel="invoice_no"-->
+              <!--placeholder="Invoice No"-->
+              <!--bindValue="invoice_no"-->
+              <!--[virtualScroll]="true"-->
+              <!--[searchable]="true"-->
+              <!--[hideSelected]="true"-->
+              <!--formControlName="invoice_no">-->
+              <!--</ng-select>-->
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="clientList"
+                         [closeOnSelect]="true"
+                         bindLabel="billing_name"
+                         placeholder="Billing Name"
+                         bindValue="entity_id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="entity_id">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Service" formControlName="service_id">
+                  <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                    {{ service?.service_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="periodFromRef" placeholder="Period From" formControlName="from_period">
+                <mat-datepicker-toggle matSuffix [for]="periodFromRef"></mat-datepicker-toggle>
+                <mat-datepicker #periodFromRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="periodToRef" placeholder="Period To" formControlName="to_period">
+                <mat-datepicker-toggle matSuffix [for]="periodToRef"></mat-datepicker-toggle>
+                <mat-datepicker #periodToRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Fixed Fee" formControlName="is_fixed_fees">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Type" formControlName="invoice_type">
+                  <mat-option *ngFor="let type of invoiceType" [value]="type?.key">
+                    {{ type?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="paymentFromRef" placeholder="Payment From"
+                       formControlName="payment_date_from">
+                <mat-datepicker-toggle matSuffix [for]="paymentFromRef"></mat-datepicker-toggle>
+                <mat-datepicker #paymentFromRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="paymentToRef" placeholder="Payment To"
+                       formControlName="payment_date_to">
+                <mat-datepicker-toggle matSuffix [for]="paymentToRef"></mat-datepicker-toggle>
+                <mat-datepicker #paymentToRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="userList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Created By"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="created_by">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <mat-select placeholder="Applied through credit note" formControlName="allocate_credit">
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="createdFromRef" placeholder="Created From"
+                       formControlName="created_on_from">
+                <mat-datepicker-toggle matSuffix [for]="createdFromRef"></mat-datepicker-toggle>
+                <mat-datepicker #createdFromRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <mat-form-field>
+                <input matInput [matDatepicker]="createdToRef" placeholder="Created To" formControlName="created_on_to">
+                <mat-datepicker-toggle matSuffix [for]="createdToRef"></mat-datepicker-toggle>
+                <mat-datepicker #createdToRef></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="tamList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="TAM"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="tam">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10">
+              <ng-select [items]="thList"
+                         [closeOnSelect]="true"
+                         bindLabel="userfullname"
+                         placeholder="Team Lead"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="th">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 MT-10 text-right">
+              <button type="button" class="btn-cancel" (click)="resetFilterForm()">Clear</button>
+              <button type="submit" class="btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Grid Filter -->
+
+    <!-- Start Filter Tags -->
+    <div class="filter-tags">
+      <form [formGroup]="advanceFilterForm">
+        <div class="tag" *ngIf="invoiceNoField.value">
+          <span class="tag__title">Invoice No:</span>
+          <span>
+            <mat-form-field>
+             <input matInput placeholder="Invoice No" formControlName="invoice_no"
+                    [value]="filterForm.get('invoice_no').value"
+                    (keyup)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"/>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('invoice_no')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="entityIdField.value">
+          <span class="tag__title">Client:</span>
+          <span>
+            <ng-select [items]="clientList"
+                       [closeOnSelect]="true"
+                       bindLabel="billing_name"
+                       placeholder="Billing Name"
+                       bindValue="entity_id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="entity_id"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('entity_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="serviceIdField.value">
+          <span class="tag__title">Service:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Service" formControlName="service_id"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let service of serviceList" [value]="service?.id">
+                    {{ service?.service_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('service_id')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="fromPeriodField.value">
+          <span class="tag__title">Period From:</span>
+          <span>
+            <mat-form-field>
+                <input matInput [matDatepicker]="periodFromRef1" placeholder="Period From" formControlName="from_period"
+                       (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-datepicker-toggle matSuffix [for]="periodFromRef1"></mat-datepicker-toggle>
+                <mat-datepicker #periodFromRef1></mat-datepicker>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('from_period')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="toPeriodField.value">
+          <span class="tag__title">Period To:</span>
+          <span>
+            <mat-form-field>
+                <input matInput [matDatepicker]="periodToRef1" placeholder="Period To" formControlName="to_period"
+                       (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                <mat-datepicker-toggle matSuffix [for]="periodToRef1"></mat-datepicker-toggle>
+                <mat-datepicker #periodToRef1></mat-datepicker>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('to_period')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="isFixedFeeField.value !== null">
+          <span class="tag__title">Fixed Fee:</span>
+          <span>
+            <mat-form-field>
+               <mat-select placeholder="Fixed Fee" formControlName="is_fixed_fees"
+                           (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)" #fixedFeeRef
+                           readonly>
+                  <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+               </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('is_fixed_fees')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="invoiceTypeField.value">
+          <span class="tag__title">Type:</span>
+          <span>
+            <mat-form-field>
+                <mat-select placeholder="Type" formControlName="invoice_type"
+                            (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+                  <mat-option *ngFor="let type of invoiceType" [value]="type?.key">
+                    {{ type?.label}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('invoice_type')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="paymentDateFromField.value">
+          <span class="tag__title">Payment From:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="paymentFromRef1" placeholder="Payment From"
+                     formControlName="payment_date_from"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="paymentFromRef1"></mat-datepicker-toggle>
+              <mat-datepicker #paymentFromRef1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('payment_date_from')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="paymentDateToField.value">
+          <span class="tag__title">Payment To:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="paymentToRef1" placeholder="Payment To" formControlName="payment_date_to"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="paymentToRef1"></mat-datepicker-toggle>
+              <mat-datepicker #paymentToRef1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('payment_date_to')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="createdByField.value">
+          <span class="tag__title">Created By:</span>
+          <span>
+           <ng-select [items]="userList"
+                      [closeOnSelect]="true"
+                      bindLabel="userfullname"
+                      placeholder="Created By"
+                      bindValue="id"
+                      [virtualScroll]="true"
+                      [searchable]="true"
+                      [hideSelected]="true"
+                      formControlName="created_by"
+                      (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('created_by')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="allocateCreditField.value !== null">
+          <span class="tag__title">Applied through credit note:</span>
+          <span>
+            <mat-form-field>
+               <mat-select placeholder="Applied through credit note" #appliedRef
+                           (selectionChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)"
+                           formControlName="allocate_credit" readonly>
+                   <mat-option *ngFor="let yesNo of yesNoList.slice(1)" [value]="yesNo?.key">
+                    {{ yesNo?.label}}
+                  </mat-option>
+               </mat-select>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('allocate_credit')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="createdOnFromField.value">
+          <span class="tag__title">Created From:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="createdFromRef1" placeholder="Created From"
+                     formControlName="created_on_from"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="createdFromRef1"></mat-datepicker-toggle>
+              <mat-datepicker #createdFromRef1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('created_on_from')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="createdOnToField.value">
+          <span class="tag__title">Created To:</span>
+          <span>
+            <mat-form-field>
+              <input matInput [matDatepicker]="createdToRef1" placeholder="Created To" formControlName="created_on_to"
+                     (dateChange)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              <mat-datepicker-toggle matSuffix [for]="createdToRef1"></mat-datepicker-toggle>
+              <mat-datepicker #createdToRef1></mat-datepicker>
+            </mat-form-field>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('created_on_to')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="tamField.value">
+          <span class="tag__title">TAM:</span>
+          <span>
+            <ng-select [items]="tamList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="TAM"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="tam"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('tam')">close</mat-icon>
+        </div>
+
+        <div class="tag" *ngIf="thField.value">
+          <span class="tag__title">Team Lead:</span>
+          <span>
+            <ng-select [items]="thList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Team Lead"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="th"
+                       (change)="setAdvanceFilterKeyUp($event, advanceFilterForm, true)">
+              </ng-select>
+          </span>
+          <mat-icon class="material-icons tag__close" (click)="onClearTag('th')">close</mat-icon>
+        </div>
+
+        <div class="clearAll-tags"
+             *ngIf="invoiceNoField.value || entityIdField.value || serviceIdField.value || fromPeriodField.value || toPeriodField.value
+              || paymentDateFromField.value || paymentDateToField.value || createdOnFromField.value || createdOnToField.value
+              || createdByField.value || tamField.value || thField.value || allocateCreditField.value
+              || invoiceTypeField.value || isFixedFeeField.value">
+          <a (click)="resetFilterForm()">Clear all</a>
+        </div>
+      </form>
+    </div>
+    <!-- End Filter Tags -->
+
+    <div class="table-container">
+      <div class="table-block">
+        <table class="table-body">
+          <thead>
+          <tr>
+            <th width="2%"
+                *ngIf="((invoiceSelectedStatus === RTE && (importCsv || moveToXero)) || (invoiceSelectedStatus === APM && (moveToDebtors || updateDebtors || moveToPaid))) && (invoiceSelectedStatus !== ALL)">
+              <mat-checkbox (change)="onSelectAllItem($event.checked, invoiceSelectedStatus)"></mat-checkbox>
+            </th>
+            <th width="5%">Sr. No.</th>
+            <th
+              *ngIf="(invoiceSelectedStatus === ARW ||  invoiceSelectedStatus === ABA || invoiceSelectedStatus === RTE || invoiceSelectedStatus === AMR || invoiceSelectedStatus === STC || invoiceSelectedStatus === PAD || invoiceSelectedStatus === APM || invoiceSelectedStatus === ALL)"
+              (click)="getSortData('invoice_no', sortBy === 'invoice_no' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Invoice No.
+              <i *ngIf="sortBy === 'invoice_no'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'invoice_no', 'icon-up' : sortBy === 'invoice_no' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'invoice_no' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th width="15%"
+                (click)="getSortData('billing_name', sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Billing Name
+              <i *ngIf="sortBy === 'billing_name'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'billing_name', 'icon-up' : sortBy === 'billing_name' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'billing_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th
+              (click)="getSortData('service_name', sortBy === 'service_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Service
+              <i *ngIf="sortBy === 'service_name'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'service_name', 'icon-up' : sortBy === 'service_name' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'service_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th
+              (click)="getSortData('is_fixed_fees', sortBy === 'is_fixed_fees' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Fixed Fee
+              <i *ngIf="sortBy === 'is_fixed_fees'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'is_fixed_fees', 'icon-up' : sortBy === 'is_fixed_fees' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'is_fixed_fees' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th
+              (click)="getSortData('invoice_type', sortBy === 'invoice_type' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Type
+              <i *ngIf="sortBy === 'invoice_type'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'invoice_type', 'icon-up' : sortBy === 'invoice_type' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'invoice_type' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th *ngIf="invoiceSelectedStatus === ALL">Status</th>
+            <th
+              (click)="getSortData('paid_amount', sortBy === 'paid_amount' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Amount(Inc. GST)
+              <i *ngIf="sortBy === 'paid_amount'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'paid_amount', 'icon-up' : sortBy === 'paid_amount' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'paid_amount' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th *ngIf="invoiceSelectedStatus === APM"
+              (click)="getSortData('outstanding_amount', sortBy === 'outstanding_amount' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Outstanding Amount
+              <i *ngIf="sortBy === 'outstanding_amount'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'outstanding_amount', 'icon-up' : sortBy === 'outstanding_amount' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'outstanding_amount' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th
+              *ngIf="(invoiceSelectedStatus === PAD || invoiceSelectedStatus === APM || invoiceSelectedStatus === ALL)"
+              (click)="getSortData('allocate_credit', sortBy === 'allocate_credit' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Credit Note Applied
+              <i *ngIf="sortBy === 'allocate_credit'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'allocate_credit', 'icon-up' : sortBy === 'allocate_credit' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'allocate_credit' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th *ngIf="(invoiceSelectedStatus === PAD || invoiceSelectedStatus === ALL)"
+                (click)="getSortData('payment_date', sortBy === 'payment_date' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Payment Date
+              <i *ngIf="sortBy === 'payment_date'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'payment_date', 'icon-up' : sortBy === 'payment_date' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'payment_date' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th
+              (click)="getSortData('tam_name', sortBy === 'tam_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              TAM
+              <i *ngIf="sortBy === 'tam_name'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'tam_name', 'icon-up' : sortBy === 'tam_name' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'tam_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th
+              (click)="getSortData('tl_name', sortBy === 'tl_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Team Lead
+              <i *ngIf="sortBy === 'tl_name'"
+                 [ngClass]="{'material-icons': true,'active': sortBy === 'tl_name', 'icon-up' : sortBy === 'tl_name' && sortOrder === 'asc', 'icon-down' :  true}">
+                {{sortBy === 'tl_name' ? (sortOrder === 'asc' ? 'arrow_upward':'arrow_downward') :
+                'arrow_downward'}}
+              </i>
+            </th>
+            <th>Created By</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody *ngIf="invoiceStatusWiseList.length">
+          <tr *ngFor="let status of invoiceStatusWiseList; let i = index;"
+              [ngClass]="getClasses(status, status?.status_id)">
+            <td
+              *ngIf="((status?.status_id === RTE && (importCsv || moveToXero)) || (status?.status_id === APM && (moveToDebtors || updateDebtors || moveToPaid))) && (invoiceSelectedStatus !== ALL)">
+              <mat-checkbox
+                [checked]="(status?.status_id === RTE) ? selectAllForImportCSV : (status?.status_id === APM) ? selectAllForForMoveToDebtors : ''"
+                (change)="onSelectItem($event.checked, status.id, invoiceSelectedStatus)"></mat-checkbox>
+            </td>
+            <td>{{+pageSize * (pageIndex) + i + 1}}
+              <mat-icon class="primary-color v-align-middle" *ngIf="status?.merge_invoice === 1">merge_type</mat-icon>
+              <mat-icon class="red-color v-align-middle" *ngIf="status?.discontinue_stage === 1"
+                        [matTooltip]="'Discontinue Process Initiated'">block
+              </mat-icon>
+            </td>
+            <td
+              *ngIf="(invoiceSelectedStatus === ARW ||  invoiceSelectedStatus === ABA || invoiceSelectedStatus === RTE || invoiceSelectedStatus === AMR || invoiceSelectedStatus === STC || invoiceSelectedStatus === PAD || invoiceSelectedStatus === APM || invoiceSelectedStatus === ALL)">
+              {{status?.invoice_no}}
+            </td>
+            <!--*ngIf="(invoiceSelectedStatus === RTE || invoiceSelectedStatus === STC || invoiceSelectedStatus === PAD || invoiceSelectedStatus === APM || invoiceSelectedStatus === ALL)"&ndash;&gt;-->
+            <td>{{status?.billing_name}}</td>
+            <td>{{status?.service_name}} <br> {{status?.from_period !== '0000-00-00' ? (status?.from_period
+              |
+              date : 'dd-MM-yyyy' + ' to ') : 'till '}}{{status?.to_period | date : 'dd-MM-yyyy'}}
+            </td>
+            <td>
+              <span class="turquoise-color fw-500" *ngIf="status?.is_fixed_fees == 1"><mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>Yes</span>
+              <span class="red-color fw-500" *ngIf="status?.is_fixed_fees !== 1"><mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>No</span>
+            </td>
+            <td>{{status?.invoice_type}}</td>
+            <td *ngIf="invoiceSelectedStatus === ALL">{{status?.status}}</td>
+            <td>{{status?.totalamount}}</td>
+            <td *ngIf="invoiceSelectedStatus === APM">{{status?.outstanding_amount}}</td>
+            <td
+              *ngIf="(invoiceSelectedStatus === PAD || invoiceSelectedStatus === APM || invoiceSelectedStatus === ALL)">
+              <span class="turquoise-color fw-500" *ngIf="status?.allocate_credit == 2"><mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>Yes</span>
+              <span class="red-color fw-500" *ngIf="status?.allocate_credit !== 2"><mat-icon
+                class="grid_icon_trip_origin mat-icon material-icons">trip_origin</mat-icon>No</span>
+            </td>
+            <td *ngIf="(invoiceSelectedStatus === PAD || invoiceSelectedStatus === ALL)">
+              {{(status?.payment_date !== '0000-00-00') ? (status?.payment_date | date : 'dd-MM-yyyy') :''}}
+            </td>
+            <td>{{status?.tam_name}}</td>
+            <td>{{status?.tl_name}}</td>
+            <td>{{status?.created_by?.created_by}} <br> {{status?.created_on | date : 'dd-MM-yyyy'}}</td>
+            <td>
+              <ul>
+                <li>
+                  <a
+                    *ngIf="+status?.parent_id === 0 && getInvoiceServiceEdit(status?.service_id) && (status?.status_id === ARW || status?.status_id === ATH || status?.status_id === ABA || status?.status_id === AMR) && (tabData['add_edit'])"
+                    (click)="editInvoice(status)" [matTooltip]="'Edit Invoice'" class="light-orange-color">
+                    <mat-icon class="mat-icon_width_auto">edit</mat-icon>
+                  </a>
+                  <a *ngIf="status?.adjusted===0 && status?.status_id === ADJ" target="target"
+                     (click)="editInvoice(status)" [matTooltip]="'Edit Invoice'" class="light-orange-color">
+                    <mat-icon class="mat-icon_width_auto">edit</mat-icon>
+                  </a>
+                  <a>
+                    <mat-icon [matMenuTriggerFor]="menuaction">more_vert</mat-icon>
+                    <mat-menu #menuaction="matMenu" class="column-menu">
+                      <button mat-menu-item class="menu-header">
+                        <h3>Action</h3>
+                      </button>
+                      <button mat-menu-item
+                              (click)="viewInvoice(status)">
+                        <a>
+                          <mat-icon class="material-icons">remove_red_eye</mat-icon>
+                          View Invoice
+                        </a>
+                      </button>
+                      <button mat-menu-item (click)="onOpenInvoiceLogDialog(status)">
+                        <a>
+                          <mat-icon class="material-icons">message</mat-icon>
+                          Invoice Log
+                        </a>
+                      </button>
+                      <button mat-menu-item
+                              *ngIf="(status?.status_id === STC) && (tabData['add_edit']) && getInvoiceServiceEdit(status?.service_id)"
+                              (click)="invoiceSendToClient(status)">
+                        <a>
+                          <mat-icon class="material-icons">email</mat-icon>
+                          Invoice Send To Client
+                        </a>
+                      </button>
+                      <button mat-menu-item
+                              *ngIf="(tabData['view']) && (status?.status_id === RTE || status?.status_id === APM || status?.status_id === PAD) && (invoiceSelectedStatus !== ALL)"
+                              (click)="invoiceSendToClientPreview(status)">
+                        <a>
+                          <mat-icon class="material-icons">email</mat-icon>
+                          Invoice Preview
+                        </a>
+                      </button>
+                      <button mat-menu-item
+                              *ngIf="(status?.status_id === RTE || status?.status_id === APM || status?.status_id === PAD) && (invoiceSelectedStatus === ALL)"
+                              (click)="invoiceSendToClientPreview(status)">
+                        <a>
+                          <mat-icon class="material-icons">email</mat-icon>
+                          Invoice Preview
+                        </a>
+                      </button>
+                      <button mat-menu-item
+                              *ngIf="+status?.parent_id === 0 && getInvoiceServiceEdit(status?.service_id) && (status?.status_id === ARW || status?.status_id === ATH || status?.status_id === ABA || status?.status_id === AMR) && (tabData['add_edit'])"
+                              (click)="onOpenDismissDialog(status?.id)">
+                        <a>
+                          <mat-icon class="material-icons">email</mat-icon>
+                          Dismiss Invoice
+                        </a>
+                      </button>
+                    </mat-menu>
+                  </a>
+                </li>
+              </ul>
+            </td>
+
+
+          </tr>
+          </tbody>
+        </table>
+        <table *ngIf="invoiceStatusWiseList.length">
+          <tfoot>
+          <tr>
+            <td colspan="3" class="totalAmount">
+              <label>Total Amount:</label> <span>{{totalInvoicePaidAmount}}</span>
+            </td>
+            <td colspan="7">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- End Data Grid -->
+  <div *ngIf="invoiceStatusWiseList.length === 0" class="panel-title red-color">
+    No Records Found!
+  </div>
+</div>
+<div class="bottom-panel-action" *ngIf="selectedInvoiceIds.length > 0 && importCsv">
+  <button (click)="onConfirmationDialog()" type="button" class="btn-bordered btn-white border-round"><span
+    class="v-align-middle">IMPORT CSV </span>
+    <mat-icon class="v-align-middle">keyboard_arrow_right</mat-icon>
+  </button>
+</div>
+<div class="bottom-panel-action" *ngIf="selectedInvoiceIdsForMoveToDebtors.length > 0 && moveToDebtors">
+  <button (click)="onConfirmationDialogMoveToDebtors()" type="button" class="btn-bordered btn-white border-round"><span
+    class="v-align-middle">Move to debtors manually</span>
+    <mat-icon class="v-align-middle">keyboard_arrow_right</mat-icon>
+  </button>
+</div>

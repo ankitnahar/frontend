@@ -1,0 +1,106 @@
+<!-- Leave Balance Container -->
+<div class="newsletter-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon class="material-icons">keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">LEAVE BALANCE LISTING</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <!--<button class="btn btn-primary MT-5" (click)="onUploadLeaveList()">-->
+          <!--<mat-icon class="material-icons v-align-middle">file_upload</mat-icon>-->
+          <!--Upload Leave Balance-->
+          <!--</button>-->
+            <form [formGroup]="filterForm">
+              <mat-form-field [floatLabel]="'never'">
+                <input matInput placeholder="Search" formControlName="userfullname"
+                       (keyup)="setAdvanceFilter(filterForm)">
+              </mat-form-field>
+            </form>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span>
+                <mat-icon>file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+            <th width="20%">User Name</th>
+            <th width="10%">Bio ID</th>
+            <th width="10%">Month</th>
+            <th width="10%">CL</th>
+            <th width="10%">CO</th>
+            <th width="15%">LA</th>
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody>
+            <tr *ngFor="let leavelist of leaveBalanceList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="20%">{{leavelist.userfullname}}</td>
+              <td width="10%">{{leavelist.user_bio_id}}</td>
+              <td width="10%">{{leavelist.month}}</td>
+              <td width="10%">{{leavelist.cl}}</td>
+              <td width="10%">{{leavelist.co}}</td>
+              <td width="15%">{{leavelist.la}}</td>
+              <td width="10%">
+                <mat-icon class="light-orange-color" [matTooltip]="'Edit'"
+                          (click)="onEditLeaveBalance(leavelist)">edit
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <table>
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="totalRecords"
+                             [pageSize]="pageSize"
+                             [pageIndex]="pageIndex"
+                             [pageSizeOptions]="pageArray"
+                             (page)="onPageChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>  <!-- End Table -->
+  <!-- End Grid Inner Header -->
+</div>

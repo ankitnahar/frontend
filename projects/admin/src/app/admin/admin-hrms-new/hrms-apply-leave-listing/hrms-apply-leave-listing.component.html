@@ -1,0 +1,192 @@
+<div class="holiday-list-out-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">LEAVE LISTING</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <button class="open-dialog-btn MB-10" (click)="onApplyLeave()">
+            <mat-icon class="material-icons">add</mat-icon>
+            Apply Leave
+          </button>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li>
+              <a (click)="downloadExcel()">
+                <span>Excel</span>
+                <mat-icon>file_download</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <form [formGroup]="filterForm" (submit)="setAdvanceFilter(filterForm)">
+        <div class="row">
+          <div class="col-md-4">
+            <ng-select [items]="userList"
+                       [closeOnSelect]="true"
+                       bindLabel="userfullname"
+                       placeholder="Employee Name"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="user_id"
+                       (change)="setAdvanceFilter(filterForm)">
+            </ng-select>
+          </div>
+          <div class="col-md-4">
+            <ng-select [items]="leaveType"
+                       [closeOnSelect]="true"
+                       bindLabel="leave_type"
+                       placeholder="Leave Type"
+                       bindValue="id"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="leave_type"
+                       (change)="setAdvanceFilter(filterForm)">
+            </ng-select>
+          </div>
+          <div class="col-md-4">
+            <ng-select [items]="hrStatus"
+                       [closeOnSelect]="true"
+                       bindLabel="label"
+                       placeholder="Status"
+                       bindValue="key"
+                       [virtualScroll]="true"
+                       [searchable]="true"
+                       [hideSelected]="true"
+                       formControlName="status_id"
+                       (change)="setAdvanceFilter(filterForm)">
+            </ng-select>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- End Grid Inner Header -->
+
+  <!-- Start Table -->
+  <div class="table-container">
+    <div class="table-block">
+      <table>
+        <thead>
+        <tr>
+          <th width="5%">Sr. No</th>
+          <th width="15%">Employee Name</th>
+          <th width="15%">Leave Type</th>
+          <th width="20%">Leave Period</th>
+          <th width="5%">Days</th>
+          <th width="15%">Date of Requested</th>
+          <th width="10%">Approval</th>
+          <th width="10%">Status</th>
+          <th width="5%">Action</th>
+        </tr>
+        </thead>
+      </table>
+
+      <div class="table-body">
+        <table>
+          <tbody>
+          <tr *ngFor="let applyLeavelist of applyLeaveList; let i = index">
+            <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+            <td width="15%">{{applyLeavelist?.created_by?.userfullname}}
+            </td>
+            <td width="15%">{{applyLeavelist?.leave_type}}</td>
+            <td width="20%">{{applyLeavelist?.from_date | date : 'dd-MM-yyyy'}} To {{applyLeavelist?.to_date | date :
+              'dd-MM-yyyy'}}
+            </td>
+            <td width="5%">{{applyLeavelist?.days}}</td>
+            <td width="15%">{{applyLeavelist?.created_on | date : 'dd-MM-yyyy'}}</td>
+            <td width="10%">
+              <div>
+                <div class="approval-name user-approved-request-details">
+                    <span *ngIf="applyLeavelist?.first_approval != null && applyLeavelist?.first_approval?.id !== 0"
+                          class="{{applyLeavelist?.status_id === 2 ? 'orange-color' : applyLeavelist?.status_id === 3 ? '' : applyLeavelist?.status_id === 4 ? 'green-color' : applyLeavelist?.status_id === 5 ? 'green-color' : applyLeavelist?.status_id === 6 ? 'red-color' : ''}}">
+                    <img
+                      matTooltip="{{applyLeavelist?.first_approval?.userfullname}}{{(applyLeavelist?.status_id === 4 ||applyLeavelist?.status_id === 5) ? (applyLeavelist?.first_approval_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                      *ngIf="applyLeavelist?.first_approval?.user_image"
+                      src="{{url+applyLeavelist?.first_approval?.user_image}}"/>
+                    <img
+                      matTooltip="{{applyLeavelist?.first_approval?.userfullname}} {{(applyLeavelist?.status_id === 4 ||applyLeavelist?.status_id === 5) ? (applyLeavelist?.first_approval_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                      *ngIf="!applyLeavelist?.first_approval?.user_image"
+                      src="assets/images/profile_placeholder.png"/>
+                    </span>
+                  <span *ngIf="applyLeavelist?.second_approval != null && applyLeavelist?.second_approval?.id !== 0"
+                        class="{{applyLeavelist?.status_id === 4 ? '' :  applyLeavelist?.status_id === 5 ? 'green-color' : applyLeavelist?.status_id === 6 ? 'red-color' : ''}}">
+                    <img
+                      matTooltip="{{applyLeavelist?.second_approval?.userfullname}} {{(applyLeavelist?.status_id === 4 ||applyLeavelist?.status_id === 5) ? (applyLeavelist?.second_approval_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                      *ngIf="applyLeavelist?.second_approval?.user_image"
+                      src="{{url+applyLeavelist?.second_approval?.user_image}}"/>
+                    <img
+                      matTooltip="{{applyLeavelist?.second_approval?.userfullname}} {{(applyLeavelist?.status_id === 4 ||applyLeavelist?.status_id === 5) ? (applyLeavelist?.second_approval_on | date : 'dd-MM-yyyy HH:mm:ss') : ''}}"
+                      *ngIf="!applyLeavelist?.second_approval?.user_image"
+                      src="assets/images/profile_placeholder.png"/>
+                      </span>
+                </div>
+              </div>
+            </td>
+            <td width="10%">
+              <div *ngFor="let status of hrStatus">
+                <span *ngIf="status.key === applyLeavelist?.status_id">{{status.label}}</span>
+              </div>
+            </td>
+            <td width="3%">
+              <mat-icon class="light-orange-color" (click)="onApproveLeaveListingDialog(applyLeavelist)"
+                        *ngIf="applyLeavelist?.status_id === 2 && applyLeavelist?.first_approval?.id === userInfo.id">
+                edit
+              </mat-icon>
+              <mat-icon class="light-orange-color" (click)="onApproveLeaveListingDialog(applyLeavelist)"
+                        *ngIf="applyLeavelist?.status_id === 3 && applyLeavelist?.first_approval?.id === userInfo.id">
+                edit
+              </mat-icon>
+              <mat-icon class="light-orange-color" (click)="onApproveLeaveListingDialog(applyLeavelist)"
+                        *ngIf="applyLeavelist?.status_id === 4 && applyLeavelist?.second_approval?.id === userInfo.id">
+                edit
+              </mat-icon>
+              <mat-icon class="light-orange-color" (click)="onApproveLeaveListingDialog(applyLeavelist)"
+                        *ngIf="(userInfo?.designation_id?.designation_id === 7 && (applyLeavelist?.status_id === 4 || applyLeavelist?.status_id === 3))">
+                edit
+              </mat-icon>
+              <mat-icon *ngIf="applyLeavelist?.status_id <= 3 && applyLeavelist?.user_id === userInfo?.id" class="light-orange-color"
+                        (click)="onDeleteLeave(applyLeavelist)">delete
+              </mat-icon>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <table>
+        <tfoot>
+        <tr>
+          <td colspan="10">
+            <mat-paginator [length]="totalRecords"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="pageArray"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>  <!-- End Table -->

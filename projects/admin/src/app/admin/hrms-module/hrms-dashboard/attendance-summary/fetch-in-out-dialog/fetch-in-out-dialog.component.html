@@ -1,0 +1,59 @@
+<!--  Start Fetch Missing In out dialog  -->
+<div>
+  <div class="modal__header">
+    <div class="modal__header__logo">Fetch Missing In-Out Time</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+
+  <form [formGroup]="addMissingInOutForm" (submit)="onSubmit(addMissingInOutForm.value)">
+    <div class="modal__body">
+      <div class="row">
+        <!-- <div class="col-md-12 custom-ng-select-dropdown">
+           <ng-select [items]="userList"
+                      [closeOnSelect]="true"
+                      bindLabel="userfullname"
+                      placeholder="Location"
+                      [virtualScroll]="true"
+                      [searchable]="true"
+                      [hideSelected]="true"
+                      formControlName="location">
+           </ng-select>
+           <div class="validation-msg">
+             <app-validation *ngIf="isRequiredField(addMissingInOutForm.get('location'))"
+                             [errMsg]="validationMsg.USERNAME_REQUIRED"></app-validation>
+           </div>
+         </div>-->
+
+        <div class="col-md-12 MT-10">
+          <mat-form-field>
+            <input matInput [matDatepicker]="DateRef" placeholder="Date"
+                   [max]="todayDate" formControlName="currentDate" required/>
+            <mat-datepicker-toggle matSuffix [for]="DateRef"></mat-datepicker-toggle>
+            <mat-datepicker #changeInOutDate #DateRef></mat-datepicker>
+          </mat-form-field>
+          <div class="validation-msg">
+            <app-validation *ngIf="isRequiredField(addMissingInOutForm.get('currentDate'))"
+                            [errMsg]="validationMsg.DATE"></app-validation>
+          </div>
+          <div class="col-md-3 MT-10 text-left">
+            <mat-checkbox formControlName="is_remark">Update Remark Only
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <div class="text-right row">
+        <div class="col-md-12 PR-25">
+          <button class="btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--  End  Fetch In out dialog  -->

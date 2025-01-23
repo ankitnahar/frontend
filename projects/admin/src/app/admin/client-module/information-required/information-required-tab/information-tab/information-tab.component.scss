@@ -1,0 +1,54 @@
+@import "../../../../../../assets/scss/main";
+// -----------------------------------------------------------------------------------------------
+// =============================== Admin (Invoices) Dashboard scss ===============================
+// -----------------------------------------------------------------------------------------------
+.admin-information-tab-container {
+  .invoice-tabs-container {
+    .admin-invoice-awaiting-review-tab-container {
+      .invoice-status-list {
+        align-self: center;
+        ul {
+          padding: 0;
+          margin: 0;
+          li {
+            display: inline-block;
+            list-style-type: none;
+            a {
+              display: block;
+              padding: .5rem .8rem .5rem 0;
+              i, .mat-icon {
+                vertical-align: bottom;
+                font-size: 1.6rem;
+              }
+            }
+
+            // For loop for nth-child
+            @include forLoopNthChild(1, 4, $invoiceStatusList);
+          }
+        }
+      }
+      /*      .table-block {
+              width: 200rem;
+            }*/
+      @at-root .totalAmount {
+        label {
+          color: $black-color;
+          font-weight: 500;
+          margin-left: 1rem;
+        }
+
+        span {
+          color: $dark-primary-color;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .tab-content {
+      border-top: 10px solid #eff0f0;
+    }
+  }
+  .red-tr-grid {
+    background: #fab4b4 !important;
+  }
+}

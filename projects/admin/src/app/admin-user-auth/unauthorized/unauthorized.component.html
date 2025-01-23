@@ -1,0 +1,36 @@
+<!-- Admin login html view -->
+<div class="admin-login-container">
+  <div class="panel-block">
+    <div class="panel-block__container">
+      <div class="panel-logo">
+        <img src="assets/images/logo.png"/>
+      </div>
+
+      <div class="panel-body-container">
+        <div class="panel-header">
+          <h3 class="red-color">UNAUTHORIZED</h3>
+        </div>
+        <div class="panel-body">
+          <!-- Start login form view -->
+          <div class="login-screen text-center">
+            <h4>You are not authorized to log into the system.</h4>
+            <h4>
+              Please contact administrator.</h4>
+
+            <h4>
+              Your IP address is {{IpAddress}}</h4>
+          </div>
+          <!-- End login form view -->
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Copy right section -->
+    <div class="panel-block__copyright">
+      <p>Copyright@ {{currentDate | date:'yyyy'}}. All Rights reserved to befree</p>
+    </div>
+    <!-- End Copy right section -->
+  </div>
+</div>

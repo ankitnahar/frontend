@@ -1,0 +1,407 @@
+<div class="common-report-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>REPORTS</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">{{reportTabData['name']}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <div class="with-filter-grid-container">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header PT-5">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3>Saved Report</h3>
+        </div>
+        <div class="col-md-6">
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="5%">Sr. No</th>
+
+            <th width="15%" (click)="getSortClientReportData('report_name',
+             (clientReportSortBy === 'report_name') ? (clientReportSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Report Name
+              <i *ngIf="clientReportSortBy === 'report_name'" [ngClass]="{'material-icons': true,
+            'active' : (clientReportSortBy === 'report_name'),
+            'icon-up' : ((clientReportSortBy === 'report_name') && (clientReportSortOrder === 'asc')),
+            'icon-down' : true}">
+                {{(clientReportSortBy === 'report_name') ? ((clientReportSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+
+            <th width="60%" (click)="getSortClientReportData('report_output',
+             (clientReportSortBy === 'report_output') ? (clientReportSortOrder === 'asc' ? 'desc' : 'asc') : 'asc')">
+              Output Field
+              <i *ngIf="clientReportSortBy === 'report_output'" [ngClass]="{'material-icons': true,
+            'active' : (clientReportSortBy === 'report_output'),
+            'icon-up' : ((clientReportSortBy === 'report_output') && (clientReportSortOrder === 'asc')),
+            'icon-down' : true}">
+                {{(clientReportSortBy === 'report_output') ? ((clientReportSortOrder === 'asc') ?
+                'arrow_upward':'arrow_downward') : 'arrow_downward'}}
+              </i>
+            </th>
+            <th width="10%">Report Owner</th>
+
+            <th width="10%">Action</th>
+          </tr>
+          </thead>
+        </table>
+
+        <div class="table-body">
+          <table>
+            <tbody *ngIf="clientReportList.length > 0">
+            <tr *ngFor="let clientReport of clientReportList; let i = index">
+              <td width="5%">{{+pageSize * (pageIndex) + i + 1}}</td>
+              <td width="15%">{{clientReport?.name}}</td>
+              <td width="60%" class="word-break">{{clientReport?.filter_output_field}}</td>
+              <td width="10%">{{clientReport?.created_by?.userfullname}}</td>
+              <td width="10%">
+                <mat-icon *ngIf="tabData['view']" class="light-orange-color" [matTooltip]="'Load Report'"
+                          (click)="loadDocument(clientReport)">
+                  timelapse
+                </mat-icon>
+                <mat-icon *ngIf="tabData['add_edit']" class="wet-asphalt-color" [matTooltip]="'Share Report'"
+                          (click)="shareDocumentWithUser(clientReport)">share
+                </mat-icon>
+                <mat-icon *ngIf="tabData['delete']" class="red-color" [matTooltip]="'Delete Report'"
+                          (click)="deleteClientReport(clientReport)">
+                  delete
+                </mat-icon>
+              </td>
+            </tr>
+            </tbody>
+            <tbody *ngIf="clientReportList.length ===0" class="panel-title">No Records Found</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- End Table -->
+    <table *ngIf="clientReportList.length">
+      <tfoot>
+      <tr>
+        <td colspan="10">
+          <mat-paginator [length]="totalRecords"
+                         [pageSize]="pageSize"
+                         [pageIndex]="pageIndex"
+                         [pageSizeOptions]="pageArray"
+                         (page)="onPageChange($event)">
+          </mat-paginator>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+  </div>
+
+
+  <!--Start add filter field-->
+  <div class="section-sepration PB-30">
+    <span class="panel-title">Filter Field</span>
+    <span class="MR-10 on-right "><button class="open-dialog-btn primary-color" (click)="resetFilterField()"><mat-icon>clear_all</mat-icon>Reset Filter</button></span>
+    <form [formGroup]="clientForm">
+      <div formArrayName="clientReportFields">
+        <div class="row col-md-12" *ngFor="let filterGroup of getFilterFieldArray().controls; let i=index"
+             [formGroupName]="i">
+          <!-- | slice: ((followingUserLength === 0 && followingUserListLength === 0) ? 4 : 0) -->
+          <div class="col-md-3">
+            <mat-form-field>
+              <mat-select placeholder="Filter Field" formControlName="fieldname"
+                          (selectionChange)="changeFieldName($event.value, i)">
+                <mat-option *ngFor="let report of ReportList" [value]="report">{{report?.field_title}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field>
+              <mat-select placeholder="Select Filter" formControlName="condition"
+                          (selectionChange)="onSelectShowHideField($event.value, i)">
+                <mat-option *ngFor="let fType of selectedReportFilter[i]" [value]="fType?.key">{{fType?.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4" *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'TB'">
+            <mat-form-field>
+              <input matInput [placeholder]="getFilterFieldArray().controls[i].get('fieldname').value['field_title']"
+                     formControlName="value"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4" *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'TN'">
+            <mat-form-field>
+              <input type="number" matInput
+                     [placeholder]="getFilterFieldArray().controls[i].get('fieldname').value['field_title']"
+                     formControlName="value"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4"
+               *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'DD' && getFilterFieldArray().controls[i].get('fieldname').value['isCommaSeperated']">
+            <mat-form-field>
+              <mat-select [placeholder]="getFilterFieldArray().controls[i].get('fieldname').value['field_title']"
+                          formControlName="value">
+                <mat-option *ngFor="let fTypeValue of selectedReportValue[i]" [value]="fTypeValue">{{fTypeValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4"
+               *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'DD' && getFilterFieldArray().controls[i].get('fieldname').value['isMultiSelect']">
+            <div *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_name'] === 'parent_id'">
+              <ng-select [multiple]="true" [items]="parentTradingList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         (change)="onChangeParentEntity($event)"
+                         formControlName="value" #ParentTradingName
+                         [(ngModel)]="selectedParentTradingEntity">
+              </ng-select>
+            </div>
+            <div *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_name'] === 'trading_name'">
+              <ng-select [multiple]="true" [items]="tradingList"
+                         [closeOnSelect]="true"
+                         bindLabel="trading_name"
+                         placeholder="Trading Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="value" #TradingName
+                         [(ngModel)]="selectedTradingEntity">
+              </ng-select>
+            </div>
+            <div *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_name'] === 'billing_name'">
+              <ng-select [multiple]="true" [items]="billingList"
+                         [closeOnSelect]="true"
+                         bindLabel="billing_name"
+                         placeholder="Billing Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="value" #BillingName
+                         [(ngModel)]="selectedBillingEntity">
+              </ng-select>
+            </div>
+
+            <div *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_name'] === 'entity_name'">
+              <ng-select [multiple]="true" [items]="nameList"
+                         [closeOnSelect]="true"
+                         bindLabel="name"
+                         placeholder="Entity Name"
+                         bindValue="id"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="value" #Name
+                         [(ngModel)]="selectedNameEntity">
+              </ng-select>
+            </div>
+
+            <div *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_name'] === 'code'">
+              <ng-select [multiple]="true" [items]="codeList"
+                         [closeOnSelect]="true"
+                         bindLabel="code"
+                         placeholder="Client Code"
+                         bindValue="code"
+                         [virtualScroll]="true"
+                         [searchable]="true"
+                         [hideSelected]="true"
+                         formControlName="value" #Code
+                         [(ngModel)]="selectedCodeEntity">
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-md-4"
+               *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'DD' && !getFilterFieldArray().controls[i].get('fieldname').value['isCommaSeperated'] && !getFilterFieldArray().controls[i].get('fieldname').value['isMultiSelect']">
+            <mat-form-field>
+              <mat-select [placeholder]="getFilterFieldArray().controls[i].get('fieldname').value['field_title']"
+                          formControlName="value" [(ngModel)]="selectedReportUpdatedValue[i]" [multiple]="true">
+                <mat-option *ngFor="let fTypeValue of selectedReportValue[i]" [value]="fTypeValue?.key">
+                  {{fTypeValue?.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4"
+               *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'CL' && getFilterFieldArray().controls[i].get('condition').value !== 'between'">
+            <mat-form-field>
+              <input matInput (mousedown)="date.open()" formControlName="value" [matDatepicker]="DateRef"
+                     placeholder="Date"/>
+              <mat-datepicker-toggle matSuffix [for]="DateRef"></mat-datepicker-toggle>
+              <mat-datepicker #date #DateRef disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2"
+               *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'CL' && getFilterFieldArray().controls[i].get('condition').value === 'between'">
+            <mat-form-field>
+              <input matInput (mousedown)="fromdate.open()" formControlName="value" [matDatepicker]="FrDateRef"
+                     placeholder="From Date"/>
+              <mat-datepicker-toggle matSuffix [for]="FrDateRef"></mat-datepicker-toggle>
+              <mat-datepicker #fromdate #FrDateRef disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2"
+               *ngIf="getFilterFieldArray().controls[i].get('fieldname').value['field_type'] === 'CL' && getFilterFieldArray().controls[i].get('condition').value === 'between'">
+            <mat-form-field>
+              <input matInput (mousedown)="todate.open()" formControlName="value2" [matDatepicker]="toDateRef"
+                     placeholder="To Date"/>
+              <mat-datepicker-toggle matSuffix [for]="toDateRef"></mat-datepicker-toggle>
+              <mat-datepicker #todate #toDateRef disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2 MT-15" *ngIf="i === 0">
+            <mat-icon class="mat-icon material-icons cursor-pointer primary-color" (click)="addNewFilter(i)">add
+            </mat-icon>
+          </div>
+          <div class="col-md-2 MT-15" *ngIf="i !== 0">
+            <mat-icon class="mat-icon material-icons cursor-pointer red-color" (click)="removeFilter(i)">
+              indeterminate_check_box
+            </mat-icon>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Start add output field-->
+  <div class="section-sepration output-field PB-30">
+    <span class="panel-title">Output Field</span>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="field-bg">
+          <span class="panel-title">Choose Field</span>
+          <span class="panel-title on-right black-color"><button class="open-dialog-btn" (click)="addFieldToOutput()">Add All Fields</button></span>
+          <div class="panel-body primary-chip" dragula="DRAGULA_FACTS" id="leftDragableModel"
+               [(dragulaModel)]="leftDragableModel">
+            <mat-chip-list *ngFor="let oField of leftDragableModel">
+              <mat-chip>{{oField?.field_title}}
+                <!--<mat-icon>done</mat-icon>-->
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 PL-0">
+        <div class="field-bg">
+          <span class="panel-title turquoise-color">Selected Field</span>
+          <button class="btn-primary on-right MT-5 MR-5" (click)="showGenerateReport(0)">Generate Report
+          </button>
+          <span class="panel-title on-right"><button class="open-dialog-btn"
+                                                     (click)="resetOutputField()">Reset</button></span>
+          <div class="panel-body success-chip" dragula="DRAGULA_FACTS" id="rightDragableModel"
+               [(dragulaModel)]="rightDragableModel">
+            <mat-chip-list *ngFor="let oField of rightDragableModel">
+              <mat-chip>{{oField?.field_title}}
+                <!--<mat-icon>done</mat-icon>-->
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+        </div>
+        <div class="MT-15" *ngIf="tabData['add_edit']">
+          <form [formGroup]="reportDataForm" (submit)="saveClientReport(reportDataForm.valid, reportDataForm.value)"
+                class="row on-right">
+            <div class="col-md-7 PL-">
+              <mat-form-field>
+                <input matInput placeholder="Report Name" formControlName="name" required/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-5 PLR-0">
+              <button type="button" (click)="saveClientReport(reportDataForm.valid, reportDataForm.value)"
+                      class="btn-orange btn-bordered" *ngIf="selectedClientReport" [disabled]="reportDataForm.invalid">
+                Update Report
+              </button>
+              <button type="submit" class="btn-success" *ngIf="!selectedClientReport"
+                      [disabled]="reportDataForm.invalid">
+                Save New Report
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- generate report -->
+  <div class="section-sepration with-filter-grid-container" *ngIf="showHideReport">
+    <!-- Start Grid Inner Header -->
+    <div class="grid-inner-header PT-5">
+      <div class="row">
+        <div class="col-md-6 inner-header-title">
+          <h3>Generate Report</h3>
+        </div>
+        <div class="col-md-6">
+          <ul class="download-icon">
+            <li *ngIf="tabData['export']">
+              <a (click)="showGenerateReport(1)">
+                <span>Excel</span> <i class="material-icons">file_download</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- End Grid Inner Header -->
+    <!-- Start Table -->
+    <div class="table-container">
+      <div class="table-block">
+        <table>
+          <thead>
+          <tr>
+            <th width="10%" *ngFor="let col of reportColumn">{{col}}</th>
+            <th width="10%" *ngIf="reportTabData['id'] === 15">Action</th>
+          </tr>
+          </thead>
+          <tbody *ngIf="generatedReportList.length">
+          <tr *ngFor="let report of generatedReportList; let i = index">
+            <td width="10%" *ngFor="let col of reportColumn">{{checkIsFieldValueIsDate(report[col], 1)}}</td>
+            <td width="10%" *ngIf="reportTabData['id'] === 15">
+              <a target="_blank" (click)="onViewBillingInformation()" *ngIf="reportTabData['id'] === 15">
+                <mat-icon class="primary-color" [matTooltip]="'View Billing Information'">visibility</mat-icon>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+          <tbody *ngIf="generatedReportList.length ===0" class="panel-title">No Records Found</tbody>
+        </table>
+        <table *ngIf="generatedReportList.length">
+          <tfoot>
+          <tr>
+            <td colspan="10">
+              <mat-paginator [length]="rtotalRecords"
+                             [pageSize]="rpageSize"
+                             [pageIndex]="rpageIndex"
+                             [pageSizeOptions]="rpageArray"
+                             (page)="onPageReportChange($event)">
+              </mat-paginator>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- End Table -->
+  </div>
+</div>

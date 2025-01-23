@@ -1,0 +1,39 @@
+<div class="view-client-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>CLIENT</span>
+
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">VIEW CLIENT</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <div class="">
+    <mat-tab-group class="demo-tab-group" >
+      <mat-tab label="Active Client">
+        <div>
+         <app-active-client></app-active-client>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Discontinue Client">
+        <div>
+         <app-discontinue-client></app-discontinue-client>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+</div>
+

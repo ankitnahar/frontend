@@ -1,0 +1,222 @@
+<div class="my-profile-container">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span>HRMS</span>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          <span class="active">PROFILE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <div class="sub-header-bg">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <span class="user_img">
+          <img src="{{imagePath+userData.user_image}}" alt=""
+               *ngIf="userData.user_image !== ''" class="profile-image-temp"/>
+              <img src="assets/images/user.png" alt=""
+                   *ngIf="userData.user_image == ''" class="profile-image-temp"/>
+        </span>
+        <span class="user_description">
+        <h3>{{userData?.userfullname}}</h3>
+        <mat-label>{{userData?.email}}</mat-label><br/>
+        <mat-label>{{userDetails?.Designation}}</mat-label>
+          </span>
+      </div>
+      <div class="col-md-3 PL-0 text-right">
+        <mat-label><span [innerHTML]="userDetails?.Entity"></span></mat-label>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row col-md-12 MT-15">
+    <div class="col-md-2 PL-0">
+      <mat-card class="personal-card">
+        <mat-card-header>
+          <mat-card-title>About Me</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <ul class="MT-10">
+            <li class="MB-10">
+              <mat-icon>fiber_manual_record</mat-icon>
+              <span [innerHtml]="userDetails?.Department | safeHtml"></span>
+            </li>
+            <li class="MB-10">
+              <mat-icon>fiber_manual_record</mat-icon>
+              {{userDetails?.Designation}}
+            </li>
+            <li class="MB-10">
+              <mat-icon>fiber_manual_record</mat-icon>
+              {{userDetails?.Mobile_Phone}}
+            </li>
+            <li class="MB-10">
+              <mat-icon>fiber_manual_record</mat-icon>
+              {{userDetails?.Location}}
+            </li>
+            <li class="MB-10">
+              <mat-icon>fiber_manual_record</mat-icon>
+              (GMT 12:00)
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-md-7 PL-0">
+      <mat-card class="personal-info">
+        <mat-card-header>
+          <mat-card-title>Personal Information</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div class="row MT-10">
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Mobile Number</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Mobile_Phone}}</mat-label>
+            </div>
+
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Other Email</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Other_Email}}</mat-label>
+            </div>
+
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500">Gender</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Gender}}</mat-label>
+            </div>
+
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Marital status</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Marital_status}}</mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Name - Emergency Contact - 1</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Name_Emergency_Contact_1}}</mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Emergency No. - 1</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Emergency_No_1}}</mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Name - Emergency Contact - 2</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Name_Emergency_Contact_2}}</mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Emergency No. - 2</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Emergency_No_2}}</mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Blood Group</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Blood_Group}}</mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Notice Period</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userDetails?.Notice_Period}}</mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Permanent Address</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label [innerHtml]="userDetails?.Permanent_Address | safeHtml"></mat-label>
+            </div>
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Present Address</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label>
+                <span [innerHtml]="userDetails?.Address_Line_1 | safeHtml"></span>
+                <span [innerHtml]="userDetails?.Address_Line_2 | safeHtml"></span>
+              </mat-label>
+            </div>
+
+
+            <div class="col-md-6 PLR-0">
+              <mat-label class="fw-500"> Birth Date</mat-label>
+            </div>
+            <div class="col-md-6">
+              <mat-label> {{userData?.user_birthdate | date : 'dd-MM-yyyy'}}</mat-label>
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-md-3 PLR-0 hrms_right_blue">
+      <mat-card class="reporting_to">
+        <mat-card-header>
+          <mat-card-title>Reporting To</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div class="row MT-10">
+            <div class="row col-md-12 PLR-0">
+              <div class="col-md-4">
+           <span class="user_img">
+          <img src="assets/images/user.png"/>
+        </span>
+              </div>
+
+              <div class="col-md-8 PL-0">
+              <span class="user_description">
+        <h3>{{userDetails?.Reporting_To}}</h3>
+          </span></div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="team_details1 MT-10">
+        <mat-card-header>
+          <mat-card-title>Team Details</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <div class="row MT-10">
+            <div class="row col-md-12 PLR-0 MB-10" *ngFor="let designation of designationList">
+              <div class="col-md-3 PR-0">
+                <span class="user_img">
+                   <img src="assets/images/user.png"/>
+                  </span>
+              </div>
+
+              <div class="col-md-9 PT-10">
+                <span class="user_description">
+                  <h5>{{getUserInfo(designation?.id, 'userfullname')}}<span> {{getUserInfo(designation?.id, 'user_bio_id')}} - {{designation?.designation_name}}</span></h5>
+                  <p>{{getUserInfo(designation?.id, 'location_id', 'location_name')}}</p>
+                </span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

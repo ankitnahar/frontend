@@ -1,0 +1,434 @@
+<!-- Admin (Administration)Update Information html view -->
+<div class="admin-manage-users-container query-module">
+  <!-- Start BreadCrumb Top Header -->
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-12 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span><a (click)="onGoQueryModule()">QUERY DETAILS</a></span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">EDIT QUERY</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active" *ngIf="queryData?.parent_id > 0"> Parent Client : {{queryData?.parent_name}} | </span>
+          <span>{{queryData?.trading_name}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+  <form [formGroup]="editQueryForm" (submit)="onSubmit(editQueryForm)">
+    <div>
+      <div class="row">
+        <span class="panel-title">Worksheet Period:</span> <label class="PT-15">{{queryData?.start_period | date :
+        'dd-MM-yyyy'}} TO
+        {{queryData?.end_period | date : 'dd-MM-yyyy'}}</label>
+        <span class="panel-title">Subject:</span>
+        <span class="col-md-8" *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+          <mat-form-field>
+            <input matInput formControlName="subject" required/>
+          </mat-form-field>
+        </span>
+        <span class="col-md-6 MT-15" *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">
+          {{queryData?.subject}}
+        </span>
+      </div>
+      <mat-accordion [multi]="true" *ngFor="let bankDetail of getQueryBankArray().controls; let i = index;">
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title><span class="fw-500">{{bankDetail.value['bank_name']}} </span>: {{bankDetail.value['account_no'] | accountNumberMask}}</mat-panel-title>
+          </mat-expansion-panel-header>
+      <!-- Start grid -->
+      <div class="expand-grid merge_cells">
+        <div class="expand-grid__thead">
+          <table class="PT-0">
+            <tr>
+              <th width="3%">Sr. No</th>
+              <th width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '8%':'8%'}}">Transaction Date</th>
+              <th width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '11%':'11%'}}">Memo</th>
+              <th width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '6%':'6%'}}">Debit<mat-icon matTooltip="Prefix currency symbol in amount" class="v-align-middle gray-color" matTooltipPosition="below">info</mat-icon></th>
+              <th width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '7%':'7%'}}">Credit<mat-icon matTooltip="Prefix currency symbol in amount" class="v-align-middle gray-color" matTooltipPosition="below">info</mat-icon></th>
+              <th width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '8%':'8%'}}">GST</th>
+              <th width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '25%':'25%'}}">Queries Comments</th>
+              <th width="5%"></th>
+              <th width="10%" *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">Answer</th>
+              <th width="10%" *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">Client Comments</th>
+              <th width="6%">Action</th>
+              <th width="1%"></th>
+            </tr>
+            <ng-container *ngFor="let updateinfo of getQueryArray(i).controls; let j = index" class="expand-grid__tbody expand-grid-scrollable">
+              <tr class="" [ngClass]="{'is-active-row' : trIndex === updateinfo.value['id']}" style="white-space: nowrap; height: auto !important; align-items: center;" class="min_width_query">
+                <td (click)="openRow(updateinfo.value['id'])" width="3%">
+                  <a class="open-inner-data">
+                  </a>{{j + 1}}
+                </td>
+                <td width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '8%':'8%'}}">
+                  <mat-form-field *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+                    <input matInput [matDatepicker]="fromdateRef" placeholder="Transaction Date" [formControl]="updateinfo.get('transation_date')" (dateChange)="updateDateForQuery(i,j, $event.value)">
+                    <mat-datepicker-toggle matSuffix [for]="fromdateRef"></mat-datepicker-toggle>
+                    <mat-datepicker #fromdateRef></mat-datepicker>
+                  </mat-form-field>
+                  <span *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">{{updateinfo.value['transation_date'] | date : 'dd-MM-yyyy'}}</span>
+                </td>
+                <td width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '11%':'11%'}}" class="word-break">
+                  <mat-form-field *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+                    <input matInput [formControl]="updateinfo.get('memo')" value="{{updateinfo.value['memo']}}" />
+                  </mat-form-field>
+                  <span *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">{{updateinfo.value['memo']}}</span>
+                </td>
+                <td width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '6%':'6%'}}">
+                  <mat-form-field *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+                    <input matInput [formControl]="updateinfo.get('withdraw')" value="{{updateinfo.value['withdraw']}}" />
+                  </mat-form-field>
+                  <span *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">{{updateinfo.value['withdraw']}}</span>
+                </td>
+                <td width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '7%':'7%'}}">
+                  <mat-form-field *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+                    <input matInput [formControl]="updateinfo.get('deposit')" value="{{updateinfo.value['deposit']}}"/>
+                  </mat-form-field>
+                  <span *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">{{updateinfo.value['deposit']}}</span>
+                </td>
+                <td width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '8%':'8%'}}">
+                  <mat-form-field [floatLabel]="'never'" *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+                    <mat-select placeholder="Please Select" [value]="updateinfo.value['gst']" [formControl]="updateinfo.get('gst')">
+                      <mat-option *ngFor="let yesNoData of yesNoQuestionMarksList.slice(1);" [value]="yesNoData.label">
+                        {{yesNoData.label}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <span *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">{{updateinfo.value['gst']}}</span>
+                </td>
+                <td width="{{queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6 ? '25%':'25%'}}" *ngIf="updateinfo.value['is_skip'] != 1" [attr.rowspan]="updateinfo.value['rowSpan'] > 0 ? updateinfo.value['rowSpan'] : null" class="{{updateinfo.value['rowSpan'] > 0 ? 'bgTextarea_Merge_Cell textarea_small word-break' : 'textarea_small word-break'}}">
+                  <mat-form-field appearance="fill" *ngIf="bankDetail.value['rows'] === 0 && queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+                    <textarea matInput value="{{updateinfo.value['query_comment']}}"  [formControl]="updateinfo.get('query_comment')" matTextareaAutosize matAutosizeMinRows=2 matAutosizeMaxRows=7></textarea>
+                  </mat-form-field>
+                  <ng-select *ngIf="bankDetail.value['rows'] > 0 && queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6"
+                             [items]="queryQuestionList"
+                             bindLabel="question_name"
+                             placeholder="Comment"
+                             bindValue="question_name"
+                             [virtualScroll]="false"
+                             [formControl]="updateinfo.get('query_comment')">
+                  </ng-select>
+                  <span *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">{{updateinfo.value['query_comment']}}</span>
+                </td>
+                <td width="5%" class="text-center">
+                  <mat-icon class="orange-color v-align-middle" (click)="onFileSelect('addDocument_' + updateinfo.value['id'])"
+                            matTooltip="Add Document">note_add
+                  </mat-icon>
+                  {{uploadDocName[i] && uploadDocName[i][j] ? uploadDocName[i][j] : ''}}
+                  <input type="file" [hidden]="true" id="{{'addDocument_'+ updateinfo.value['id']}}"
+                         (change)="onUploadDocument($event,updateinfo.value['id'], i, j)"
+                         [multiple]="true"/>
+
+                  <a (click)="onAddDocumentsDialog(updateinfo.value['id'],i,j,3)" class="cursor-pointer v-align-middle">
+
+                    <svg id="Capa_1" enable-background="new 0 0 511.696 511.696" class="v-align-middle" height="15"
+                         viewBox="0 0 511.696 511.696" width="15" xmlns="http://www.w3.org/2000/svg">
+                      <g>
+                        <g id="Drive_4_">
+                          <path
+                            d="m255.395 161.647-106.199 184.2h-.3l61.5 75-137.999 57.9c-2.701-1.5-4.801-3.6-6-5.7l-64.801-120c-3.3-6.601-.599-11.7.3-14.7l173.701-300c1.199-1.8 2.999-3.6 5.4-5.101h.3l89.099 27.601z"
+                            fill="#59c36a"/>
+                        </g>
+                        <path
+                          d="m511.696 345.848-120.3 75-28.5-75-107.5-184.2-74.1-128.402c2.098-1.5 4.799-2.399 7.2-2.399h134.799c3.001.899 9.001.599 12.9 7.5l173.701 300c1.199 2.101 1.8 4.8 1.8 7.501z"
+                          fill="#ffda2d"/>
+                        <path
+                          d="m336.194 38.348c-3.898-6.901-9.899-6.601-12.9-7.5h-67.899v130.8l107.5 184.2 28.5 75 120.3-75c0-2.701-.601-5.4-1.8-7.5z"
+                          fill="#fdbf00"/>
+                        <path
+                          d="m511.696 345.848c0 2.699-.601 5.4-1.5 7.2l-64.801 120c-2.401 3.9-8.099 7.8-13.2 7.8h-352.599c-2.401 0-5.101-.901-7.2-2.1l76.5-132.9z"
+                          fill="#4086f4"/>
+                        <path
+                          d="m255.395 480.848h176.8c5.101 0 10.8-3.9 13.2-7.8l64.801-120c.899-1.8 1.5-4.501 1.5-7.2h-256.3v135z"
+                          fill="#4175df"/>
+                      </g>
+                    </svg>
+                  </a>
+                  <mat-icon matBadge="{{getDocumentArray(i,j).controls.length}}" matBadgeColor="warn"
+                                        matTooltip="View Document" *ngIf="getDocumentArray(i,j).controls.length > 0" class="primary-color cursor-pointer v-align-middle" (click)="openRow(updateinfo.value['id'])">cloud_done
+                </mat-icon>
+                </td>
+                <td width="10%" class="word-break" *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">
+                  {{getAnswerName(updateinfo.get('answer_type').value)}}
+                </td>
+                <td width="10%" class="word-break" *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6">{{updateinfo.value['client_comment']}}</td>
+                <td width="6%">
+                  <mat-form-field [floatLabel]="'never'">
+                    <mat-select [formControl]="updateinfo.get('status_id')">
+                      <mat-option *ngFor="let statusData of informationStatus" [value]="statusData?.key">
+                        {{ statusData?.label }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td width="1%">
+                  <mat-icon *ngIf="getQueryArray(i).controls.length - 1 == j && bankDetail.value['rows'] > 0" class="red-color cursor-pointer" (click)="onAddQuery(updateinfo.value['bank_id'],updateinfo.value['bank_info_id'])"
+                            matTooltip="Add Query">
+                    add
+                  </mat-icon>
+                  <mat-icon *ngIf="getQueryArray(i).controls.length > 1 && bankDetail.value['rows'] > 0" class="red-color cursor-pointer" (click)="onDeleteQuery(updateinfo.value['id'])"
+                            matTooltip="Delete Query">
+                    delete
+                  </mat-icon>
+                </td>
+              </tr>
+              <tr *ngIf="trIndex === updateinfo.value['id']" class="inner-data" style="position: relative;">
+                <td [attr.colspan]="queryData?.stage_id?.id >= 5 ? 11 : 9" style="border-top:1px solid #c3c3c3;">
+                  <div class="row col-md-12">
+                    <div class="col-md-6" *ngFor="let documentData of getDocumentArray(i,j).controls; let k = index">
+                      <div class="inner-data__view">
+                        <div class="">{{documentData.value['is_client'] === 1 ? 'Client' : 'Befree'}} :</div>
+                        <div>
+                          <a (click)="onOpenDocumentFile(documentData.value)" *ngIf="documentData.value['is_drive'] === 1"
+                             class="cursor-pointer">
+                            <mat-icon class="v-align-middle">remove_red_eye</mat-icon>
+                            {{documentData.get('document_name').value}}
+                          </a>
+                          <a (click)="downloadDocument(documentData)" *ngIf="documentData.value['is_drive'] === 0"
+                             class="cursor-pointer">
+                            <mat-icon class="v-align-middle primary-color">get_app</mat-icon>
+                            {{documentData.get('document_name').value}}
+                          </a>
+                          <a (click)="deleteDocument(updateinfo.value['id'], documentData.get('id').value,i,j)">
+                            <mat-icon aria-hidden="false" aria-label="delete" class="red-color v-align-middle">delete
+                            </mat-icon>
+                          </a>
+                        </div>
+                      </div>
+                    </div></div>
+                </td>
+              </tr>
+            </ng-container>
+          </table>
+        </div>
+      </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <div class="row col-md-12">
+
+        <div class="col-md-5 PL-0" *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+          <mat-card>
+            <div class="panel-title ML-0">Additional Query</div>
+            <form [formGroup]="editAdditionalQueryForm" #addAdditionaQueryForm="ngForm"
+                  (submit)="onSubmitAdditionalQuery(editAdditionalQueryForm)">
+              <div class="col-md-12 PLR-0">
+                <mat-form-field>
+                  <mat-label>Comment</mat-label>
+                  <textarea matInput formControlName="comment"></textarea>
+                </mat-form-field>
+                <div class="validation-msg">
+                  <app-validation *ngIf="isRequiredField(editAdditionalQueryForm.get('comment'))"
+                                  [errMsg]="validationMsg.QUERY_COMMENTS_REQUIRED"></app-validation>
+                </div>
+              </div>
+              <div class="col-md-12 PLR-0 text-right">
+                <button type="submit" class="btn-primary" [disabled]="editAdditionalQueryForm.invalid">
+                  Add
+                </button>
+              </div>
+            </form>
+          </mat-card>
+        </div>
+        <div class="col-md-7 PL-0">
+          <mat-card>
+            <!-- Start Table -->
+            <div class="expand-grid">
+              <div class="expand-grid__thead">
+                <table *ngIf="additionalQueryListing.length">
+                  <thead>
+                  <tr>
+                    <th width="5%">Sr. No</th>
+                    <th width="50%">Additional Query</th>
+                    <th width="{{queryData?.stage_id?.id >= 6 ? '25%' : '40%'}}">Document</th>
+                    <th *ngIf="queryData?.stage_id?.id >= 6" width="15%">Client Comment</th>
+                    <th width="5%">Action</th>
+                  </tr>
+                  </thead>
+                </table>
+
+                <div class="expand-grid__tbody expand-grid-scrollable" *ngIf="additionalQueryListing.length">
+                  <table>
+                    <tbody *ngFor="let updateAdditionalQuery of additionalQueryListing; let k = index">
+                    <tr [ngClass]="{'is-active-row' : trIndexInner === k}" class="hover-icons row-data">
+                      <td width="5%">
+                        {{k + 1}}
+                      </td>
+                      <td width="50%" class="word-break">{{updateAdditionalQuery?.comment}}</td>
+                      <td width="{{queryData?.stage_id?.id >= 6 ? '25%' : '40%'}}">
+                        <input type="file" [hidden]="true" id="{{'addDocumentAdd_'+ updateAdditionalQuery.id}}"
+                               (change)="onUploadDocumentAdditional($event, updateAdditionalQuery.id, k)"
+                               [multiple]="true"/>
+
+                        <mat-icon class="orange-color"
+                                  (click)="onFileSelect('addDocumentAdd_' + updateAdditionalQuery.id)"
+                                  matTooltip="Add Document">note_add
+                        </mat-icon>
+                        <a (click)="onAddDocumentsDialog(updateAdditionalQuery.id,k,0,5)" class="cursor-pointer"
+                           style="vertical-align: super;">
+
+                          <svg id="Capa_1" enable-background="new 0 0 511.696 511.696" class="v-align-middle MR-5"
+                               height="15"
+                               viewBox="0 0 511.696 511.696" width="15" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                              <g id="Drive_4_">
+                                <path
+                                  d="m255.395 161.647-106.199 184.2h-.3l61.5 75-137.999 57.9c-2.701-1.5-4.801-3.6-6-5.7l-64.801-120c-3.3-6.601-.599-11.7.3-14.7l173.701-300c1.199-1.8 2.999-3.6 5.4-5.101h.3l89.099 27.601z"
+                                  fill="#59c36a"/>
+                              </g>
+                              <path
+                                d="m511.696 345.848-120.3 75-28.5-75-107.5-184.2-74.1-128.402c2.098-1.5 4.799-2.399 7.2-2.399h134.799c3.001.899 9.001.599 12.9 7.5l173.701 300c1.199 2.101 1.8 4.8 1.8 7.501z"
+                                fill="#ffda2d"/>
+                              <path
+                                d="m336.194 38.348c-3.898-6.901-9.899-6.601-12.9-7.5h-67.899v130.8l107.5 184.2 28.5 75 120.3-75c0-2.701-.601-5.4-1.8-7.5z"
+                                fill="#fdbf00"/>
+                              <path
+                                d="m511.696 345.848c0 2.699-.601 5.4-1.5 7.2l-64.801 120c-2.401 3.9-8.099 7.8-13.2 7.8h-352.599c-2.401 0-5.101-.901-7.2-2.1l76.5-132.9z"
+                                fill="#4086f4"/>
+                              <path
+                                d="m255.395 480.848h176.8c5.101 0 10.8-3.9 13.2-7.8l64.801-120c.899-1.8 1.5-4.501 1.5-7.2h-256.3v135z"
+                                fill="#4175df"/>
+                            </g>
+                          </svg>
+                        </a>
+                        <mat-icon matBadge="{{updateAdditionalQuery['document'].length}}" matBadgeColor="warn"
+                                  matTooltip="View Document" (click)="openRowAdditionalComments(k)" *ngIf="updateAdditionalQuery['document'].length" class="primary-color">cloud_done
+                        </mat-icon>
+                      </td>
+                      <td *ngIf="queryData?.stage_id?.id >= 6" width="15%" class="word-break">{{updateAdditionalQuery?.client_comment}}</td>
+                      <td width="5%">
+                        <a (click)="removeAdditionalQuery(updateAdditionalQuery)" *ngIf="updateAdditionalQuery?.is_deleted != 1 && queryData?.stage_id?.id < 5">
+                          <mat-icon matTooltip="Resolve Query" aria-hidden="false" aria-label="delete" class="red-color">playlist_add_check
+                          </mat-icon>
+                        </a>
+
+                        <mat-icon *ngIf="updateAdditionalQuery?.is_deleted == 1" matTooltip="Resolve Query on {{updateAdditionalQuery?.deleted_on | date : 'dd-MM-yyy HH:mm:ss'}}" class="turquoise-color">done_all</mat-icon>
+                      </td>
+                    </tr>
+                    <tr *ngIf="trIndexInner === k" class="inner-data">
+                      <div class="row PT-10">
+                        <div class="col-md-6"  *ngFor="let documentsList of updateAdditionalQuery['document']; let m = index">
+                          <div class="inner-data__view">
+                            <div class="">{{documentsList?.is_client === 1 ? 'Client' : 'Befree'}} :</div>
+                            <div>
+                              <a (click)="onOpenDocumentFile(documentsList)" *ngIf="documentsList?.is_drive === 1"
+                                 class="cursor-pointer v-align-middle">
+                                <mat-icon>remove_red_eye</mat-icon>{{documentsList?.document_name}}
+                              </a>
+                              <a (click)="downloadDocument(documentsList, 1)" *ngIf="documentsList?.is_drive === 0"
+                                 class="cursor-pointer v-align-middle">
+                                <mat-icon class="v-align-middle">get_app</mat-icon>{{documentsList?.document_name}}
+                              </a>
+                              <a (click)="deleteAdditionalDocument(documentsList?.id)"
+                                 *ngIf="documentsList?.is_client === 0">
+                                <mat-icon aria-hidden="false" aria-label="delete" class="red-color v-align-middle">delete
+                                </mat-icon>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <table *ngIf="isSendToClient">
+                  <tfoot>
+                  <tr>
+                    <td colspan="8" class=""></td>
+                    <td colspan="2" class="PR-10" style="float: right" *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6">
+                      <mat-form-field>
+                        <mat-select placeholder="Reminder Days" formControlName="reminder">
+                          <mat-option *ngFor="let days of snoozeOrReminderDays" [value]="days['key']">
+                            {{days['label']}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <div class="validation-msg">
+                        <app-validation *ngIf="isRequiredField(editQueryForm.get('reminder'))"
+                                        [errMsg]="validationMsg.REMINDER_REQUIRED"></app-validation>
+                      </div>
+                    </td>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            <!-- End Grid -->
+          </mat-card>
+        </div>
+      </div>
+      <div class="row col-md-12">
+        <div class="col-md-6 PL-0" *ngIf="queryData?.sendback_reason_tm">
+          <span class="panel-title">Send Back Reason to TM :</span> {{queryData?.sendback_reason_tm}}
+        </div>
+        <div class="col-md-6 PL-0" *ngIf="queryData?.sendback_reason_atl">
+          <span class="panel-title">Send Back Reason to ATL :</span> {{queryData?.sendback_reason_atl}}
+        </div>
+        <div class="col-md-6 PL-0" *ngIf="queryData?.sendback_reason_tl">
+          <span class="panel-title"> Send Back Reason to TL :</span> {{queryData?.sendback_reason_tl}}
+        </div>
+      </div>
+      <div class="col-md-12 PB-20">
+        <div class="row MT-30">
+          <div class="col-md-6 PL-0">
+            <button *ngIf="queryData?.stage_id?.id !== 5 && queryData?.stage_id?.id !== 6" type="submit" class="btn-primary"
+                    (click)="updateStatusIdWithDraft(queryData.stage_id.id, 1, 'draft')">
+              Save
+            </button>
+            <button *ngIf="queryData?.stage_id?.id === 5 || queryData?.stage_id?.id === 6" type="submit" class="btn-primary"
+                    (click)="updateStatusIdWithDraft(queryData.stage_id.id, 0,'submit')">
+              Submit
+            </button>
+          </div>
+          <div class="col-md-6 text-right PR-0">
+            <button
+              *ngIf="queryData.stage_id.id === 2 || queryData.stage_id.id === 3 || queryData.stage_id.id === 4"
+              (click)="onSendtoStaff(queryData,1,1)" type="button" class="btn-dark-blue MR-5">Send back to
+              Staff
+            </button>
+            <button *ngIf="queryData.stage_id.id === 3 || queryData.stage_id.id === 4"
+                    (click)="onSendtoStaff(queryData,2,2)" type="button" class="btn-orange MR-5">Send back
+              to
+              ATL
+            </button>
+            <button *ngIf="queryData.stage_id.id === 4"
+                    (click)="onSendtoStaff(queryData,3,3)" type="button" class="btn-dark-blue MR-5 ">Send back
+              to
+              TL
+            </button>
+            <button
+              *ngIf="queryData.stage_id.id === 1"
+              (click)="updateStatusIdWithDraft(2, 0, 'ATL')" type="submit" class="btn-orange MR-5"
+              [disabled]="editQueryForm.invalid">Send to ATL
+            </button>
+            <button
+              *ngIf="queryData.stage_id.id === 1 || queryData.stage_id.id === 2"
+              (click)="updateStatusIdWithDraft(3, 0, 'TL')" type="submit" class="btn-dark-blue MR-5"
+              [disabled]="editQueryForm.invalid">Send to TL
+            </button>
+            <button
+              *ngIf="queryData.stage_id.id === 1 || queryData.stage_id.id === 2 || queryData.stage_id.id === 3"
+              (click)="updateStatusIdWithDraft(4, 0, 'TAM')" type="submit" class="btn-primary MR-5"
+              [disabled]="editQueryForm.invalid">Send to TAM
+            </button>
+            <button
+              *ngIf="(queryData.stage_id.id === 1 || queryData.stage_id.id === 2 || queryData.stage_id.id === 3 || queryData.stage_id.id === 4) && (isSendToClient === true)"
+              (click)="updateStatusIdWithDraft(queryData.stage_id.id, 0, 'Client');" type="submit"
+              class="btn-success" [disabled]="editQueryForm.invalid">Send to Client
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

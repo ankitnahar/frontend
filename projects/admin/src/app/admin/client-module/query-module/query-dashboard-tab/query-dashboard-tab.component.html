@@ -1,0 +1,35 @@
+<!-- Start BreadCrumb Top Header -->
+<div class="admin-invoice-dashboard-container">
+  <div class="breadcrumb-top-header">
+    <div class="row">
+      <div class="col-md-9 PL-0">
+        <div class="breadcrumb-top-header__breadcrumbs">
+          <mat-icon class="material-icons cursor-pointer"><a (click)="onGoDashboard()">home</a></mat-icon>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span>CLIENT</span>
+
+          <i class="material-icons">keyboard_arrow_right</i>
+          <span class="active">PENDING QUERIES</span>
+        </div>
+      </div>
+      <div class="col-md-3 PR-0">
+      </div>
+    </div>
+  </div>
+  <!-- End BreadCrumb Top Header -->
+
+  <!--start Pending queries tab menu-->
+  <div class="invoice-tabs-container">
+    <mat-tab-group class="demo-tab-group worksheet-tabs" [selectedIndex]="selectedIndexData"
+                   (selectedIndexChange)="onSelectedIndexChange($event)">
+      <mat-tab *ngFor="let tab of tabList" label="{{tab?.status_name}}"></mat-tab>
+    </mat-tab-group>
+
+    <div class="tab-content">
+      <app-pending-queries-list [querySelectedStatus]="selectedQueryStatus"
+                                [queryselectedTabID]="selectedTabID"></app-pending-queries-list>
+    </div>
+  </div>
+</div>
+<!--end Pending queries tab menu-->

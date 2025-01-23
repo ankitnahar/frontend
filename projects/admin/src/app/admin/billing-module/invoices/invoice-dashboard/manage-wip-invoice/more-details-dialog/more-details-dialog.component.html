@@ -1,0 +1,84 @@
+<!--  Start More Details dialog  -->
+<div class="admin-invoice-manage-wip-more-details-container">
+  <div class="modal__header">
+    <div class="modal__header__logo">MORE DETAILS</div>
+  </div>
+
+  <div class="modal__close">
+    <a>
+      <mat-icon class="material-icons" (click)="onClose()">close</mat-icon>
+    </a>
+  </div>
+  <div class="modal__body">
+    <div class="row MT-10" *ngIf="timesheetDetails['bank_cc_name'] !== ''">
+      <div class="col-md-4">
+        <label>Bank / CC / Paypal Info</label>
+      </div>
+      <div class="col-md-8">
+        <span><mat-label>{{timesheetDetails['bank_cc_name']}}</mat-label></span>
+      </div>
+    </div>
+    <div class="row MT-10" *ngIf="timesheetDetails['bank_cc_account_no'] !== ''">
+      <div class="col-md-4">
+        <label>Account No</label>
+      </div>
+      <div class="col-md-8">
+        <span><mat-label>{{timesheetDetails['bank_cc_account_no']}}</mat-label></span>
+      </div>
+    </div>
+    <div class="row MT-20" *ngIf="timesheetDetails['no_of_value'] !== '' && timesheetDetails['no_of_value']">
+      <div class="col-md-4">
+        <label>{{subactivityCodeDetail[timesheetDetails['subactivity_code']]}}</label>
+      </div>
+      <div class="col-md-8">
+        <span><mat-label>{{timesheetDetails['no_of_value']}}</mat-label></span>
+      </div>
+    </div>
+    <div class="row MT-20"
+         *ngIf="timesheetDetails['period_startdate'] !=='' && timesheetDetails['period_startdate'] !== '0000-00-00' && timesheetDetails['period_startdate'] !== null">
+      <div class="col-md-4">
+        <label>Period From</label>
+      </div>
+      <div class="col-md-8">
+        <span><mat-label>{{timesheetDetails['period_startdate'] | date : 'dd-MM-yyyy'}}</mat-label></span>
+      </div>
+    </div>
+    <div class="row MT-20"
+         *ngIf="timesheetDetails['period_enddate'] !== '' && timesheetDetails['period_enddate'] !== '0000-00-00' && timesheetDetails['period_enddate'] !== null">
+      <div class="col-md-4">
+        <label>Period To</label>
+      </div>
+      <div class="col-md-8">
+        <span><mat-label>{{timesheetDetails['period_enddate'] | date : 'dd-MM-yyyy'}}</mat-label></span>
+      </div>
+    </div>
+    <div class="row MT-20"
+         *ngIf="timesheetDetails['extra_value'] && timesheetDetails['extra_value'] !== '' && timesheetDetails['extra_value'] !== null">
+      <div class="col-md-4">
+        <label>{{subactivityCodeDetail[timesheetDetails['subactivity_code']]}}</label>
+      </div>
+      <div class="col-md-8">
+        <span><mat-label>{{timesheetDetails['extra_value']}}</mat-label></span>
+      </div>
+    </div>
+    <div class="row MT-20"
+         *ngIf="timesheetDetails['name_of_employee'] !== '' && timesheetDetails['name_of_employee'] !== null">
+      <div class="col-md-4">
+        <label>Employee Name</label>
+      </div>
+      <div class="col-md-8">
+        <span *ngIf="nameOfEmp">
+          <tr *ngFor="let emp of nameOfEmp; let i = index">
+            <td><p><label class="orange-color">First Name : </label>{{nameOfEmp[i]['first_name']}}</p>
+              <p class="MT-5"><label class="orange-color">Last Name : </label>{{nameOfEmp[i]['last_name']}}</p>
+            </td>
+          </tr>
+          </span>
+      </div>
+    </div>
+  </div>
+  <div class="modal__footer">
+
+  </div>
+</div>
+<!--  End More Details dialog  -->

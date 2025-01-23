@@ -1,0 +1,16 @@
+<div>
+  <mat-tab-group class="demo-tab-group contact-tab">
+    <mat-tab label="Basic">
+      <div>
+        <app-hosting-basic [billingInformation]="billingInformation" [isEdit]="isEdit" [serviceInfo]="serviceInfo"
+                           (onAddUpdate)="getHostingDataInfo();"></app-hosting-basic>
+      </div>
+    </mat-tab>
+    <mat-tab label="User List" *ngIf="isUpdated">
+      <div>
+        <app-hosting-user-list [billingInformation]="billingInformation" [isEdit]="isEdit"
+                               [serviceInfo]="serviceInfo"></app-hosting-user-list>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
