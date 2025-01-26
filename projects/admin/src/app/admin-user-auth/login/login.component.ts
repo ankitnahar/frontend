@@ -107,8 +107,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
   createLoginUserForm() {
     this.loginForm = this._fb.group({
       user_login_name: new FormControl('', [<any>Validators.required]),
-      password: new FormControl('', [Validators.required]),
-      is_checked_terms: new FormControl('', [Validators.required])
+      password: new FormControl('', [Validators.required])
     });
   }
 
@@ -146,15 +145,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     }
   }
 
-  OnChangeTerms(value) {
-    if (value) {
-      this.loginForm.get('is_checked_terms').setValue(1);
-      this.loginForm.updateValueAndValidity();
-    } else {
-      this.loginForm.get('is_checked_terms').setValue(null);
-      this.loginForm.updateValueAndValidity();
-    }
-  }
+ 
 
   onSubmitForgotEmailForm(formParam: any, isValid: boolean) {
     if (isValid) {
