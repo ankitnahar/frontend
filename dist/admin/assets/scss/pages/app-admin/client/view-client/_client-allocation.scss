@@ -1,0 +1,28 @@
+// -----------------------------------------------------------------------------------------------
+// ================================ Client allocation scss =========================
+// -----------------------------------------------------------------------------------------------
+.client-allocation {
+  margin: 0 2rem;
+  &__header {
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: .1rem solid lighten($light-gray-color, 15);
+    b {
+      font-weight: 500;
+    }
+  }
+
+  &__body {
+    margin: 1.5rem 0;
+    .role-name {
+      display: block;
+      margin-top: 1rem;
+    }
+    .role_disable {
+      color: $black-color;
+    }
+  }
+  .mat-chip {
+    margin: 0 .7rem .7rem 0;
+  }
+}

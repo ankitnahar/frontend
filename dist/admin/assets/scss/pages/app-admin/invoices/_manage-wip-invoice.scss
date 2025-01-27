@@ -1,0 +1,79 @@
+// -----------------------------------------------------------------------------------------------
+// =============================== Admin (Invoices) Dashboard scss ===============================
+// -----------------------------------------------------------------------------------------------
+.admin-invoice-manage-wip-invoice-container {
+  .manage-wip-invoice-tab-container {
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 500;
+      padding: 1rem 1.5rem;
+      color: $orange-color;
+    }
+    .mat-expansion-panel-header {
+      padding: 0 1rem;
+    }
+    .mat-expansion-panel-body {
+      padding: 1rem 0;
+    }
+    .mat-tab-body-wrapper {
+      max-height: 75vh !important;
+    }
+    .mat-expansion-panel:not([class*=mat-elevation-z]) {
+      box-shadow: 0 0 0 -2px rgba(0, 0, 0, 0.2), 0 0px 0px 0 rgba(0, 0, 0, 0.14), 0 0 0px 0 rgba(0, 0, 0, 0.12);
+      background: lighten($light-gray-color, 23%);
+      border: .1rem solid lighten($gray-color, 40%);
+    }
+    .mat-expansion-panel-header-title {
+      color: $dark-primary-color;
+    }
+    .mat-form-field-infix {
+      width: 9rem;
+    }
+    .table-container {
+      background-color: lighten($gray-color, 50%);
+      thead {
+        tr {
+          td {
+            border: none;
+          }
+        }
+      }
+    }
+    .bk-general-services {
+      background-color: $white-color;
+      width: 100%;
+      border-bottom: 2rem solid lighten($light-gray-color, 20%);;
+      padding: 1rem 0 2rem 0;
+    }
+
+    .discount-section, .notes-section {
+      background-color: $white-color;
+      width: 100%;
+      border-bottom: 0.7rem solid lighten($light-gray-color, 20%);;
+      padding: 1rem 0 2rem 0;
+      .mat-radio-label {
+        margin-left: 1.5rem;
+      }
+      .advance-invoice-link {
+        color: $dark-primary-color;
+        margin-left: 1.5rem;
+        cursor: pointer;
+      }
+    }
+
+    .grand-total-section {
+
+    }
+    .notes-section {
+      border-bottom: 0 solid transparent;
+      border-top: 2rem solid lighten($light-gray-color, 20%);
+    }
+    .elipsis {
+      @include elipsis(180px);
+    }
+  }
+  input {
+    padding: .4rem .5rem;
+    width: 9rem;
+  }
+}

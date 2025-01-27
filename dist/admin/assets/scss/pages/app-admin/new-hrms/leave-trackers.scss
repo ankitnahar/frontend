@@ -1,0 +1,113 @@
+.leave-trackers-container {
+  .sub-header-bg {
+    background: #d4ebf7;
+    padding: 15px;
+    .mat-card {
+      padding: 16px !important;
+      border-radius: 4px;
+    }
+    .user_img {
+      position: absolute;
+      img {
+        border-radius: 50%;
+        width: 50%;
+        border: 2px solid #3c4251;
+      }
+    }
+    .user_description {
+      position: relative;
+      left: 10%;
+      h3 {
+        color: $dark-primary-color;
+        font-weight: 500;
+      }
+      mat-label {
+        color: $black-color;
+      }
+    }
+  }
+
+  .personal-card {
+    color: $white-color;
+    .mat-card {
+      padding: 16px;
+      border-radius: 4px;
+    }
+    .mat-card-title {
+      color: $black-color;
+      font-size: 1.4rem;
+      mat-icon {
+        vertical-align: middle;
+      }
+    }
+    li {
+      mat-icon {
+        vertical-align: middle;
+        font-size: 4.2rem;
+        color: $white-color;
+      }
+    }
+  }
+  .bg_c {
+    background: #24acd8;
+    .mat-card-title {
+      border-bottom: 2px solid #1a8db3 !important;
+    }
+  }
+  .bg_e {
+    background: #ffab40;
+    .mat-card-title {
+      border-bottom: 2px solid #e39736 !important;
+    }
+  }
+  .bg_loss {
+    background: #648ca0;
+    .mat-card-title {
+      border-bottom: 2px solid #52788b !important;
+    }
+  }
+  .personal-info {
+    .col-md-6 {
+      border-bottom: 1px solid #f0f0f0;
+    }
+    mat-label {
+      line-height: 24px;
+    }
+  }
+
+  .reporting_to {
+    .user_img {
+      img {
+        border-radius: 50%;
+        width: 100%;
+        border: 2px solid #3c4251;
+      }
+    }
+    .user_description {
+      h3 {
+        color: $dark-primary-color;
+        font-weight: 500;
+      }
+      mat-label {
+        color: $black-color;
+      }
+    }
+  }
+
+  .team_details {
+    .user_img {
+      img {
+        border-radius: 50%;
+        width: 100%;
+        border: 2px solid #3c4251;
+      }
+    }
+    h5 {
+      color: $primary-color;
+      font-weight: 500;
+      span {
+        color: $black-color;
+      }
+    }
+  }
+}

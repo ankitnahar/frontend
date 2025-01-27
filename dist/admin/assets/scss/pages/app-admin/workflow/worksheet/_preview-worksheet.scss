@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------------------------------
+// ================================ Preview Worksheet  scss =========================
+// -----------------------------------------------------------------------------------------------
+.preview-worksheet {
+  .label-span-color {
+    label {
+      display: inline-block;
+      text-align: left;
+      padding-right: 1rem;
+      box-sizing: border-box;
+      line-height: 2.3rem;
+    }
+    span {
+      .mat-chip-list-wrapper {
+        display: inline !important;
+      }
+      .mat-chip:not(.mat-basic-chip) {
+        margin-bottom: 1rem !important;
+        background-color: #e4e3e3 !important;
+        padding: .5rem 1rem !important;
+        font-size: 1.3rem;
+      }
+    }
+  }
+}

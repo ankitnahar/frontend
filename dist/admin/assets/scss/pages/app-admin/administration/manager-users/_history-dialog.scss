@@ -1,0 +1,183 @@
+// -----------------------------------------------------------------------------------------------
+// =========================== Admin(Administaration) View History Dialog ========================
+// -----------------------------------------------------------------------------------------------
+.modal {
+  &.history-modal {
+    .modal__header {
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-direction: row;
+      .modal__header__logo {
+        font-weight: 500;
+        font-size: 1.6rem;
+        display: inline-block;
+        //margin: auto;
+        align-self: center;
+      }
+      .modal__header__datepicker {
+        display: inline-block;
+        margin: 0 15px;
+      }
+    }
+    .modal__close {
+      top: 2.2rem;
+    }
+    .modal__footer {
+      margin: 0;
+    }
+  }
+
+  &__body {
+    .view-history-container {
+      z-index: 1;
+      background-color: $white-color;
+      right: 0;
+      padding: 0;
+      margin: 0;
+      li {
+        display: block;
+        & > a {
+          padding: 0.5rem 1.2rem;
+          border: 0;
+          display: flex;
+          flex-direction: row;
+          box-sizing: border-box;
+          width: 100%;
+          font-size: 1.3rem;
+          color: $black-color;
+          //&:hover {
+          //  background-color: lighten($light-gray-color, 22%);
+          //}
+          .profile-icon {
+            margin-right: 1rem;
+            img {
+              vertical-align: middle;
+            }
+          }
+          .history-details {
+            flex: 1;
+            border-bottom: 1px solid lighten($light-gray-color, 15%);
+            padding-bottom: 1.5rem;
+            h3 {
+              float: left;
+              width: 20rem;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              margin: 0;
+              font-weight: 500;
+              font-size: 1.5rem;
+              color: darken($gray-color, 10%);
+              line-height: 2rem;
+              margin-top: .2rem;
+              span {
+                color: $dark-primary-color;
+              }
+            }
+            .history-time {
+              float: right;
+              color: $gray-color;
+              font-weight: 500;
+              margin-top: 0.3rem;
+              font-size: 1.2rem;
+              span {
+                position: relative;
+                top: -.5rem;
+              }
+              i {
+                font-size: 2rem;
+              }
+            }
+            .history-content {
+              margin-top: 0.5rem;
+              li {
+                font-weight: 400;
+                line-height: 1.8rem;
+                color: lighten($black-color, 20%);
+                i {
+                  color: $dark-primary-color;
+                  font-size: 1.8rem;
+                  position: relative;
+                  top: 0.7rem;
+                  margin-left: -2.4rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+* Responsive Design Started
+*/
+@include respond(large-desktop) {
+  .modal {
+    &.history-modal {
+      .modal__header {
+        .modal__header__logo {
+
+        }
+        .modal__header__datepicker {
+
+        }
+      }
+      .modal__close {
+
+      }
+      .modal__body {
+        padding: 0 0;
+      }
+      .modal__footer {
+      }
+    }
+  }
+}
+
+@include respond(big-desktop) {
+  .modal {
+    &.history-modal {
+      .modal__header {
+        .modal__header__logo {
+
+        }
+        .modal__header__datepicker {
+
+        }
+      }
+      .modal__close {
+
+      }
+      .modal__body {
+        padding: 0 0;
+      }
+      .modal__footer {
+      }
+    }
+  }
+}
+
+@include respond(phone) {
+  .modal {
+    &.history-modal {
+      .modal__header {
+        .modal__header__logo {
+
+        }
+        .modal__header__datepicker {
+
+        }
+      }
+      .modal__close {
+        top: 2.2rem;
+      }
+      .modal__body {
+        padding: 1rem 0;
+      }
+      .modal__footer {
+      }
+    }
+  }
+}

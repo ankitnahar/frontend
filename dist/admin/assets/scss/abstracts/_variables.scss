@@ -1,0 +1,46 @@
+// ---------------------------------------------------------------------------------------------
+// ===================== common Variables for color / fonts and Dimension  =====================
+// ---------------------------------------------------------------------------------------------
+
+//
+// Font family variables
+//
+$font-family: 'Roboto', sans-serif;
+
+//
+// Color Variables
+//
+$white-color: #fff;
+$dark-black-color: #000;
+$black-color: #212121;
+$dark-primary-color: #0288D1;
+$primary-color: #03A9F4;
+$primary-light-color: #B3E5FC;
+$red-color: #FF5252;
+$light-gray-color: #BDBDBD;
+$gray-color: #757575;
+$green-color: #5dc35e;
+$white-tranparent-color: rgba(0, 0, 0, 0.3);
+
+$orange-color: #ff5722;
+$light-orange-color: lighten($orange-color, 12%);
+$turquoise-color: #1abc9c;
+$wet-asphalt-color: #34495e;
+$light-orange-color: #e67e22;
+$asbestos-color: #7f8c8d;
+$inner-grid-color: #F9F9FB;
+$delete-icon-color: #e74c3c;
+$dark-blue-color: #263544;
+$light-dark-blue-color: lighten($dark-blue-color, 25%);
+
+//
+// Colors Array
+//
+$colors: $red-color $primary-color $turquoise-color $light-orange-color $wet-asphalt-color;
+
+$invoiceStatusList: $primary-color $wet-asphalt-color $turquoise-color $light-orange-color;
+
+//
+// Spinner Variables
+//
+$spinner-dimensions: 5rem;

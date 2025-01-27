@@ -1,0 +1,57 @@
+// ---------------------------------------------------------------------------------------------
+// =================================== Date Ranger | Date picker owl sass file  ======================================
+// ---------------------------------------------------------------------------------------------
+.owl-dt-control-period-button .owl-dt-control-button-content {
+
+  font-size: 1.4rem;
+  height: 3rem;
+}
+
+.owl-dt-calendar-table .owl-dt-calendar-header .owl-dt-weekdays th {
+  font-size: 1.4rem
+
+}
+
+.owl-dt-calendar-table .owl-dt-calendar-cell-content {
+  font-size: 1.4rem
+}
+
+.owl-dt-container-info .owl-dt-container-range .owl-dt-container-range-content {
+  font-size: 1.5rem
+}
+
+.owl-dt-container-control-button .owl-dt-control-button-content {
+  font-size: 1.5rem;
+}
+
+/**
+Timer
+ */
+.timepicker {
+  &__header {
+    background: $dark-blue-color !important;
+  }
+  .clock-face {
+    &__number {
+      span.active {
+        background: $primary-color !important;
+      }
+    }
+  }
+  &__actions {
+    justify-content: center !important;
+  }
+  .timepicker-button {
+    border-color: $dark-primary-color !important;
+    background: transparent !important;
+    color: $dark-primary-color !important;
+    padding: .7rem 2rem !important;
+    margin-right: 5px !important;
+    border: 1px solid $dark-primary-color !important;
+    outline: 0 !important;
+    @include border-radius(0.2rem);
+    height: auto !important;
+    min-width: auto !important;
+    line-height: 20px !important;
+  }
+}

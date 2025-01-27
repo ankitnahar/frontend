@@ -1,0 +1,17 @@
+/*change multiple worksheet status main page scss start*/
+.change-multiple-worksheet-status {
+
+  .mat-checkbox-inner-container {
+    height: 1.5rem;
+    width: 1.5rem;
+    .mat-checkbox-frame {
+      border-color: rgba(142, 142, 142, 0.54);
+    }
+  }
+}
+
+.change_status {
+  border: 1px solid #fff;
+  border-radius: 20px;
+
+}

@@ -1,0 +1,82 @@
+// --------------------------------------------------------------------------------------
+// ===================== Admin (Administration) add user scss  =====================
+// --------------------------------------------------------------------------------------
+.admin-add-user-management-container {
+  .save-history-btns {
+    text-align: right;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.form-container {
+  .form-title {
+    h3 {
+      margin: 0;
+      padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: $dark-primary-color;
+    }
+  }
+}
+
+.hover-none {
+  &:hover {
+    .picture-upload__hover {
+      display: none !important;
+    }
+  }
+}
+
+.picture-upload {
+  position: relative;
+  display: inline-block;
+  height: 10rem;
+  width: 10rem;
+  cursor: pointer;
+  background: lighten($light-gray-color, 20%);
+  border-radius: 50%;
+  text-align: center;
+
+  .add-img {
+    line-height: 10rem;
+    font-size: 2.8rem;
+    color: $light-gray-color;
+  }
+
+  img {
+    height: 10rem;
+    width: 10rem;
+    border-radius: 50%;
+  }
+
+  &__hover {
+    text-align: center;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, .3);
+    border-radius: 50%;
+    i {
+      font-size: 2.6rem;
+      line-height: 10rem;
+      color: $white-color;
+    }
+  }
+
+  &:hover {
+    .picture-upload__hover {
+      display: block;
+    }
+  }
+}
+
+.remove-btn {
+  vertical-align: top;
+  margin-top: 40px;
+  margin-left: 30px;
+}

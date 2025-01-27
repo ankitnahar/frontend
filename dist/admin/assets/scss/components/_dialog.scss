@@ -1,0 +1,236 @@
+// ---------------------------------------------------------------------------------------------
+// ===================================  Diailog sass file  ======================================
+// ---------------------------------------------------------------------------------------------
+.modal {
+  position: fixed;
+  background: $white-color;
+  left: 50%;
+  top: 50%;
+  width: 50rem;
+  z-index: 990;
+  //@include border-radius(0rem);
+  transform: translate(-50%, -50%);
+  transition: 0.2s all ease-in;
+  //box-shadow: 0 3px 0px -3px rgba(0, 0, 0, 0.2), 0 2px 3px 1px rgba(0, 0, 0, 0.14), 0 -1px 1px 1px rgba(0, 0, 0, 0.12);
+  &.mini-modal {
+    width: 30rem;
+  }
+  &.midium-modal {
+    width: 50rem;
+  }
+  &.large-modal {
+    width: 80rem;
+  }
+  &.xl-large-modal {
+    width: 180rem;
+  }
+  &__close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.8rem;
+    font-size: 2rem;
+    color: $white-color;
+    cursor: pointer;
+  }
+  &__header {
+    border-bottom: .1rem solid $dark-primary-color;
+    background-color: lighten($dark-blue-color, 10%);
+    padding: 1.5rem;
+    color: $white-color;
+    min-height: 6rem;
+    h3 {
+      padding-bottom: 1rem;
+      font-weight: 500;
+      color: $orange-color;
+    }
+    &__logo {
+      line-height: 3rem;
+      word-break: break-word;
+      width: 99%;
+      mat-icon {
+        position: relative;
+        top: .6rem;
+        margin-left: 1rem;
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__body {
+    margin: 1rem 0;
+    padding: 2rem;
+    //padding: 1.5rem;
+    max-height: 75vh;
+    overflow: auto;
+    &__upload-img {
+      text-align: center;
+      img {
+        max-width: 100%;
+      }
+    }
+    &.min-height {
+      min-height: 35vh;
+    }
+  }
+
+  &__footer {
+    margin: 0 0 2rem 0;
+    text-align: center;
+    //border-top: 1px solid lighten($light-gray-color, 10%);
+    padding-top: 1rem;
+    button {
+      padding: 0.6rem 3rem;
+    }
+  }
+}
+
+.modal-layer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  background: $white-tranparent-color;
+}
+
+/**
+* Different dialog size
+*/
+.xl-large-dialog-container {
+  min-width: 100vw !important;
+}
+
+.xl-mid-timesheet-dialog-container {
+  min-width: 95vw !important;
+}
+
+.lg-dialog--container {
+  max-width: 80vw !important;
+}
+
+.add-bookkeeping-dialog-panel-container, .add-form-medium-dialog-container, .dismiss-dialog-container {
+  max-width: 50vw !important;
+}
+
+.changeInOutDialogContainer, .training-list-dialog-container, .add-form-dialog-container {
+  max-width: 40rem !important;
+}
+
+.view-client-dialog-container {
+  max-width: 60rem !important;
+  .mat-chip:not(.mat-basic-chip) {
+    margin-bottom: 1rem !important;
+    background-color: #e4e3e3 !important;
+    padding: .7rem 1.8rem !important;
+    font-size: 1.6rem;
+  }
+}
+
+.advance-invoice-dialog-container {
+  width: 70vw;
+  .grid-search {
+    float: left;
+  }
+}
+
+/**
+* Responsive Design Started
+*/
+@include respond(big-desktop) {
+  .modal {
+    width: 80rem;
+    &.large-modal {
+      width: 80rem;
+    }
+    &.xl-large-modal {
+      width: 90%;
+    }
+    &__close {
+      //right: 0;
+    }
+    &__header {
+      h3 {
+      }
+    }
+    &__body {
+      padding: 2rem 1rem;
+    }
+    &__footer {
+    }
+  }
+}
+
+@include respond(tab-port) {
+  .modal {
+    width: 90%;
+    &.large-modal {
+      width: 90%;
+    }
+    &.xl-large-modal {
+      width: 90%;
+    }
+    &__close {
+      right: 1.2rem;
+    }
+    &__header {
+      h3 {
+      }
+    }
+    &__body {
+      padding: 2rem 1rem;
+    }
+    &__footer {
+    }
+  }
+}
+
+@include respond(tab-land) {
+  .modal {
+    width: 90%;
+    &.large-modal {
+      width: 90%;
+    }
+    &.xl-large-modal {
+      width: 90%;
+    }
+    &__close {
+      right: 1.2rem;
+    }
+    &__header {
+      h3 {
+      }
+    }
+    &__body {
+      padding: 2rem 1rem;
+    }
+    &__footer {
+    }
+  }
+}
+
+@include respond(phone) {
+  .modal {
+    width: 97%;
+    &.large-modal {
+      width: 97%;
+    }
+    &.xl-large-modal {
+      width: 97%;
+    }
+    &__close {
+      right: 0.5rem;
+    }
+    &__header {
+      h3 {
+      }
+    }
+    &__body {
+      padding: 2rem 1rem;
+      max-height: 82vh;
+    }
+    &__footer {
+    }
+  }
+}

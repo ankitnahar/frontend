@@ -1,0 +1,62 @@
+//
+// Import child files
+//
+@import "add-user";
+@import "update-user";
+@import "change-password";
+@import "user-hierarchy";
+@import "personal-info";
+@import "user-privileges";
+@import "history-dialog";
+@import "newsletter";
+
+// --------------------------------------------------------------------------------------
+// ===================== Admin (Administration) manage users scss  =====================
+// --------------------------------------------------------------------------------------
+.admin-manage-users-container {
+  .table-container {
+    .elipsis-email {
+      @include elipsis(18rem);
+    }
+  }
+
+  /**
+   * Responsive Design Started
+   */
+  @include respond(large-desktop) {
+    .table-body {
+      max-height: 72vh;
+    }
+  }
+
+  @include respond(big-desktop) {
+
+  }
+
+  @include respond(tab-land) {
+    .table-container {
+      .table-block {
+        width: 180rem;
+      }
+    }
+  }
+
+  @include respond(tab-port) {
+    .table-container {
+      .table-block {
+        width: 180rem;
+      }
+    }
+  }
+
+  @include respond(phone) {
+    .filter {
+      width: 95.2%;
+    }
+    .table-container {
+      .table-block {
+        width: 180rem;
+      }
+    }
+  }
+}

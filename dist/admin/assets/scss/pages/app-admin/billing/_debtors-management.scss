@@ -1,0 +1,28 @@
+// -----------------------------------------------------------------------------------------------
+// ================================ Admin Biiling Module Debtors Management scss =========================
+// -----------------------------------------------------------------------------------------------
+.debtors-management-container {
+  .total_units {
+    label {
+      color: $black-color;
+      font-weight: 500;
+      margin-left: 1rem;
+    }
+    span {
+      color: $dark-primary-color;
+      font-weight: 500;
+    }
+  }
+}
+
+.debtors-management-comments {
+  h5 {
+    float: left;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    color: #5c5b5b;
+  }
+}

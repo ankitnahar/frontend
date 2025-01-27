@@ -1,0 +1,35 @@
+.admin-hrms-new-dashboard-container {
+  .breadcrumb-top-header {
+    background-color: #f0f0f0;
+    padding: 0;
+    mat-icon {
+      color: #5f6d7d !important;
+    }
+    h2 {
+      color: $white-color;
+      font-weight: 400;
+      display: inline-block;
+    }
+    .mat-icon-button {
+      background: $primary-color;
+      border-radius: 2px;
+      height: 33px;
+      line-height: 34px;
+      margin-left: 5px;
+      mat-icon {
+        vertical-align: middle;
+        vertical-align: -webkit-baseline-middle;
+      }
+    }
+    mat-icon {
+      color: $white-color;
+    }
+    .user-label {
+      background: $dark-primary-color;
+      padding: 8px 15px;
+      color: $white-color;
+      border-radius: 0;
+      margin-left: 10px;
+    }
+  }
+}
