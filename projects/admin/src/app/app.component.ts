@@ -34,7 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loginRequiredSubscriber = this._sharedService.getLoginRequired().subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
     });
-    this.subscribeIsLoggedIn();
+    //this.subscribeIsLoggedIn();
     this.isLoggedIn = this._sharedService.isLoggedIn();
     this.loading = true;
   }

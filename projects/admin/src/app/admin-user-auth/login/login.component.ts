@@ -48,10 +48,10 @@ export class LoginComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loginCheck().then(res => {
+    //this.loginCheck().then(res => {
       this.formView = true;
       this.doLoginForm();
-    });
+   // });
     // Code By : Atri Acharya For Single Sing On From Mini Orange
     // Date : 09/06/2021
 
@@ -107,7 +107,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
   createLoginUserForm() {
     this.loginForm = this._fb.group({
       user_login_name: new FormControl('', [<any>Validators.required]),
-      password: new FormControl('', [Validators.required])
+      password: new FormControl('', [Validators.required]),
+      is_checked_terms: new FormControl('', [Validators.required])
     });
   }
 
@@ -139,13 +140,23 @@ export class LoginComponent extends BaseComponent implements OnInit {
     this.userInfo = this._sharedService.getUser();
     if (!CommonFunctions.isEmpty(this.userInfo)) {
       if (!this.userInfo.office_location) {
+        this.onBookYourLunch();
+        // this.onCheckFoodStatus();
       } else {
         this._router.navigate(['/' + AdminRoutes.ADMIN_NEW_HRMS]);
       }
     }
   }
 
- 
+  OnChangeTerms(value) {
+    if (value) {
+      this.loginForm.get('is_checked_terms').setValue(1);
+      this.loginForm.updateValueAndValidity();
+    } else {
+      this.loginForm.get('is_checked_terms').setValue(null);
+      this.loginForm.updateValueAndValidity();
+    }
+  }
 
   onSubmitForgotEmailForm(formParam: any, isValid: boolean) {
     if (isValid) {
@@ -199,6 +210,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      if (result) {
         const param = {};
         param['method'] = '_put';
         this._commonCrudService.updateData(AdminAPI.BOOK_FOOD_USER_INFO, this.userInfo.id, param).subscribe(Response => {
@@ -206,12 +218,20 @@ export class LoginComponent extends BaseComponent implements OnInit {
           this._sharedService.setUser(this.userInfo);
           this.onGoDashboard();
         });
+      } else {
+        this.onBookYourLunch();
+        // this.onCheckFoodStatus();
+      }
     });
   }
 
- 
+  onBookYourLunch() {
+    
+  }
 
-  
+  onTerms() {
+    
+  }
 
   deleteAllCookies() {
     const cookies = document.cookie.split(";");

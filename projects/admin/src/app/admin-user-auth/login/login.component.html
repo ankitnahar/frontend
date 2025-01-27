@@ -8,12 +8,54 @@
 
       <div class="panel-body-container">
         <div class="panel-header">
-          <h3>Welcome to HK Accountax!</h3>
+          <h3>Welcome to befree!</h3>
         </div>
         <div class="panel-body">
           <!-- Start login form view -->
           <div class="login-screen" *ngIf="activeView == enumView.LOGIN_VIEW">
-            <form [formGroup]="loginForm" (submit)="onSubmitLoginForm(loginForm)">
+            <form [formGroup]="loginForm" (submit)="onSubmitLoginForm(loginForm)" *ngIf="formType === 0 && formView === true">
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field>
+                    <input matInput type="text" placeholder="Username" formControlName="email"/>
+                  </mat-form-field>
+                  <div class="validation-msg">
+                    <app-validation *ngIf="isRequiredField(loginForm.get('email'))"
+                                    [errMsg]="validationMsg.USERNAME"></app-validation>
+                  </div>
+                </div>
+
+                <!--<div class="col-md-12">-->
+                  <!--<mat-form-field>-->
+                    <!--<input matInput [type]="hide ? 'password' : 'text'" placeholder="Password"-->
+                           <!--formControlName="password"/>-->
+                    <!--<mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>-->
+                  <!--</mat-form-field>-->
+                  <!--<div class="validation-msg">-->
+                    <!--<app-validation *ngIf="isRequiredField(loginForm.get('password'))"-->
+                                    <!--[errMsg]="validationMsg.PASSWORD"></app-validation>-->
+                  <!--</div>-->
+                <!--</div>-->
+
+                <!--<div class="col-md-12 MT-10">-->
+                  <!--<mat-checkbox (change)="OnChangeTerms($event.checked)"></mat-checkbox> I have read and agree to the <a (click)="onTerms()" class="primary-color fw-500"> terms and conditions</a>-->
+                <!--</div>-->
+
+                <div class="col-md-12 MT-20">
+                  <button type="submit" class="btn-primary btn-block btn-login" [disabled]="!loginForm.valid">LOGIN
+                  </button>
+                </div>
+
+                <!--<div class="col-md-12 MT-30">-->
+                  <!--<div class="forgot-password-link">-->
+                    <!--<a (click)="onGoToForgotPassword()">Forgot Password?</a>-->
+                  <!--</div>-->
+                <!--</div>-->
+              </div>
+            </form>
+
+
+            <form [formGroup]="loginForm" (submit)="onSubmitLoginForm(loginForm)" *ngIf="formType === 1 && formView === true">
               <div class="row">
                 <div class="col-md-12">
                   <mat-form-field>
@@ -37,18 +79,20 @@
                   </div>
                 </div>
 
-                
+                <div class="col-md-12 MT-10">
+                  <mat-checkbox (change)="OnChangeTerms($event.checked)"></mat-checkbox> I have read and agree to the <a (click)="onTerms()" class="primary-color fw-500"> terms and conditions</a>
+                </div>
 
                 <div class="col-md-12 MT-20">
                   <button type="submit" class="btn-primary btn-block btn-login" [disabled]="!loginForm.valid">LOGIN
                   </button>
                 </div>
 
-                <div class="col-md-12 MT-30">
-                  <div class="forgot-password-link">
-                    <a (click)="onGoToForgotPassword()">Forgot Password?</a>
-                  </div>
-                </div>
+                <!--<div class="col-md-12 MT-30">-->
+                  <!--<div class="forgot-password-link">-->
+                    <!--<a (click)="onGoToForgotPassword()">Forgot Password?</a>-->
+                  <!--</div>-->
+                <!--</div>-->
               </div>
             </form>
           </div>
@@ -91,7 +135,7 @@
 
     <!-- Start Copy right section -->
     <div class="panel-block__copyright">
-      <p>Copyright@ {{currentYear}}. All Rights reserved to HK Accountax</p>
+      <p>Copyright@ {{currentYear}}. All Rights reserved to befree</p>
     </div>
     <!-- End Copy right section -->
   </div>
