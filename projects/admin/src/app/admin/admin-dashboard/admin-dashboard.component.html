@@ -356,19 +356,7 @@ help
         </mat-card-header>
         <mat-divider></mat-divider>
 
-        <mat-card-content>
-          <div class="list-parent-section announcementSection">
-            <ul class="leave-request-list" *ngFor="let policy of readPoliciesHoliday;">
-              <li>
-                <mat-icon>keyboard_arrow_right</mat-icon>
-              </li>
-              <li class="user-details">
-                <h3><a (click)="onOpenReadPolicies(policy)">
-                  {{policy?.name}} </a></h3>
-              </li>
-            </ul>
-          </div>
-        </mat-card-content>
+        
       </mat-card>
     </div>
     <!-- Start Read Holiday Section End-->

@@ -20,7 +20,6 @@ import {MatDialog} from '@angular/material';
 import {SharedObjService} from '../../../utility/shared-service/shared-object.service';
 import {Nominee} from "../../../utility/shared-model/nominee-model";
 import {FoodMaster} from "../../../utility/shared-model/food.model";
-import {FeedbackMenuLunchDialogComponent} from "./my-lunch-booking/feedback-menu-lunch-dialog/feedback-menu-lunch-dialog.component";
 
 @Component({
   selector: 'app-admin-hrms-new',
@@ -423,26 +422,8 @@ export class AdminHrmsNewComponent implements OnInit {
    * @param foodMaster
    */
   onFeedbackMenuReviewDialog(foodMasterData: FoodMaster, type: number) {
-    const dialogRef = this.dialog.open(FeedbackMenuLunchDialogComponent, {
-      panelClass: 'add-form-medium-dialog-container',
-      data: {
-        foodMaster: (foodMasterData) ? foodMasterData : [],
-        typeOfView: type
-      }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-    });
+    
   }
 
-  onMsaLink() {
-    this._router.navigate([]).then(result => {
-      window.open('/' + AdminRoutes.MSA_LINKS, '_blank');
-    });
-  }
-
-  onBrandDocs() {
-    this._router.navigate([]).then(result => {
-      window.open('/' + AdminRoutes.BRAND_DOCUMENTS, '_blank');
-    });
-  }
+  
 }

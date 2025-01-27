@@ -31,11 +31,6 @@ const routes: Routes = [
     canActivate: [AdminAuthGuard]
   },
   {
-    path: AdminRoutes.STSYEM_SETUP,
-    loadChildren: './system-setup/system-setup.module#SystemSetupModule',
-    canActivate: [AdminAuthGuard]
-  },
-  {
     path: AdminRoutes.REPORT,
     loadChildren: './report/report.module#ReportModule',
     canActivate: [AdminAuthGuard]
