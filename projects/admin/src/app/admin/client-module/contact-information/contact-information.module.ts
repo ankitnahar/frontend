@@ -8,9 +8,6 @@ import {AdminAuthGuard} from '../../../_guards/auth.guards';
 import {ContactInformationComponent} from './contact-information.component';
 import {ContactComponent} from './contact/contact.component';
 import {AddressComponent} from './address/address.component';
-import {ContactInfoNewsletterComponent} from "./contact-info-newsletter/contact-info-newsletter.component";
-import {ClientUsersModule} from './client-users/client-users.module';
-import {ClientUsersComponent} from "./client-users/client-users.component";
 
 const routes = [
   {
@@ -25,10 +22,6 @@ const routes = [
   {
     path: 'address',
     loadChildren: './address/address.module#AddressModule'
-  },
-  {
-    path: 'client-users',
-    loadChildren: './client-users/client-users.module#ClientUsersModule'
   }
 
 ];
@@ -37,17 +30,14 @@ const routes = [
   declarations: [
     ContactInformationComponent,
     ContactComponent,
-    AddressComponent,
-    ContactInfoNewsletterComponent,
-    ClientUsersComponent
+    AddressComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     UtilityModule,
     ContactModule,
-    AddressModule,
-    ClientUsersModule
+    AddressModule
   ],
   entryComponents: []
 })

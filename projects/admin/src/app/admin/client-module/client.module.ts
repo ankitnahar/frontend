@@ -10,10 +10,6 @@ const routes: Routes = [
     loadChildren: './software/software.module#SoftwareModule'
   },
   {
-    path: 'discontinue-client',
-    loadChildren: './discontinue-client/discontinue-client.module#DiscontinueClientModule'
-  },
-  {
     path: AdminRoutes.CONTACT_INFORMATION_ROUTE,
     loadChildren: './contact-information/contact-information.module#ContactInformationModule'
   },

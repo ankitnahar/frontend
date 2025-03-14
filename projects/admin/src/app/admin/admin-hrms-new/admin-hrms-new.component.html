@@ -15,15 +15,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-      </div>
-      <div class="col-md-2 PR-0">
-        <mat-form-field floatLabel="never" *ngIf="yearMonth.length">
-          <mat-select placeholder="Months" (selectionChange)="onChangeGetValue($event.value)"
-                      [value]="yearMonth[0]['key']">
-            <mat-option *ngFor="let year of yearMonth;" [value]="year.key">{{year.label}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+      </div>      
     </div>
   </div>
 

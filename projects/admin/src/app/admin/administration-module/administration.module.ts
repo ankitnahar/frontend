@@ -24,12 +24,7 @@ const routes: Routes = [
     path: 'ip-address',
     loadChildren: './ip-address/ip-address.module#IpAddressModule',
     canActivate: [AdminAuthGuard]
-  },
-  {
-    path: 'manage-discontinue-question',
-    loadChildren: './manage-discontinue-question/manage-discontinue-question.module#ManageDiscontinueQuestionModule',
-    canActivate: [AdminAuthGuard]
-  },
+  },  
   {
     path: 'manage-emails',
     loadChildren: './manage-emails/manage-emails.module#ManageEmailsModule'

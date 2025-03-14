@@ -1,6 +1,5 @@
 import {AdminUser} from '../../../../../utility/shared-model/admin-user.model';
 import {Shift} from '../shift-list/shift-list.model';
-import {LeaveBalance} from "../leave-balance-list/leave-balance.model";
 
 export class AttendanceSummary {
   private _id: number;
@@ -24,7 +23,6 @@ export class AttendanceSummary {
   private _reason: string;
   private _is_exception: number;
   private _units: number;
-  private _leave_balance: LeaveBalance[];
   private _is_holiday: number;
 
   get id(): number {
@@ -193,15 +191,6 @@ export class AttendanceSummary {
 
   set units(value: number) {
     this._units = value;
-  }
-
-
-  get leave_balance(): LeaveBalance[] {
-    return this._leave_balance;
-  }
-
-  set leave_balance(value: LeaveBalance[]) {
-    this._leave_balance = value;
   }
 
   get is_holiday(): number {

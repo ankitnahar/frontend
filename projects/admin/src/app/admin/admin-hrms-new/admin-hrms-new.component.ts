@@ -79,31 +79,10 @@ export class AdminHrmsNewComponent implements OnInit {
     this.securityCodeTabData = this._sharedService.checkUserPrivilegesTabs(this.securityCodeTabID);
     // this.initializationMethod();
     this.isAddTimesheetButtonRights = this._sharedService.checkUserPrivileges(this.tabID, 'otherRights', 'otherRights', 'button_name', 'add_timesheet', 1);
-    this.monthYearList();
-    this.getDashboard(null);
-    this.getHRDetail();
-    this.getTimesheetUnits();
-    this.getUserList();
-    this.getUserUpcomingHoliday();
-    this.getDailyMotivation();
+    
   }
 
-  getTodaysMenu() {
-    this._commonCrudService.getData(AdminAPI.BOOK_FOOD_DASHBOARD, this.userData.id).subscribe(Response => {
-      this.todaysMenu = Response.payload.data;
-    });
-  }
-
-  getDailyMotivation() {
-    this._commonCrudService.listData(AdminAPI.DROPDOWN_LIST, {
-      'table': 'motivational',
-      'column': 'id,motivation'
-    }, {}).subscribe(response => {
-      const day = new Date().getDate();
-      const item = response.filter(x => x.id === Number(day));
-      this.motivation = (item.length) ? item[0]["motivation"] : "";
-    });
-  }
+ 
 
   /**
    * Get User List
@@ -196,39 +175,7 @@ export class AdminHrmsNewComponent implements OnInit {
       });
   }
 
-  attendanceSummary(status: string, yearMonth: string, viewType: string, type: string) {
-    console.log(status, yearMonth, viewType, type);
-    if (status !== '' && yearMonth && viewType && type) {
-      let jsonData = {};
-      if (type === 'status' || type === 'remark' || type === 'finalremark') {
-        if (type === 'status') {
-          jsonData = convertURLParamToEncode({'status': status, 'month_year': yearMonth, 'view': viewType});
-        } else if (type === 'remark') {
-          jsonData = convertURLParamToEncode({'remark': status, 'month_year': yearMonth, 'view': viewType});
-        } else if (type === 'finalremark') {
-          if (status === '3') {
-            jsonData = convertURLParamToEncode({
-              'final_remark': status,
-              // 'remark': 5,
-              'month_year': yearMonth,
-              'view': viewType
-            });
-          } else {
-            jsonData = convertURLParamToEncode({'final_remark': status, 'month_year': yearMonth, 'view': viewType});
-          }
-        }
-        this._router.navigate(['/' + AdminRoutes.ATTENDANCE_SUMMARY], {queryParams: jsonData});
-      }
-
-      if (type === 'stage_id') {
-        if (type === 'stage_id') {
-          jsonData = convertURLParamToEncode({'stage_id': status, 'month_year': yearMonth, 'view': viewType});
-        }
-        this._router.navigate(['/' + AdminRoutes.HRMS_USER_PENDING_TIMESHEET], {queryParams: jsonData});
-      }
-    }
-  }
-
+ 
   onChangeGetValue(value: string) {
     this.selectedYearMonth = value;
     this.getDashboard(value);
@@ -364,66 +311,5 @@ export class AdminHrmsNewComponent implements OnInit {
       this.userTimesheetUnits = response;
     });
   }
-
-  /**
-   * Get Holiday for this month
-   */
-  getUserUpcomingHoliday() {
-    // console.log(this.userData);
-    this._commonCrudService.listData(AdminAPI.HR_USER_UPCOMING_HOLIDAY + '/' + this.userData.shift_id, {}).subscribe(response => {
-      const data = response.payload.data;
-      const dateMonth = new Date();
-      dateMonth.setMonth(new Date().getMonth());
-      const dateMonthNext = new Date();
-      dateMonthNext.setMonth(new Date().getMonth() + 1);
-      this.upcomingHolidayList = data.length ? data.filter(item => (moment(item['date'], 'YYYY-MM-DD').format('MM') === moment(dateMonthNext).format('MM')) || (moment(item['date'], 'YYYY-MM-DD').format('MM') === moment(dateMonth).format('MM'))) : [];
-    });
-  }
-
-  /**
-   * Holiday request count
-   */
-  onHolidayRequestcount() {
-    this._router.navigate([]).then(result => {
-      window.open('/' + AdminRoutes.APPLY_HOLIDAY_WORKING_LISTING, '_blank');
-    });
-  }
-
-  /**
-   * Leave request count
-   */
-  onLeaveRequestcount() {
-    this._router.navigate([]).then(result => {
-      window.open('/' + AdminRoutes.APPLY_LEAVE_LISTING, '_blank');
-    });
-  }
-
-  onAwardeeOfTheMonths () {
-    this._router.navigate([]).then(result => {
-      window.open('/' + AdminRoutes.AWARDEE_OF_THE_MONTH, '_blank');
-    });
-  }
-
-
-  /**
-   * user Listing API.
-   * @param pageNumber
-   * @param key
-   * @param val
-   */
-  getAwardList() {
-    this._commonCrudService.listData(AdminAPI.AWARD_NOMINEE_LIST_DASHBOARD, {}, {}).subscribe((response) => {
-      this.nomineeList = response.payload.data;
-    });
-  }
-
-  /**
-   * On Feedback Menu Review Dialog
-   * @param foodMaster
-   */
-  onFeedbackMenuReviewDialog(foodMasterData: FoodMaster, type: number) {
-    
-  }
-
   
 }
